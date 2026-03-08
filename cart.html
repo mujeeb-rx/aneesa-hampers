@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart & Checkout – Aneesa Hampers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+    .cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    .cursor-ring{width:32px;height:32px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s,top .12s;opacity:.4;}
+    #ah-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.77rem;z-index:9999;display:none;white-space:nowrap;font-family:'Jost',sans-serif;}
+    nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(253,246,240,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(192,100,122,.1);}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
+    .nav-logo span{color:var(--deep-rose);}
+    .nav-links{display:flex;gap:36px;list-style:none;}
+    .nav-links a{text-decoration:none;font-size:.74rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
+    .nav-right{display:flex;align-items:center;gap:14px;}
+    .nav-cart{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--burgundy);font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:none;}
+    .cart-count{background:var(--deep-rose);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;}
+    .nav-wa{background:var(--green);color:white;border-radius:30px;padding:9px 20px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;text-decoration:none;cursor:none;}
+    /* STEP INDICATOR */
+    .steps-bar{padding:100px 60px 30px;background:var(--white);border-bottom:1px solid rgba(192,100,122,.1);}
+    .steps{display:flex;align-items:center;justify-content:center;gap:0;max-width:500px;margin:0 auto;}
+    .step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+    .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;border:2px solid rgba(192,100,122,.3);color:rgba(192,100,122,.5);transition:all .4s;}
+    .step.done .step-num,.step.active .step-num{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+    .step-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;transition:opacity .3s;}
+    .step.active .step-label{opacity:1;color:var(--deep-rose);}
+    .step-line{flex:1;height:2px;background:rgba(192,100,122,.15);margin:0 -2px;position:relative;top:-14px;}
+    .step-line.done{background:var(--burgundy);}
+    /* MAIN LAYOUT */
+    .cart-main{padding:40px 60px 80px;display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;}
+    /* CART ITEMS */
+    .cart-section{background:var(--white);border-radius:20px;padding:28px;}
+    .cart-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:22px;}
+    .cart-title em{font-style:italic;color:var(--deep-rose);}
+    .cart-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid rgba(192,100,122,.1);}
+    .cart-item:last-child{border-bottom:none;}
+    .item-img{width:80px;height:80px;border-radius:12px;object-fit:cover;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;overflow:hidden;}
+    .item-img img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+    .item-info{flex:1;}
+    .item-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;margin-bottom:4px;}
+    .item-price{font-size:.85rem;color:var(--deep-rose);font-weight:500;margin-bottom:10px;}
+    .item-qty{display:flex;align-items:center;gap:10px;}
+    .qty-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(192,100,122,.3);background:none;color:var(--burgundy);font-size:1rem;cursor:none;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+    .qty-btn:hover{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+    .qty-num{font-size:.9rem;font-weight:500;min-width:20px;text-align:center;}
+    .item-total{font-size:.9rem;font-weight:600;margin-left:auto;align-self:center;}
+    .remove-btn{background:none;border:none;color:rgba(192,100,122,.5);font-size:1.1rem;cursor:none;transition:color .2s;align-self:flex-start;margin-left:8px;}
+    .remove-btn:hover{color:#e05050;}
+    .cart-empty{text-align:center;padding:60px 20px;opacity:.5;}
+    .cart-empty .icon{font-size:3.5rem;margin-bottom:16px;}
+    /* FORM */
+    .form-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;margin-bottom:22px;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-group{display:flex;flex-direction:column;gap:6px;}
+    .form-group.full{grid-column:1/-1;}
+    .form-label{font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.5;}
+    .form-input{border:1.5px solid rgba(192,100,122,.2);border-radius:12px;padding:12px 15px;font-family:'Jost',sans-serif;font-size:.86rem;color:var(--burgundy);background:var(--white);outline:none;transition:border-color .3s;}
+    .form-input:focus{border-color:var(--deep-rose);}
+    .form-input.error{border-color:#e05050;}
+    /* DELIVERY OPTIONS */
+    .delivery-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+    .delivery-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid rgba(192,100,122,.2);border-radius:12px;cursor:none;transition:all .3s;}
+    .delivery-opt.selected{border-color:var(--burgundy);background:rgba(59,13,26,.04);}
+    .delivery-opt input{accent-color:var(--burgundy);cursor:none;}
+    .delivery-opt-info{flex:1;}
+    .delivery-opt-name{font-size:.84rem;font-weight:500;}
+    .delivery-opt-desc{font-size:.75rem;opacity:.5;margin-top:2px;}
+    .delivery-opt-price{font-size:.84rem;font-weight:600;color:var(--deep-rose);}
+    /* ORDER SUMMARY */
+    .summary-box{background:var(--white);border-radius:20px;padding:26px;position:sticky;top:100px;}
+    .summary-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:20px;}
+    .summary-row{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:12px;opacity:.7;}
+    .summary-row.total{opacity:1;font-weight:600;font-size:1rem;border-top:1px solid rgba(192,100,122,.15);padding-top:14px;margin-top:4px;}
+    .promo-wrap{display:flex;gap:8px;margin:16px 0;}
+    .promo-input{flex:1;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;padding:10px 13px;font-family:'Jost',sans-serif;font-size:.82rem;color:var(--burgundy);background:var(--cream);outline:none;}
+    .promo-btn{padding:10px 16px;background:var(--burgundy);color:white;border:none;border-radius:10px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1px;cursor:none;transition:background .3s;}
+    .promo-btn:hover{background:var(--deep-rose);}
+    .checkout-btn{width:100%;padding:15px;background:var(--burgundy);color:white;border:none;border-radius:14px;font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:all .3s;margin-top:16px;}
+    .checkout-btn:hover{background:var(--deep-rose);}
+    /* UPI PAYMENT MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(59,13,26,.55);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:var(--cream);border-radius:24px;padding:36px;width:100%;max-width:420px;position:relative;text-align:center;animation:mIn .35s ease;}
+    @keyframes mIn{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-close{position:absolute;top:16px;right:16px;width:34px;height:34px;background:var(--blush);border:none;border-radius:50%;cursor:none;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+    .modal-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:6px;}
+    .modal-title em{font-style:italic;color:var(--deep-rose);}
+    .upi-amount{font-size:1.5rem;font-weight:600;color:var(--deep-rose);margin-bottom:6px;}
+    .upi-sub{font-size:.78rem;opacity:.5;margin-bottom:20px;}
+    .qr-img{width:200px;height:200px;border-radius:16px;border:3px solid var(--blush);margin:0 auto 16px;}
+    .upi-id-box{background:var(--blush);border-radius:12px;padding:12px 18px;font-size:.85rem;margin-bottom:16px;letter-spacing:1px;}
+    .upi-id-box strong{display:block;font-size:1rem;color:var(--deep-rose);margin-top:3px;}
+    .pay-phonepe{display:block;width:100%;padding:14px;background:#5f259f;color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;cursor:none;margin-bottom:10px;text-decoration:none;transition:opacity .3s;}
+    .pay-phonepe:hover{opacity:.88;}
+    .paid-btn{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:opacity .3s;}
+    .paid-btn:hover{opacity:.88;}
+    /* SUCCESS */
+    .success-screen{display:none;text-align:center;padding:80px 40px;}
+    .success-screen.show{display:block;}
+    .success-icon{font-size:4rem;margin-bottom:20px;animation:bounce .6s ease;}
+    @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;margin-bottom:10px;}
+    .success-id{font-size:.9rem;color:var(--deep-rose);font-weight:600;margin-bottom:6px;}
+    .success-sub{font-size:.85rem;opacity:.6;line-height:1.7;margin-bottom:30px;}
+    .success-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn-p{padding:12px 28px;background:var(--burgundy);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;cursor:none;text-decoration:none;}
+    .btn-g{padding:12px 28px;background:var(--green);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;cursor:none;text-decoration:none;}
+    #floatWA{position:fixed;bottom:26px;right:26px;z-index:500;display:flex;align-items:center;gap:9px;background:var(--green);color:white;border-radius:50px;padding:12px 20px;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;text-decoration:none;box-shadow:0 6px 28px rgba(37,211,102,.4);cursor:none;animation:fa 2.5s ease-in-out infinite;}
+    @keyframes fa{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    @media(max-width:900px){
+      nav{padding:15px 20px;}.nav-links{display:none;}
+      .steps-bar{padding:90px 20px 26px;}
+      .cart-main{grid-template-columns:1fr;padding:24px 20px 60px;}
+      .summary-box{position:static;}
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Collections</a></li>
+    <li><a href="cart.html" class="active">Cart</a></li>
+    <li><a href="login.html">Account</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+    <a class="nav-wa" href="#" id="navWA">💬 Order Now</a>
+  </div>
+</nav>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="steps">
+    <div class="step active" id="step1"><div class="step-num">1</div><div class="step-label">Cart</div></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step" id="step2"><div class="step-num">2</div><div class="step-label">Details</div></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><div class="step-label">Payment</div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="cart-main" id="cartMain">
+  <!-- LEFT -->
+  <div>
+    <!-- STEP 1: CART ITEMS -->
+    <div class="cart-section" id="cartStep">
+      <div class="cart-title">Your <em>Cart</em></div>
+      <div id="cartItemsWrap"></div>
+      <button class="checkout-btn" style="margin-top:20px" onclick="goToDetails()">Continue to Details →</button>
+    </div>
+    <!-- STEP 2: DETAILS FORM -->
+    <div class="cart-section" id="detailsStep" style="display:none">
+      <div class="form-title">Delivery <span style="font-style:italic;color:var(--deep-rose)">Details</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="fName" placeholder="Your full name"/></div>
+        <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="fPhone" placeholder="10-digit number" type="tel"/></div>
+        <div class="form-group full"><label class="form-label">Address *</label><input class="form-input" id="fAddr" placeholder="House no, Street, Area"/></div>
+        <div class="form-group"><label class="form-label">City *</label><input class="form-input" id="fCity" placeholder="City"/></div>
+        <div class="form-group"><label class="form-label">Pincode *</label><input class="form-input" id="fPin" placeholder="Pincode" type="number"/></div>
+        <div class="form-group full"><label class="form-label">Gift Message (optional)</label><textarea class="form-input" id="fMsg" rows="2" placeholder="Write a personal message…"></textarea></div>
+      </div>
+      <div style="margin-bottom:16px;margin-top:4px">
+        <div class="form-label" style="margin-bottom:12px">Delivery Option</div>
+        <div class="delivery-opts">
+          <label class="delivery-opt selected" id="opt_standard"><input type="radio" name="delivery" value="standard" checked onchange="updateDelivery(this)"><div class="delivery-opt-info"><div class="delivery-opt-name">Standard Delivery</div><div class="delivery-opt-desc">2-3 days · Kadapa & nearby</div></div><div class="delivery-opt-price">FREE</div></label>
+          <label class="delivery-opt" id="opt_express"><input type="radio" name="delivery" value="express" onchange="updateDelivery(this)"><div class="delivery-opt-info"><div class="delivery-opt-name">Express Delivery</div><div class="delivery-opt-desc">Same day · Before 2 PM</div></div><div class="delivery-opt-price">₹99</div></label>
+          <label class="delivery-opt" id="opt_pickup"><input type="radio" name="delivery" value="pickup" onchange="updateDelivery(this)"><div class="delivery-opt-info"><div class="delivery-opt-name">Self Pickup</div><div class="delivery-opt-desc">Pick from Kadapa</div></div><div class="delivery-opt-price">FREE</div></label>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button class="checkout-btn" style="background:var(--blush);color:var(--burgundy);flex:0.4" onclick="goBack()">← Back</button>
+        <button class="checkout-btn" style="flex:1" onclick="goToPayment()">Pay Now →</button>
+      </div>
+    </div>
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎀</div>
+      <div class="success-title">Order Placed!</div>
+      <div class="success-id" id="successOrderId"></div>
+      <div class="success-sub">Thank you! Your order has been received.<br/>We'll confirm via WhatsApp shortly.</div>
+      <div class="success-btns">
+        <a href="products.html" class="btn-p">Continue Shopping</a>
+        <a href="#" class="btn-g" id="confirmWA">💬 Confirm on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+  <!-- RIGHT: SUMMARY -->
+  <div class="summary-box" id="summaryBox">
+    <div class="summary-title">Order Summary</div>
+    <div class="summary-row"><span>Subtotal</span><span id="sumSub">₹0</span></div>
+    <div class="summary-row"><span>Discount</span><span id="sumDiscount" style="color:var(--green)">-₹0</span></div>
+    <div class="summary-row"><span>Delivery</span><span id="sumDelivery">FREE</span></div>
+    <div class="summary-row total"><span>Total</span><span id="sumTotal">₹0</span></div>
+    <div class="promo-wrap">
+      <input class="promo-input" id="promoInput" placeholder="Promo code"/>
+      <button class="promo-btn" onclick="applyPromo()">Apply</button>
+    </div>
+    <div id="promoMsg" style="font-size:.75rem;margin-top:-8px;min-height:18px;"></div>
+  </div>
+</div>
+
+<!-- UPI PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Pay to <em>Aneesa</em></div>
+    <div class="upi-amount" id="payAmount"></div>
+    <div class="upi-sub">Scan QR or pay via PhonePe</div>
+    <img class="qr-img" id="qrImg" src="" alt="QR Code"/>
+    <div class="upi-id-box">UPI ID<strong>8639066613@ybl</strong></div>
+    <a class="pay-phonepe" id="phonePeLink" href="#">📱 Open PhonePe & Pay</a>
+    <button class="paid-btn" onclick="confirmPaid()">✅ I have paid — Confirm Order</button>
+  </div>
+</div>
+
+<a href="#" id="floatWA">💬 Order via WhatsApp</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const WA_NUM='918639066613';
+const UPI_ID='8639066613@ybl';
+const UPI_NAME='Aneesa';
+
+// CART
+const Cart={
+  get(){try{return JSON.parse(localStorage.getItem('ah_cart')||'[]')}catch{return[]}},
+  save(i){localStorage.setItem('ah_cart',JSON.stringify(i));updateSummary();badge();},
+  remove(id){Cart.save(Cart.get().filter(i=>i.id!==id));renderCart();},
+  updateQty(id,d){const it=Cart.get(),i=it.find(x=>x.id===id);if(i){i.qty=Math.max(1,i.qty+d);Cart.save(it);renderCart();}},
+  count(){return Cart.get().reduce((s,i)=>s+(i.qty||1),0);},
+  subtotal(){return Cart.get().reduce((s,i)=>s+i.price*(i.qty||1),0);}
+};
+function badge(){document.querySelectorAll('.cart-count').forEach(el=>el.textContent=Cart.count());}
+function toast(msg){const t=document.getElementById('ah-toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2500);}
+badge();
+
+let discount=0, deliveryFee=0, currentOrderId='';
+
+// RENDER CART
+function renderCart(){
+  const items=Cart.get();
+  const wrap=document.getElementById('cartItemsWrap');
+  if(!items.length){wrap.innerHTML=`<div class="cart-empty"><div class="icon">🛍️</div><p>Your cart is empty</p><br/><a href="products.html" style="color:var(--deep-rose);font-size:.8rem;letter-spacing:2px;text-transform:uppercase;">Browse Products →</a></div>`;updateSummary();return;}
+  wrap.innerHTML=items.map(i=>`
+    <div class="cart-item">
+      <div class="item-img">${i.image?`<img src="${i.image}" alt="${i.name}"/>`:'🎁'}</div>
+      <div class="item-info">
+        <div class="item-name">${i.name}</div>
+        <div class="item-price">₹${Number(i.price).toLocaleString()}</div>
+        <div class="item-qty">
+          <button class="qty-btn" onclick="Cart.updateQty('${i.id}',-1)">−</button>
+          <span class="qty-num">${i.qty||1}</span>
+          <button class="qty-btn" onclick="Cart.updateQty('${i.id}',1)">+</button>
+        </div>
+      </div>
+      <div class="item-total">₹${(i.price*(i.qty||1)).toLocaleString()}</div>
+      <button class="remove-btn" onclick="Cart.remove('${i.id}')">✕</button>
+    </div>`).join('');
+  updateSummary();
+}
+window.Cart=Cart;
+
+// SUMMARY
+function updateSummary(){
+  const sub=Cart.subtotal();
+  const total=Math.max(0,sub-discount)+deliveryFee;
+  document.getElementById('sumSub').textContent=`₹${sub.toLocaleString()}`;
+  document.getElementById('sumDiscount').textContent=`-₹${discount.toLocaleString()}`;
+  document.getElementById('sumDelivery').textContent=deliveryFee?`₹${deliveryFee}`:'FREE';
+  document.getElementById('sumTotal').textContent=`₹${total.toLocaleString()}`;
+}
+
+// PROMO CODES
+const PROMOS={'ANEESA10':10,'GIFT20':20,'WELCOME15':15};
+window.applyPromo=()=>{
+  const code=document.getElementById('promoInput').value.trim().toUpperCase();
+  const msg=document.getElementById('promoMsg');
+  if(PROMOS[code]){
+    const pct=PROMOS[code];
+    discount=Math.round(Cart.subtotal()*pct/100);
+    msg.innerHTML=`<span style="color:var(--green)">✅ ${pct}% discount applied!</span>`;
+    updateSummary();
+  } else {
+    discount=0; updateSummary();
+    msg.innerHTML=`<span style="color:#e05050">❌ Invalid promo code</span>`;
+  }
+};
+
+// DELIVERY
+window.updateDelivery=inp=>{
+  deliveryFee=inp.value==='express'?99:0;
+  document.querySelectorAll('.delivery-opt').forEach(o=>o.classList.remove('selected'));
+  inp.closest('.delivery-opt').classList.add('selected');
+  updateSummary();
+};
+
+// STEPS
+window.goToDetails=()=>{
+  if(!Cart.get().length){toast('⚠️ Your cart is empty!');return;}
+  document.getElementById('cartStep').style.display='none';
+  document.getElementById('detailsStep').style.display='block';
+  document.getElementById('step1').classList.add('done');
+  document.getElementById('step2').classList.add('active');
+  document.getElementById('line1').classList.add('done');
+};
+window.goBack=()=>{
+  document.getElementById('detailsStep').style.display='none';
+  document.getElementById('cartStep').style.display='block';
+  document.getElementById('step1').classList.remove('done');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('line1').classList.remove('done');
+};
+
+// VALIDATE & SHOW PAYMENT
+window.goToPayment=()=>{
+  const fields=[['fName','Name'],['fPhone','Phone'],['fAddr','Address'],['fCity','City'],['fPin','Pincode']];
+  let ok=true;
+  fields.forEach(([id,lbl])=>{
+    const el=document.getElementById(id);
+    if(!el.value.trim()){el.classList.add('error');ok=false;}
+    else el.classList.remove('error');
+  });
+  if(!ok){toast('⚠️ Please fill all required fields');return;}
+  // Show payment modal
+  const total=Math.max(0,Cart.subtotal()-discount)+deliveryFee;
+  const note='Aneesa Hampers Order';
+  const upiUrl=`upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent(note)}`;
+  const qrUrl=`https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(upiUrl)}&choe=UTF-8`;
+  document.getElementById('payAmount').textContent=`₹${total.toLocaleString()}`;
+  document.getElementById('qrImg').src=qrUrl;
+  document.getElementById('phonePeLink').href=`phonepe://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent(note)}`;
+  document.getElementById('step2').classList.add('done');
+  document.getElementById('step3').classList.add('active');
+  document.getElementById('line2').classList.add('done');
+  document.getElementById('payModal').classList.add('open');
+};
+
+window.closeModal=()=>document.getElementById('payModal').classList.remove('open');
+
+// CONFIRM PAID → SAVE ORDER TO FIREBASE
+window.confirmPaid=async()=>{
+  const items=Cart.get();
+  const total=Math.max(0,Cart.subtotal()-discount)+deliveryFee;
+  const orderData={
+    name:document.getElementById('fName').value,
+    phone:document.getElementById('fPhone').value,
+    address:document.getElementById('fAddr').value,
+    city:document.getElementById('fCity').value,
+    pincode:document.getElementById('fPin').value,
+    giftMessage:document.getElementById('fMsg').value,
+    deliveryType:document.querySelector('input[name="delivery"]:checked').value,
+    items:items.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty||1})),
+    subtotal:Cart.subtotal(),
+    discount,
+    deliveryFee,
+    total,
+    status:'pending',
+    paymentMethod:'UPI',
+    createdAt:serverTimestamp()
+  };
+  try {
+    const ref=await addDoc(collection(db,'orders'),orderData);
+    currentOrderId=ref.id;
+    closeModal();
+    // Show success
+    document.getElementById('detailsStep').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('summaryBox').style.display='none';
+    document.getElementById('successOrderId').textContent=`Order ID: #${currentOrderId.slice(-6).toUpperCase()}`;
+    // WhatsApp confirm
+    const lines=items.map(i=>`• ${i.name} ×${i.qty||1} = ₹${(i.price*(i.qty||1)).toLocaleString()}`).join('\n');
+    const waMsg=`🎁 *New Order — Aneesa Hampers*\n━━━━━━━━━━━━━\n👤 *Name:* ${orderData.name}\n📞 *Phone:* ${orderData.phone}\n📍 *Address:* ${orderData.address}, ${orderData.city} - ${orderData.pincode}\n🚚 *Delivery:* ${orderData.deliveryType}\n${orderData.giftMessage?`💌 *Message:* ${orderData.giftMessage}\n`:''}\n━━━━━━━━━━━━━\n🛍️ *Items:*\n${lines}\n━━━━━━━━━━━━━\n💰 *Total: ₹${total.toLocaleString()}*\n✅ *Payment: UPI Paid*\n🆔 *Order ID:* #${currentOrderId.slice(-6).toUpperCase()}`;
+    document.getElementById('confirmWA').href=`https://wa.me/${WA_NUM}?text=${encodeURIComponent(waMsg)}`;
+    Cart.clear();
+    // Auto-open WhatsApp
+    setTimeout(()=>window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(waMsg)}`,'_blank'),1000);
+  } catch(e){
+    toast('❌ Error saving order. Please try again.'); console.error(e);
+  }
+};
+
+// CURSOR
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);});
+document.getElementById('navWA').onclick=e=>{e.preventDefault();window.open(`https://wa.me/${WA_NUM}?text=Hi! I need help with my order 🎁`,'_blank');};
+document.getElementById('floatWA').onclick=e=>{e.preventDefault();window.open(`https://wa.me/${WA_NUM}?text=Hi! I want to order a hamper 🎁`,'_blank');};
+
+renderCart();
+</script>
+</body>
+</html>

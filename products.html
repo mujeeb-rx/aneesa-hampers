@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collections – Aneesa Hampers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+    .cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    .cursor-ring{width:32px;height:32px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s,top .12s;opacity:.4;}
+    #ah-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.77rem;z-index:9999;display:none;white-space:nowrap;font-family:'Jost',sans-serif;}
+    nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(253,246,240,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(192,100,122,.1);}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
+    .nav-logo span{color:var(--deep-rose);}
+    .nav-links{display:flex;gap:36px;list-style:none;}
+    .nav-links a{text-decoration:none;font-size:.74rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
+    .nav-right{display:flex;align-items:center;gap:14px;}
+    .nav-cart{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--burgundy);font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:none;}
+    .cart-count{background:var(--deep-rose);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;}
+    .nav-wa{background:var(--green);color:white;border-radius:30px;padding:9px 20px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;text-decoration:none;cursor:none;}
+    /* PAGE HEADER */
+    .page-hero{padding:130px 60px 60px;background:linear-gradient(135deg,var(--burgundy),#5a1528);color:white;text-align:center;}
+    .page-hero h1{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;margin-bottom:10px;}
+    .page-hero h1 em{font-style:italic;color:var(--rose);}
+    .page-hero p{font-size:.85rem;opacity:.55;letter-spacing:2px;text-transform:uppercase;}
+    /* FILTERS */
+    .filters-bar{padding:28px 60px;background:var(--white);border-bottom:1px solid rgba(192,100,122,.1);display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:72px;z-index:100;}
+    .filter-pill{padding:8px 20px;border-radius:30px;border:1.5px solid rgba(192,100,122,.2);background:transparent;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);cursor:none;transition:all .3s;}
+    .filter-pill:hover,.filter-pill.active{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+    .filter-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+    .sort-select{padding:8px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;font-family:'Jost',sans-serif;font-size:.75rem;color:var(--burgundy);background:var(--cream);cursor:none;outline:none;}
+    /* PRODUCTS LAYOUT */
+    .products-section{padding:40px 60px 80px;}
+    .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+    /* PRODUCT CARD */
+    .prod-card{background:var(--white);border-radius:20px;overflow:hidden;cursor:none;transition:transform .3s,box-shadow .3s;position:relative;}
+    .prod-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(192,100,122,.16);}
+    .prod-img{height:220px;background:var(--blush);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;}
+    .prod-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+    .prod-card:hover .prod-img img{transform:scale(1.07);}
+    .multi-img-wrap{position:relative;width:100%;height:100%;}
+    .multi-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s;}
+    .multi-img-wrap img.shown{opacity:1;}
+    .img-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:3;}
+    .img-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);cursor:none;transition:background .3s;}
+    .img-dot.active{background:white;}
+    .prod-badge-tag{position:absolute;top:10px;left:10px;background:var(--deep-rose);color:white;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:16px;z-index:2;}
+    .prod-wish{position:absolute;top:10px;right:10px;width:32px;height:32px;background:rgba(255,255,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:none;z-index:2;border:none;transition:transform .2s;}
+    .prod-wish:hover{transform:scale(1.15);}
+    .prod-body{padding:18px;}
+    .prod-cat-lbl{font-size:.61rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:4px;}
+    .prod-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:6px;line-height:1.3;}
+    .prod-desc{font-size:.79rem;opacity:.55;line-height:1.6;margin-bottom:12px;font-weight:300;}
+    .prod-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .prod-price{font-size:1rem;font-weight:500;}
+    .prod-actions{display:flex;gap:7px;}
+    .add-btn{padding:8px 16px;background:var(--burgundy);color:white;border:none;border-radius:20px;font-family:'Jost',sans-serif;font-size:.69rem;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .3s;}
+    .add-btn:hover{background:var(--deep-rose);}
+    .wa-btn{padding:8px 14px;background:var(--green);color:white;border:none;border-radius:20px;font-size:.72rem;cursor:none;transition:all .3s;}
+    .wa-btn:hover{transform:scale(1.05);}
+    /* EMPTY / LOADING */
+    .empty-state{text-align:center;padding:80px 20px;opacity:.5;grid-column:1/-1;}
+    .empty-state .icon{font-size:3.5rem;margin-bottom:16px;}
+    /* FLOAT WA */
+    #floatWA{position:fixed;bottom:26px;right:26px;z-index:500;display:flex;align-items:center;gap:9px;background:var(--green);color:white;border-radius:50px;padding:12px 20px;font-family:'Jost',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;text-decoration:none;box-shadow:0 6px 28px rgba(37,211,102,.4);cursor:none;animation:floatAnim 2.5s ease-in-out infinite;}
+    @keyframes floatAnim{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    @media(max-width:900px){
+      nav{padding:15px 20px;}.nav-links{display:none;}
+      .page-hero{padding:110px 20px 50px;}
+      .filters-bar{padding:18px 20px;}
+      .products-section{padding:30px 20px 60px;}
+      .prod-grid{grid-template-columns:1fr 1fr;}
+    }
+    @media(max-width:600px){.prod-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html" class="active">Collections</a></li>
+    <li><a href="cart.html">Cart</a></li>
+    <li><a href="login.html">Account</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+    <a class="nav-wa" href="#" id="navWA">💬 Order Now</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>Our <em>Collections</em></h1>
+  <p>Handcrafted with love · Kadapa, Andhra Pradesh</p>
+</div>
+
+<div class="filters-bar">
+  <button class="filter-pill active" data-cat="all">All</button>
+  <button class="filter-pill" data-cat="mens">👔 Men's</button>
+  <button class="filter-pill" data-cat="couple">💑 Couple</button>
+  <button class="filter-pill" data-cat="bouquet">💐 Bouquets</button>
+  <button class="filter-pill" data-cat="birthday">🎂 Birthday</button>
+  <button class="filter-pill" data-cat="wedding">💍 Wedding</button>
+  <button class="filter-pill" data-cat="money">💵 Money</button>
+  <div class="filter-right">
+    <select class="sort-select" id="sortSelect">
+      <option value="newest">Newest First</option>
+      <option value="low">Price: Low → High</option>
+      <option value="high">Price: High → Low</option>
+    </select>
+  </div>
+</div>
+
+<section class="products-section">
+  <div class="prod-grid" id="prodGrid">
+    <div class="empty-state"><div class="icon">🎁</div><p>Loading products…</p></div>
+  </div>
+</section>
+
+<a href="#" id="floatWA">💬 Order via WhatsApp</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
+  authDomain:"aneesa-hampers.firebaseapp.com",
+  projectId:"aneesa-hampers",
+  storageBucket:"aneesa-hampers.firebasestorage.app",
+  messagingSenderId:"909653560410",
+  appId:"1:909653560410:web:397db4fec2d9f042609c63"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const WA_NUM = '918639066613';
+function waOpen(msg){ window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`,'_blank'); }
+
+// CART
+const Cart = {
+  get(){ try{return JSON.parse(localStorage.getItem('ah_cart')||'[]')}catch{return[]} },
+  save(i){ localStorage.setItem('ah_cart',JSON.stringify(i)); badge(); },
+  add(p){ const it=Cart.get(),ex=it.find(i=>i.id===p.id); ex?ex.qty++:it.push({...p,qty:1}); Cart.save(it); toast(`✅ "${p.name}" added!`); },
+  count(){ return Cart.get().reduce((s,i)=>s+(i.qty||1),0); }
+};
+function badge(){ document.querySelectorAll('.cart-count').forEach(el=>el.textContent=Cart.count()); }
+function toast(msg){ const t=document.getElementById('ah-toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2500); }
+window.addToCart = p => Cart.add(p);
+window.waOrder  = p => waOpen(`Hi! I want to order *${p.name}* (₹${p.price}) from Aneesa Hampers 🎁`);
+badge();
+
+document.getElementById('navWA').onclick = e=>{ e.preventDefault(); waOpen('Hi! I want to order a hamper 🎁'); };
+document.getElementById('floatWA').onclick = e=>{ e.preventDefault(); waOpen('Hi! I want to order 🎁'); };
+
+// CURSOR
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+document.addEventListener('mousemove',e=>{ cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'; setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80); });
+
+// FILTER STATE
+let allProducts = [];
+let currentCat = 'all';
+// Read URL param
+const urlCat = new URLSearchParams(location.search).get('cat');
+if(urlCat){ currentCat = urlCat; document.querySelectorAll('.filter-pill').forEach(p=>{ p.classList.toggle('active',p.dataset.cat===urlCat); }); }
+
+// RENDER
+function renderProducts(){
+  const sort = document.getElementById('sortSelect').value;
+  let list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p=>p.category===currentCat);
+  if(sort==='low') list.sort((a,b)=>a.price-b.price);
+  else if(sort==='high') list.sort((a,b)=>b.price-a.price);
+  const grid = document.getElementById('prodGrid');
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><div class="icon">🎁</div><p>${allProducts.length?'No products in this category yet.':'No products yet — check back soon!'}</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p=>{
+    const imgs = p.images && p.images.length ? p.images : [];
+    const hasMulti = imgs.length > 1;
+    const imgHtml = imgs.length
+      ? `<div class="multi-img-wrap" id="wrap_${p.id}">
+           ${imgs.map((src,i)=>`<img src="${src}" class="${i===0?'shown':''}" data-idx="${i}" alt="${p.name}" loading="lazy"/>`).join('')}
+           ${hasMulti?`<div class="img-dots">${imgs.map((_,i)=>`<div class="img-dot ${i===0?'active':''}" onclick="switchImg('${p.id}',${i})"></div>`).join('')}</div>`:''}
+         </div>`
+      : `<span>${p.emoji||'🎁'}</span>`;
+    return `
+    <div class="prod-card">
+      <div class="prod-img">
+        ${p.badge?`<div class="prod-badge-tag">${p.badge}</div>`:''}
+        <button class="prod-wish" onclick="toggleWish('${p.id}',this)">${isWished(p.id)?'❤️':'🤍'}</button>
+        ${imgHtml}
+      </div>
+      <div class="prod-body">
+        <div class="prod-cat-lbl">${p.category||''}</div>
+        <div class="prod-name">${p.name}</div>
+        ${p.description?`<div class="prod-desc">${p.description.slice(0,80)}${p.description.length>80?'…':''}</div>`:''}
+        <div class="prod-foot">
+          <div class="prod-price">₹${Number(p.price).toLocaleString()}</div>
+          <div class="prod-actions">
+            <button class="add-btn" onclick='addToCart(${JSON.stringify({id:p.id,name:p.name,price:Number(p.price),image:imgs[0]||""})})'>Add to Cart</button>
+            <button class="wa-btn" onclick='waOrder(${JSON.stringify({name:p.name,price:Number(p.price)})})'>💬</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// IMAGE SWITCHER (multiple photos)
+window.switchImg = (id, idx) => {
+  const wrap = document.getElementById('wrap_'+id);
+  if(!wrap) return;
+  wrap.querySelectorAll('img').forEach((img,i)=>img.classList.toggle('shown',i===idx));
+  wrap.querySelectorAll('.img-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+};
+
+// AUTO SLIDE
+function startAutoSlide(products){
+  products.forEach(p=>{
+    if(!p.images||p.images.length<=1) return;
+    let idx=0;
+    setInterval(()=>{ idx=(idx+1)%p.images.length; switchImg(p.id,idx); },3000);
+  });
+}
+
+// WISHLIST
+function isWished(id){ try{return JSON.parse(localStorage.getItem('ah_wish')||'[]').includes(id)}catch{return false;} }
+window.toggleWish = (id,btn) => {
+  let w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+  if(w.includes(id)){ w=w.filter(x=>x!==id); btn.textContent='🤍'; toast('Removed from wishlist'); }
+  else{ w.push(id); btn.textContent='❤️'; toast('❤️ Added to wishlist!'); }
+  localStorage.setItem('ah_wish',JSON.stringify(w));
+};
+
+// FILTERS
+document.querySelectorAll('.filter-pill').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    renderProducts();
+  });
+});
+document.getElementById('sortSelect').addEventListener('change', renderProducts);
+
+// FIREBASE REAL-TIME PRODUCTS
+const q = query(collection(db,'products'), orderBy('createdAt','desc'));
+onSnapshot(q, snap=>{
+  allProducts = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderProducts();
+  setTimeout(()=>startAutoSlide(allProducts),500);
+});
+</script>
+</body>
+</html>

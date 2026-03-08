@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – Aneesa Hampers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;--sidebar:#160709;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Jost',sans-serif;background:#f0e8ea;color:var(--burgundy);display:flex;min-height:100vh;cursor:none;}
+    .cursor{width:9px;height:9px;background:var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+    .cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.35;}
+    #ah-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.77rem;z-index:9999;display:none;white-space:nowrap;font-family:'Jost',sans-serif;}
+    /* SIDEBAR */
+    .sidebar{width:220px;min-height:100vh;background:var(--sidebar);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;}
+    .sidebar-logo{padding:26px 22px 20px;border-bottom:1px solid rgba(255,255,255,.06);}
+    .logo-t{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:white;}
+    .logo-t span{color:var(--rose);}
+    .logo-s{font-size:.58rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-top:2px;}
+    .sidebar-nav{flex:1;padding:18px 0;}
+    .nav-sec{font-size:.57rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.22);padding:13px 22px 5px;}
+    .nav-item{display:flex;align-items:center;gap:11px;padding:11px 22px;color:rgba(255,255,255,.46);font-size:.79rem;cursor:none;transition:all .2s;border-left:3px solid transparent;text-decoration:none;}
+    .nav-item:hover{color:white;background:rgba(255,255,255,.05);border-left-color:rgba(232,160,176,.25);}
+    .nav-item.active{color:white;background:rgba(192,100,122,.2);border-left-color:var(--rose);}
+    .nav-icon{font-size:1rem;width:18px;text-align:center;}
+    .nav-badge{margin-left:auto;background:var(--deep-rose);color:white;font-size:.58rem;padding:2px 6px;border-radius:16px;}
+    .sidebar-foot{padding:18px 22px;border-top:1px solid rgba(255,255,255,.06);}
+    .admin-row{display:flex;align-items:center;gap:9px;}
+    .admin-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--deep-rose));display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+    .admin-nm{font-size:.8rem;color:white;font-weight:500;}
+    .admin-rl{font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;}
+    .logout-btn{margin-top:11px;width:100%;padding:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:none;transition:all .2s;}
+    .logout-btn:hover{background:rgba(224,80,80,.15);color:#e88;}
+    /* MAIN */
+    .main{margin-left:220px;flex:1;}
+    .topbar{background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 14px rgba(59,13,26,.05);position:sticky;top:0;z-index:50;}
+    .topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;}
+    .topbar-title em{font-style:italic;color:var(--deep-rose);}
+    .topbar-date{font-size:.73rem;opacity:.38;letter-spacing:1px;}
+    .page-wrap{padding:28px 32px;}
+    .page{display:none;animation:pgIn .3s ease;}
+    .page.active{display:block;}
+    @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    /* STATS */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:26px;}
+    .stat-card{background:var(--white);border-radius:16px;padding:22px;box-shadow:0 2px 16px rgba(59,13,26,.05);transition:transform .2s;}
+    .stat-card:hover{transform:translateY(-3px);}
+    .stat-icon{font-size:1.5rem;margin-bottom:12px;}
+    .stat-label{font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.42;margin-bottom:5px;}
+    .stat-value{font-family:'Cormorant Garamond',serif;font-size:1.9rem;}
+    .stat-sub{font-size:.7rem;margin-top:3px;opacity:.5;}
+    /* CARD */
+    .card{background:var(--white);border-radius:16px;padding:24px;box-shadow:0 2px 16px rgba(59,13,26,.05);margin-bottom:22px;}
+    .card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;margin-bottom:4px;}
+    .card-sub{font-size:.7rem;opacity:.38;margin-bottom:18px;letter-spacing:1px;}
+    /* TABLE */
+    table{width:100%;border-collapse:collapse;}
+    th{font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.38;padding:9px 12px;text-align:left;border-bottom:1px solid rgba(192,100,122,.1);}
+    td{padding:12px 12px;font-size:.82rem;border-bottom:1px solid rgba(192,100,122,.06);}
+    tr:last-child td{border:none;}
+    tr:hover td{background:rgba(249,228,233,.25);}
+    .pill{display:inline-flex;padding:3px 10px;border-radius:16px;font-size:.64rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;}
+    .pill.pending{background:#fef3e8;color:#c07830;}
+    .pill.confirmed{background:#e8f4fd;color:#0066cc;}
+    .pill.dispatched{background:#f0e8fd;color:#7030c0;}
+    .pill.delivered{background:#e8fdf0;color:#2d7a4f;}
+    .pill.cancelled{background:#fde8e8;color:#e05050;}
+    .act-btn{padding:5px 11px;border-radius:8px;border:none;font-family:'Jost',sans-serif;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:all .2s;}
+    .btn-edit{background:var(--blush);color:var(--deep-rose);}
+    .btn-edit:hover{background:var(--rose);color:white;}
+    .btn-del{background:#fde8e8;color:#e05050;}
+    .btn-del:hover{background:#e05050;color:white;}
+    .btn-prim{background:var(--burgundy);color:white;padding:10px 20px;border-radius:28px;font-size:.72rem;letter-spacing:1.5px;}
+    .btn-prim:hover{background:var(--deep-rose);}
+    /* PRODUCTS GRID */
+    .prod-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .pa-card{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(59,13,26,.05);transition:transform .2s;}
+    .pa-card:hover{transform:translateY(-3px);}
+    .pa-img-wrap{height:160px;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden;}
+    .pa-img-wrap img{width:100%;height:100%;object-fit:cover;}
+    .pa-stock{position:absolute;top:8px;right:8px;font-size:.58rem;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:10px;}
+    .in-stk{background:#e8fdf0;color:#2d7a4f;}
+    .out-stk{background:#fde8e8;color:#e05050;}
+    .pa-body{padding:14px;}
+    .pa-cat{font-size:.59rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:3px;}
+    .pa-name{font-family:'Cormorant Garamond',serif;font-size:1rem;margin-bottom:6px;}
+    .pa-price{font-size:.95rem;font-weight:500;margin-bottom:10px;}
+    .pa-actions{display:flex;gap:6px;flex-wrap:wrap;}
+    /* UPLOAD AREA */
+    .upload-area{border:2px dashed rgba(192,100,122,.3);border-radius:14px;padding:28px;text-align:center;cursor:none;transition:all .3s;margin-bottom:14px;}
+    .upload-area:hover{border-color:var(--deep-rose);background:rgba(192,100,122,.04);}
+    .upload-icon{font-size:2.2rem;margin-bottom:8px;}
+    .upload-label{font-size:.78rem;opacity:.55;margin-bottom:10px;}
+    .upload-btn{padding:9px 20px;background:var(--burgundy);color:white;border:none;border-radius:20px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;cursor:none;}
+    .preview-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+    .preview-item{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;}
+    .preview-item img,.preview-item video{width:100%;height:100%;object-fit:cover;}
+    .preview-remove{position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(224,80,80,.9);color:white;border:none;border-radius:50%;font-size:.65rem;cursor:none;display:flex;align-items:center;justify-content:center;}
+    .progress-bar{height:6px;background:var(--blush);border-radius:6px;overflow:hidden;margin-bottom:6px;display:none;}
+    .progress-fill{height:100%;background:var(--deep-rose);border-radius:6px;transition:width .3s;}
+    /* FORM */
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+    .form-group.half{display:inline-flex;width:calc(50% - 8px);}
+    .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-label{font-size:.63rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.48;}
+    .form-input{border:1.5px solid rgba(192,100,122,.18);border-radius:11px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:.84rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .3s;}
+    .form-input:focus{border-color:var(--deep-rose);}
+    select.form-input{cursor:none;}
+    textarea.form-input{resize:vertical;min-height:75px;}
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(59,13,26,.5);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:var(--cream);border-radius:22px;padding:34px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .3s ease;}
+    @keyframes mIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+    .modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:none;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+    .modal-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;margin-bottom:18px;}
+    .modal-title em{font-style:italic;color:var(--deep-rose);}
+    @media(max-width:900px){
+      .sidebar{width:52px;}
+      .logo-t,.logo-s,.nav-item span,.admin-nm,.admin-rl,.logout-btn,.nav-sec,.nav-badge{display:none;}
+      .main{margin-left:52px;}
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      .prod-admin-grid{grid-template-columns:1fr 1fr;}
+      .page-wrap{padding:18px 14px;}
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-t"><span>Aneesa</span> Hampers</div>
+    <div class="logo-s">Admin Panel</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sec">Main</div>
+    <a class="nav-item active" data-page="dashboard" href="#"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <a class="nav-item" data-page="orders" href="#"><span class="nav-icon">📦</span><span>Orders</span><span class="nav-badge" id="pendingBadge">0</span></a>
+    <a class="nav-item" data-page="products" href="#"><span class="nav-icon">🎁</span><span>Products</span></a>
+    <div class="nav-sec">Site</div>
+    <a class="nav-item" href="index.html"><span class="nav-icon">🌐</span><span>View Website</span></a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="admin-row"><div class="admin-av">👑</div><div><div class="admin-nm">Aneesa</div><div class="admin-rl">Admin</div></div></div>
+    <button class="logout-btn" onclick="window.location='index.html'">Logout</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="pageTitle">Dashboard <em>Overview</em></div>
+    <div class="topbar-date" id="todayDate"></div>
+  </div>
+  <div class="page-wrap">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">Total Orders</div><div class="stat-value" id="st-orders">0</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-label">Pending Orders</div><div class="stat-value" id="st-pending">0</div><div class="stat-sub" style="color:#c07830">Needs attention</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Total Revenue</div><div class="stat-value" id="st-revenue">₹0</div><div class="stat-sub">All orders</div></div>
+        <div class="stat-card"><div class="stat-icon">🎁</div><div class="stat-label">Products</div><div class="stat-value" id="st-products">0</div><div class="stat-sub">In catalogue</div></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div><div class="card-title">Recent Orders</div><div class="card-sub">Live from Firebase · updates instantly</div></div>
+          <a href="#" class="act-btn btn-edit" onclick="switchPage('orders');return false;">View All →</a>
+        </div>
+        <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Time</th><th>Action</th></tr></thead>
+        <tbody id="dashOrdersBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="page" id="page-orders">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div><div class="card-title">All Orders</div><div class="card-sub">Real-time · updates when customers order</div></div>
+          <select class="form-input" id="orderFilter" style="width:150px;padding:8px 12px" onchange="filterOrders()">
+            <option value="all">All Status</option>
+            <option value="pending">⏳ Pending</option>
+            <option value="confirmed">✅ Confirmed</option>
+            <option value="dispatched">🚚 Dispatched</option>
+            <option value="delivered">🎁 Delivered</option>
+          </select>
+        </div>
+        <table><thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Delivery</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="allOrdersBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="page" id="page-products">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+        <div><div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem">Manage <em style="color:var(--deep-rose);font-style:italic">Products</em></div><div style="font-size:.7rem;opacity:.4;margin-top:2px">Add, edit or remove products from your catalogue</div></div>
+        <button class="act-btn btn-prim" onclick="openAddModal()">+ Add New Product</button>
+      </div>
+      <div class="prod-admin-grid" id="adminProdGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:50px;opacity:.4">Loading products…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    <div class="modal-title">Add New <em>Product</em></div>
+
+    <!-- MEDIA UPLOAD -->
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('mediaInput').click()">
+      <div class="upload-icon">📸</div>
+      <div class="upload-label">Click to upload photos & videos<br/><small style="opacity:.5">Multiple images + videos supported</small></div>
+      <div class="upload-btn">Choose Files</div>
+    </div>
+    <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display:none" onchange="handleMediaSelect(this)"/>
+    <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="preview-grid" id="previewGrid"></div>
+
+    <div class="form-grid-2">
+      <div class="form-group"><label class="form-label">Product Name *</label><input class="form-input" id="pName" placeholder="e.g. Pink Rose Bouquet"/></div>
+      <div class="form-group"><label class="form-label">Category *</label><select class="form-input" id="pCat"><option value="mens">Men's Hamper</option><option value="couple">Couple Hamper</option><option value="bouquet">Flower Bouquet</option><option value="birthday">Birthday Hamper</option><option value="wedding">Wedding Hamper</option><option value="money">Money Bouquet</option></select></div>
+      <div class="form-group"><label class="form-label">Price (₹) *</label><input class="form-input" id="pPrice" type="number" placeholder="1299"/></div>
+      <div class="form-group"><label class="form-label">Badge</label><select class="form-input" id="pBadge"><option value="">None</option><option value="New">New</option><option value="Bestseller">Bestseller</option><option value="Trending">Trending</option></select></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="form-label">Description</label><textarea class="form-input" id="pDesc" placeholder="Describe what's in this hamper…"></textarea></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="form-label">Items Included (comma separated)</label><input class="form-input" id="pItems" placeholder="Roses, Chocolates, Perfume, Card"/></div>
+      <div class="form-group"><label class="form-label">Emoji (if no photo)</label><input class="form-input" id="pEmoji" placeholder="🎁" maxlength="2"/></div>
+      <div class="form-group"><label class="form-label">In Stock</label><select class="form-input" id="pStock"><option value="true">Yes — In Stock</option><option value="false">No — Out of Stock</option></select></div>
+    </div>
+    <div id="uploadStatus" style="font-size:.75rem;opacity:.55;margin-bottom:10px;min-height:18px;"></div>
+    <button class="act-btn btn-prim" style="width:100%;padding:14px" onclick="saveProduct()">Save Product 🎁</button>
+  </div>
+</div>
+
+<!-- UPDATE ORDER STATUS MODAL -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal-box" style="max-width:380px;text-align:center">
+    <button class="modal-close" onclick="closeModal('statusModal')">✕</button>
+    <div class="modal-title">Update <em>Status</em></div>
+    <p style="font-size:.82rem;opacity:.55;margin-bottom:20px" id="statusOrderInfo"></p>
+    <div class="form-group">
+      <label class="form-label">New Status</label>
+      <select class="form-input" id="newStatusSel">
+        <option value="pending">⏳ Pending</option>
+        <option value="confirmed">✅ Confirmed</option>
+        <option value="dispatched">🚚 Dispatched</option>
+        <option value="delivered">🎁 Delivered</option>
+        <option value="cancelled">❌ Cancelled</option>
+      </select>
+    </div>
+    <button class="act-btn btn-prim" style="width:100%;padding:13px;margin-top:6px" onclick="saveStatus()">Update Status</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, query, orderBy, onSnapshot, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig={apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const stor=getStorage(app);
+const WA_NUM='918639066613';
+
+function toast(msg){const t=document.getElementById('ah-toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
+
+// DATE
+document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// CURSOR
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);});
+
+// NAV
+document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+  item.addEventListener('click',e=>{e.preventDefault();switchPage(item.dataset.page);});
+});
+window.switchPage=page=>{
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const titles={dashboard:'Dashboard <em>Overview</em>',orders:'Manage <em>Orders</em>',products:'Manage <em>Products</em>'};
+  document.getElementById('pageTitle').innerHTML=titles[page]||page;
+};
+
+// REAL-TIME ORDERS
+let allOrders=[];
+const ordersQ=query(collection(db,'orders'),orderBy('createdAt','desc'));
+onSnapshot(ordersQ,snap=>{
+  allOrders=snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderDashOrders();
+  renderAllOrders();
+  updateStats();
+});
+
+function timeAgo(ts){
+  if(!ts) return '';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  const diff=Math.floor((Date.now()-d)/1000);
+  if(diff<60) return 'Just now';
+  if(diff<3600) return `${Math.floor(diff/60)}m ago`;
+  if(diff<86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString('en-IN');
+}
+
+function renderDashOrders(){
+  const body=document.getElementById('dashOrdersBody');
+  const list=allOrders.slice(0,6);
+  if(!list.length){body.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:30px;opacity:.4">No orders yet — they'll appear here instantly!</td></tr>`;return;}
+  body.innerHTML=list.map(o=>`<tr>
+    <td><strong>#${o.id.slice(-5).toUpperCase()}</strong></td>
+    <td>${o.name||'—'}</td>
+    <td style="opacity:.65;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(o.items||[]).map(i=>i.name).join(', ')}</td>
+    <td><strong>₹${Number(o.total||0).toLocaleString()}</strong></td>
+    <td><span class="pill ${o.status||'pending'}">${o.status||'pending'}</span></td>
+    <td style="opacity:.45;font-size:.75rem">${timeAgo(o.createdAt)}</td>
+    <td style="display:flex;gap:5px">
+      <button class="act-btn btn-edit" onclick="openStatus('${o.id}','${o.status}','${o.name}')">Status</button>
+      <a class="act-btn btn-edit" style="text-decoration:none" href="https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hi ${o.name}! Your Aneesa Hampers order #${o.id.slice(-5).toUpperCase()} is now ${o.status} 🎁`)}" target="_blank">💬</a>
+    </td></tr>`).join('');
+}
+
+function renderAllOrders(){
+  const filter=document.getElementById('orderFilter')?.value||'all';
+  const list=filter==='all'?allOrders:allOrders.filter(o=>o.status===filter);
+  const body=document.getElementById('allOrdersBody');
+  if(!list.length){body.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;opacity:.4">No orders found</td></tr>`;return;}
+  body.innerHTML=list.map(o=>`<tr>
+    <td><strong>#${o.id.slice(-5).toUpperCase()}</strong></td>
+    <td>${o.name||'—'}</td>
+    <td style="opacity:.55;font-size:.78rem">${o.phone||'—'}</td>
+    <td style="opacity:.6;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(o.items||[]).map(i=>i.name).join(', ')}</td>
+    <td><strong>₹${Number(o.total||0).toLocaleString()}</strong></td>
+    <td style="opacity:.55;font-size:.78rem">${o.deliveryType||'—'}</td>
+    <td><span class="pill ${o.status||'pending'}">${o.status||'pending'}</span></td>
+    <td style="display:flex;gap:5px;flex-wrap:wrap">
+      <button class="act-btn btn-edit" onclick="openStatus('${o.id}','${o.status}','${o.name}')">Status</button>
+      <a class="act-btn btn-edit" style="text-decoration:none" href="https://wa.me/${o.phone}?text=${encodeURIComponent(`Hi ${o.name}! Your order is ${o.status} 🎁`)}" target="_blank">💬</a>
+    </td></tr>`).join('');
+}
+window.filterOrders=renderAllOrders;
+
+function updateStats(){
+  const pending=allOrders.filter(o=>o.status==='pending').length;
+  const revenue=allOrders.reduce((s,o)=>s+Number(o.total||0),0);
+  document.getElementById('st-orders').textContent=allOrders.length;
+  document.getElementById('st-pending').textContent=pending;
+  document.getElementById('st-revenue').textContent=`₹${revenue.toLocaleString()}`;
+  document.getElementById('pendingBadge').textContent=pending;
+}
+
+// STATUS MODAL
+let editOrderId='';
+window.openStatus=(id,status,name)=>{
+  editOrderId=id;
+  document.getElementById('statusOrderInfo').textContent=`Order #${id.slice(-5).toUpperCase()} — ${name}`;
+  document.getElementById('newStatusSel').value=status||'pending';
+  document.getElementById('statusModal').classList.add('open');
+};
+window.saveStatus=async()=>{
+  const status=document.getElementById('newStatusSel').value;
+  await updateDoc(doc(db,'orders',editOrderId),{status,updatedAt:serverTimestamp()});
+  closeModal('statusModal');
+  toast(`✅ Order updated to "${status}"`);
+};
+
+// REAL-TIME PRODUCTS
+let allProducts=[];
+const prodsQ=query(collection(db,'products'),orderBy('createdAt','desc'));
+onSnapshot(prodsQ,snap=>{
+  allProducts=snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderAdminProds();
+  document.getElementById('st-products').textContent=allProducts.length;
+});
+
+function renderAdminProds(){
+  const grid=document.getElementById('adminProdGrid');
+  if(!allProducts.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;opacity:.4"><div style="font-size:3rem;margin-bottom:14px">🎁</div><p>No products yet.<br/>Click "Add New Product" to start!</p></div>`;return;}
+  grid.innerHTML=allProducts.map(p=>{
+    const img=(p.images&&p.images[0])||'';
+    return `<div class="pa-card">
+      <div class="pa-img-wrap">
+        <span class="pa-stock ${p.inStock!==false?'in-stk':'out-stk'}">${p.inStock!==false?'In Stock':'Out of Stock'}</span>
+        ${img?`<img src="${img}" alt="${p.name}"/>`:(p.emoji||'🎁')}
+      </div>
+      <div class="pa-body">
+        <div class="pa-cat">${p.category||''}</div>
+        <div class="pa-name">${p.name}</div>
+        <div class="pa-price">₹${Number(p.price).toLocaleString()}</div>
+        <div class="pa-actions">
+          <button class="act-btn btn-edit" onclick="toggleStock('${p.id}',${p.inStock!==false})">${p.inStock!==false?'Mark Out':'Mark In'}</button>
+          <button class="act-btn btn-del" onclick="delProduct('${p.id}','${p.name}')">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleStock=async(id,current)=>{
+  await updateDoc(doc(db,'products',id),{inStock:!current});
+  toast(`📦 Stock updated`);
+};
+window.delProduct=async(id,name)=>{
+  if(!confirm(`Delete "${name}"?`)) return;
+  await deleteDoc(doc(db,'products',id));
+  toast(`🗑️ "${name}" deleted`);
+};
+
+// ADD PRODUCT WITH UPLOAD
+let selectedFiles=[];
+let uploadedUrls=[];
+
+window.openAddModal=()=>{
+  selectedFiles=[];uploadedUrls=[];
+  ['pName','pDesc','pItems','pEmoji'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pPrice').value='';
+  document.getElementById('previewGrid').innerHTML='';
+  document.getElementById('progressBar').style.display='none';
+  document.getElementById('uploadStatus').textContent='';
+  document.getElementById('addModal').classList.add('open');
+};
+
+window.handleMediaSelect=input=>{
+  const files=Array.from(input.files);
+  selectedFiles.push(...files);
+  const grid=document.getElementById('previewGrid');
+  files.forEach((f,i)=>{
+    const div=document.createElement('div');div.className='preview-item';div.id=`prev_${selectedFiles.length-files.length+i}`;
+    if(f.type.startsWith('image/')){
+      const img=document.createElement('img');img.src=URL.createObjectURL(f);div.appendChild(img);
+    } else {
+      const vid=document.createElement('video');vid.src=URL.createObjectURL(f);vid.muted=true;div.appendChild(vid);
+    }
+    const rm=document.createElement('button');rm.className='preview-remove';rm.textContent='✕';
+    const idx=selectedFiles.length-files.length+i;
+    rm.onclick=()=>{selectedFiles.splice(idx,1);div.remove();};
+    div.appendChild(rm);grid.appendChild(div);
+  });
+  input.value='';
+};
+
+async function uploadAllFiles(){
+  if(!selectedFiles.length) return [];
+  const urls=[];
+  const bar=document.getElementById('progressBar');
+  const fill=document.getElementById('progressFill');
+  const status=document.getElementById('uploadStatus');
+  bar.style.display='block';
+  for(let i=0;i<selectedFiles.length;i++){
+    const f=selectedFiles[i];
+    status.textContent=`Uploading ${i+1}/${selectedFiles.length}: ${f.name}…`;
+    const path=`products/${Date.now()}_${f.name}`;
+    const storRef=ref(stor,path);
+    const task=uploadBytesResumable(storRef,f);
+    const url=await new Promise((res,rej)=>{
+      task.on('state_changed',snap=>{fill.style.width=Math.round(snap.bytesTransferred/snap.totalBytes*100)+'%';},rej,async()=>res(await getDownloadURL(task.snapshot.ref)));
+    });
+    urls.push(url);
+    fill.style.width=Math.round((i+1)/selectedFiles.length*100)+'%';
+  }
+  status.textContent=`✅ ${urls.length} file(s) uploaded!`;
+  return urls;
+}
+
+window.saveProduct=async()=>{
+  const name=document.getElementById('pName').value.trim();
+  const price=parseFloat(document.getElementById('pPrice').value);
+  if(!name||!price){toast('⚠️ Name and price are required');return;}
+  const btn=document.querySelector('#addModal .btn-prim');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    const images=await uploadAllFiles();
+    await addDoc(collection(db,'products'),{
+      name,
+      category:document.getElementById('pCat').value,
+      price,
+      description:document.getElementById('pDesc').value,
+      items:document.getElementById('pItems').value.split(',').map(s=>s.trim()).filter(Boolean),
+      badge:document.getElementById('pBadge').value,
+      emoji:document.getElementById('pEmoji').value||'🎁',
+      inStock:document.getElementById('pStock').value==='true',
+      images,
+      createdAt:serverTimestamp()
+    });
+    closeModal('addModal');
+    toast('✅ Product added successfully!');
+    selectedFiles=[];
+  }catch(e){toast('❌ Error: '+e.message);console.error(e);}
+  btn.textContent='Save Product 🎁';btn.disabled=false;
+};
+
+window.closeModal=id=>document.getElementById(id).classList.remove('open');
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+</script>
+</body>
+</html>
