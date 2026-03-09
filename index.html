@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSU ERP - Employee & HR Management System</title>
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiRFNVIEVSUCIsInNob3J0X25hbWUiOiJEU1UgRVJQIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIvIiwidGhlbWVfY29sb3IiOiIjMDBkNGZmIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwYTBlMWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCMmFXVjNRbTk0UFNJd0lEQWdNalEwSURJME5DSWdhR1ZwWjJoMFBTSXlOREFpSUhkcFpIUm9QU0l5TkRBaUlIaHRiRzV6UFNJb2FIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaVBqeHdZWFJvSUdROUlrMHhNakF0TkRCaE5qUWdOalFnTUNBd0lERXRNVEk0SURZMElEWTRhREkyTkNBME1HRTJOQ0EyTkNBd0lEQWdNUzB4TWpnZ05qUjZiVEFnTWpFMmFERXpNbUV4TWpnZ01USTRJREFnTURFZ0xURXpNaUF6TW1neU56SmpMVE0wTGpFZ01pMDJOQzR4SURJME5DMHhNekV1T1RNek1qUTBMVEkxTmkwek5qSjZJaUJtYVd4c1BTSWpNREJrTkdabUlpOCtQQzl6ZG1jKyIsInNpemVzIjoiMjQweDI0MCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="fas fa-users"></i>
+            </div>
+            <h2>DSU ERP System</h2>
+            <p>Loading Employee & HR Management...</p>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Screen -->
+    <div id="authScreen" class="auth-screen hidden">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2>DSU ERP System</h2>
+                    <p>Employee & HR Management</p>
+                </div>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="employee@dsu.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    <p>Demo Credentials:</p>
+                    <p><strong>Employee:</strong> employee@dsu.edu / emp123</p>
+                    <p><strong>HR Admin:</strong> admin@dsu.edu / admin123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo-section">
+                    <div class="header-logo">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>DSU ERP System</h1>
+                        <span>Employee & HR Management</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn" id="notificationBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationCount">0</span>
+                </button>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=00d4ff&color=0a0e1a&size=40" alt="User Avatar" class="user-avatar" id="userAvatar">
+                    <div class="user-info">
+                        <span class="user-name" id="userName">User</span>
+                        <span class="user-role" id="userRole">Employee</span>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="profile-dropdown hidden" id="profileDropdown">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user"></i> Profile Settings
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-cog"></i> System Settings
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <nav class="sidebar-nav">
+                    <!-- Employee Modules -->
+                    <div class="nav-section">
+                        <h3>Dashboard</h3>
+                        <a href="#" class="nav-item active" data-route="dashboard-overview">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard Overview</span>
+                        </a>
+                    </div>
+                    
+                    <div class="nav-section">
+                        <h3>Employee Self Service</h3>
+                        <a href="#" class="nav-item" data-route="expense-management">
+                            <i class="fas fa-receipt"></i>
+                            <span>Expense Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="leave-management">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Leave Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="timesheet-management">
+                            <i class="fas fa-clock"></i>
+                            <span>Timesheet Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="payroll-view">
+                            <i class="fas fa-money-check-alt"></i>
+                            <span>Payroll View</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="document-portal">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Document Portal</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="training-development">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Training & Development</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="profile-management">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Profile Management</span>
+                        </a>
+                    </div>
+
+                    <!-- HR Admin Only Modules -->
+                    <div class="nav-section" id="hrAdminSection" style="display: none;">
+                        <h3>HR Administration</h3>
+                        <a href="#" class="nav-item" data-route="employee-management">
+                            <i class="fas fa-users-cog"></i>
+                            <span>Employee Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="payroll-management">
+                            <i class="fas fa-calculator"></i>
+                            <span>Payroll Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="recruitment">
+                            <i class="fas fa-handshake"></i>
+                            <span>Recruitment</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="performance-management">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Performance Management</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="leave-admin">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Leave Management Admin</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="training-admin">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Training Admin</span>
+                        </a>
+                        <a href="#" class="nav-item" data-route="reports-analytics">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Reports & Analytics</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- All module content will be dynamically created -->
+        </main>
+    </div>
+
+    <!-- Universal Modal -->
+    <div class="modal hidden" id="universalModal">
+        <div class="modal-overlay" onclick="app.closeModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <!-- Dynamic buttons -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown hidden" id="notificationDropdown">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <button class="mark-all-read" id="markAllRead">Mark all as read</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
