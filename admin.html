@@ -164,7 +164,7 @@ textarea.fi{resize:vertical;min-height:80px;}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .cat-item{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(59,13,26,.05);transition:transform .2s;}
 .cat-item:hover{transform:translateY(-2px);}
-.cat-top{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden;}
+.cat-top{height:80px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;}
 .cat-body{padding:12px 14px;}
 .cat-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;margin-bottom:3px;}
 .cat-slug{font-size:.62rem;font-family:monospace;opacity:.38;margin-bottom:8px;}
@@ -420,129 +420,160 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <!-- ══ SETTINGS ══ -->
     <div class="page" id="pg-settings">
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">📢 Announcement Bar</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Shows at top of every page</div>
-        <div class="form-grid">
-          <div class="fg"><label class="fl">Status</label><select class="fi" id="annActive"><option value="false">❌ Hidden</option><option value="true">✅ Active</option></select></div>
-          <div class="fg"><label class="fl">Message</label><input class="fi" id="annText" placeholder="Free delivery on orders above ₹999!"/></div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveAnn()">Save Announcement</button>
-      </div>
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">⚡ Flash Sale</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Apply sitewide discount with countdown</div>
-        <div class="form-grid">
-          <div class="fg"><label class="fl">Status</label><select class="fi" id="fsActive"><option value="false">❌ Off</option><option value="true">✅ Active</option></select></div>
-          <div class="fg"><label class="fl">Discount %</label><input class="fi" id="fsDisc" type="number" placeholder="20" min="1" max="90"/></div>
-          <div class="fg"><label class="fl">Ends At</label><input class="fi" id="fsEnds" type="datetime-local"/></div>
-          <div class="fg"><label class="fl">Message</label><input class="fi" id="fsMsg" placeholder="Eid Special — Today Only!"/></div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveFlash()">Save Flash Sale</button>
-      </div>
 
-      <!-- ══ WELCOME POPUP DISCOUNT ══ -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">🎁 Welcome Popup Discount</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Controls the popup shown to new visitors. The discount code they get works automatically at checkout.</div>
-
-        <!-- Live preview -->
-        <div id="popupPreview" style="background:linear-gradient(135deg,#3b0d1a,#7a2040);border-radius:14px;padding:22px 18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;">
-          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(255,255,255,.06),transparent 70%);"></div>
-          <div style="font-size:1.6rem;margin-bottom:6px;position:relative;">🎁</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:white;font-weight:600;position:relative;" id="ppvHeadline"><span id="ppvDisc">15</span>% OFF Awaits</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.6);margin-top:4px;position:relative;" id="ppvSub">Enter your details to unlock your discount instantly.</div>
-          <div style="margin-top:12px;display:inline-block;background:rgba(255,255,255,.15);border:1.5px dashed rgba(255,255,255,.4);color:white;font-size:.8rem;font-weight:700;letter-spacing:3px;padding:8px 20px;border-radius:30px;position:relative;" id="ppvCode">AH15-XXXXX</div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,.45);margin-top:8px;position:relative;">Valid for <span id="ppvDays">30</span> days · Min order ₹<span id="ppvMin">0</span></div>
-        </div>
-
-        <div class="form-grid">
-          <div class="fg">
-            <label class="fl">Popup Status</label>
-            <select class="fi" id="ppStatus" onchange="updatePopupPreview()">
-              <option value="true">✅ Show to visitors</option>
-              <option value="false">❌ Hidden</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label class="fl">Discount % <span style="color:var(--deep-rose)">*</span></label>
-            <input class="fi" id="ppDisc" type="number" placeholder="15" min="1" max="90" oninput="updatePopupPreview()"/>
-          </div>
-          <div class="fg full">
-            <label class="fl">Discount Code Prefix (e.g. AH15, ANEESA20)</label>
-            <input class="fi" id="ppPrefix" placeholder="AH15" maxlength="10" oninput="updatePopupPreview()"/>
-          </div>
-          <div class="fg full">
-            <label class="fl">Popup Subtext</label>
-            <input class="fi" id="ppSub" placeholder="Enter your details to unlock your discount instantly." oninput="updatePopupPreview()"/>
-          </div>
-          <div class="fg">
-            <label class="fl">Valid Days</label>
-            <input class="fi" id="ppDays" type="number" placeholder="30" min="1" oninput="updatePopupPreview()"/>
-          </div>
-          <div class="fg">
-            <label class="fl">Min Order Amount (₹)</label>
-            <input class="fi" id="ppMin" type="number" placeholder="0 = no minimum" min="0" oninput="updatePopupPreview()"/>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:6px;font-size:.8rem;" onclick="savePopupSettings()">
-          💾 Save — Goes Live on Homepage Instantly
+      <!-- Settings Tabs -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;">
+        <button onclick="switchSettingsTab('promotions')" id="stab-promotions"
+          style="padding:9px 20px;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;cursor:pointer;background:var(--burgundy);color:white;">
+          🎟️ Promotions
         </button>
-        <div id="ppSaveStatus" style="font-size:.72rem;text-align:center;margin-top:8px;min-height:16px;"></div>
+        <button onclick="switchSettingsTab('homepage')" id="stab-homepage"
+          style="padding:9px 20px;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;cursor:pointer;background:rgba(59,13,26,.1);color:var(--burgundy);">
+          🏠 Homepage
+        </button>
+        <button onclick="switchSettingsTab('payment')" id="stab-payment"
+          style="padding:9px 20px;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;cursor:pointer;background:rgba(59,13,26,.1);color:var(--burgundy);">
+          💳 Payment
+        </button>
       </div>
 
-      <!-- ══ HERO TEXT EDITOR ══ -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">🏠 Homepage Hero Text</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Edit the main headline and tagline shown on the homepage</div>
-        <div class="form-grid">
-          <div class="fg"><label class="fl">Eyebrow Tag (small text above title)</label><input class="fi" id="heroEyebrowInput" placeholder="🌸 Premium Gifting · Kadapa"/></div>
-          <div class="fg"><label class="fl">Headline (use | to split normal|italic)</label><input class="fi" id="heroTitleInput" placeholder="Every Gift,|A Beautiful Story"/></div>
-          <div class="fg form-full"><label class="fl">Subtitle / Description</label><textarea class="fi" id="heroSubInput" placeholder="Handcrafted hampers for every occasion…" rows="3"></textarea></div>
-          <div class="fg"><label class="fl">Button 1 Text</label><input class="fi" id="heroBtn1Input" placeholder="Shop Now 🎁"/></div>
-          <div class="fg"><label class="fl">Button 1 Link</label><input class="fi" id="heroBtn1LinkInput" placeholder="products.html"/></div>
+      <!-- ── PROMOTIONS TAB ── -->
+      <div id="stab-content-promotions">
+
+        <!-- Announcement Bar -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">📢 Announcement Bar</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Scrolling bar shown at the top of every page</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Status</label><select class="fi" id="annActive"><option value="false">❌ Hidden</option><option value="true">✅ Active</option></select></div>
+            <div class="fg"><label class="fl">Message</label><input class="fi" id="annText" placeholder="Free delivery on orders above ₹999!"/></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveAnn()">Save Announcement</button>
         </div>
-        <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:10px 14px;font-size:.72rem;color:rgba(59,13,26,.5);margin-bottom:12px;">
-          💡 Tip: For the Headline field, use a pipe character <strong>|</strong> to separate the normal text from the italic part.<br/>
-          Example: <code>Every Gift,|A Beautiful Story</code>
+
+        <!-- Flash Sale -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">⚡ Flash Sale</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Apply a sitewide discount with optional countdown timer</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Status</label><select class="fi" id="fsActive"><option value="false">❌ Off</option><option value="true">✅ Active</option></select></div>
+            <div class="fg"><label class="fl">Discount %</label><input class="fi" id="fsDisc" type="number" placeholder="20" min="1" max="90"/></div>
+            <div class="fg"><label class="fl">Ends At</label><input class="fi" id="fsEnds" type="datetime-local"/></div>
+            <div class="fg"><label class="fl">Message</label><input class="fi" id="fsMsg" placeholder="Eid Special — Today Only!"/></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveFlash()">Save Flash Sale</button>
         </div>
-        <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveHeroText()">💾 Save Hero Text</button>
+
+        <!-- Welcome Popup -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">🎁 Welcome Popup Discount</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Popup shown to new visitors — the discount code works automatically at checkout</div>
+          <div id="popupPreview" style="background:linear-gradient(135deg,#3b0d1a,#7a2040);border-radius:14px;padding:22px 18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(255,255,255,.06),transparent 70%);"></div>
+            <div style="font-size:1.6rem;margin-bottom:6px;position:relative;">🎁</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:white;font-weight:600;position:relative;" id="ppvHeadline"><span id="ppvDisc">15</span>% OFF Awaits</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.6);margin-top:4px;position:relative;" id="ppvSub">Enter your details to unlock your discount instantly.</div>
+            <div style="margin-top:12px;display:inline-block;background:rgba(255,255,255,.15);border:1.5px dashed rgba(255,255,255,.4);color:white;font-size:.8rem;font-weight:700;letter-spacing:3px;padding:8px 20px;border-radius:30px;position:relative;" id="ppvCode">AH15-XXXXX</div>
+            <div style="font-size:.65rem;color:rgba(255,255,255,.45);margin-top:8px;position:relative;">Valid for <span id="ppvDays">30</span> days · Min order ₹<span id="ppvMin">0</span></div>
+          </div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Status</label><select class="fi" id="ppStatus" onchange="updatePopupPreview()"><option value="true">✅ Show to visitors</option><option value="false">❌ Hidden</option></select></div>
+            <div class="fg"><label class="fl">Discount %</label><input class="fi" id="ppDisc" type="number" placeholder="15" min="1" max="90" oninput="updatePopupPreview()"/></div>
+            <div class="fg full"><label class="fl">Code Prefix (e.g. AH15)</label><input class="fi" id="ppPrefix" placeholder="AH15" maxlength="10" oninput="updatePopupPreview()"/></div>
+            <div class="fg full"><label class="fl">Popup Subtext</label><input class="fi" id="ppSub" placeholder="Enter your details to unlock your discount instantly." oninput="updatePopupPreview()"/></div>
+            <div class="fg"><label class="fl">Valid Days</label><input class="fi" id="ppDays" type="number" placeholder="30" min="1" oninput="updatePopupPreview()"/></div>
+            <div class="fg"><label class="fl">Min Order (₹)</label><input class="fi" id="ppMin" type="number" placeholder="0 = no minimum" min="0" oninput="updatePopupPreview()"/></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:6px;" onclick="savePopupSettings()">💾 Save — Goes Live Instantly</button>
+          <div id="ppSaveStatus" style="font-size:.72rem;text-align:center;margin-top:8px;min-height:16px;"></div>
+        </div>
+
       </div>
 
-      <!-- ══ STATS BAR EDITOR ══ -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">📊 Homepage Stats Bar</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Show real numbers — only saved stats appear on the site. Leave empty to hide the bar.</div>
-        <div id="statsEditorList">
-          <!-- filled by JS -->
+      <!-- ── HOMEPAGE TAB ── -->
+      <div id="stab-content-homepage" style="display:none">
+
+        <!-- Hero Text -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">🏠 Hero Text</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Main headline and tagline on the homepage</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Eyebrow Tag</label><input class="fi" id="heroEyebrowInput" placeholder="🌸 Premium Gifting · Kadapa"/></div>
+            <div class="fg"><label class="fl">Headline (use | for italic split)</label><input class="fi" id="heroTitleInput" placeholder="Every Gift,|A Beautiful Story"/></div>
+            <div class="fg form-full"><label class="fl">Subtitle</label><textarea class="fi" id="heroSubInput" placeholder="Handcrafted hampers for every occasion…" rows="3"></textarea></div>
+            <div class="fg"><label class="fl">Button Text</label><input class="fi" id="heroBtn1Input" placeholder="Shop Now 🎁"/></div>
+            <div class="fg"><label class="fl">Button Link</label><input class="fi" id="heroBtn1LinkInput" placeholder="products.html"/></div>
+          </div>
+          <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:10px 14px;font-size:.72rem;color:rgba(59,13,26,.5);margin-bottom:12px;">
+            💡 Use <strong>|</strong> in Headline to split into normal|<em>italic</em> — e.g. <code>Every Gift,|A Beautiful Story</code>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveHeroText()">💾 Save Hero Text</button>
         </div>
-        <button onclick="addStatRow()" style="width:100%;padding:9px;background:rgba(192,100,122,.08);border:1.5px dashed rgba(192,100,122,.3);border-radius:10px;color:var(--deep-rose);font-family:inherit;font-size:.75rem;cursor:pointer;margin-bottom:12px;">+ Add Stat</button>
-        <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveStats()">💾 Save Stats Bar</button>
+
+        <!-- Stats Bar -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">📊 Stats Bar</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Numbers shown on the homepage — leave empty to hide</div>
+          <div id="statsEditorList"></div>
+          <button onclick="addStatRow()" style="width:100%;padding:9px;background:rgba(192,100,122,.08);border:1.5px dashed rgba(192,100,122,.3);border-radius:10px;color:var(--deep-rose);font-family:inherit;font-size:.75rem;cursor:pointer;margin-bottom:12px;">+ Add Stat</button>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveStats()">💾 Save Stats Bar</button>
+        </div>
+
+        <!-- Gallery -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">📸 Gallery Section</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Up to 6 images in the "Our Latest Creations" section</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Eyebrow</label><input class="fi" id="galEyebrow" placeholder="Follow Us"/></div>
+            <div class="fg"><label class="fl">Title (use | for italic)</label><input class="fi" id="galTitle" placeholder="Our Latest|Creations"/></div>
+            <div class="fg form-full"><label class="fl">Subtitle</label><input class="fi" id="galSub" placeholder="Tag us @aneesahampers!"/></div>
+            <div class="fg"><label class="fl">Instagram Handle</label><input class="fi" id="galHandle" placeholder="@aneesahampers"/></div>
+          </div>
+          <div style="font-size:.78rem;font-weight:500;margin:14px 0 8px;color:rgba(59,13,26,.6);">Images (max 6)</div>
+          <div id="galleryEditorList" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;"></div>
+          <button onclick="addGalleryItem()" style="width:100%;padding:9px;background:rgba(192,100,122,.08);border:1.5px dashed rgba(192,100,122,.3);border-radius:10px;color:var(--deep-rose);font-family:inherit;font-size:.75rem;cursor:pointer;margin-bottom:12px;">+ Add Image</button>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveGallery()">💾 Save Gallery</button>
+        </div>
+
       </div>
 
-      <!-- ══ GALLERY / CREATIONS EDITOR ══ -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">📸 "Our Latest Creations" Gallery</div>
-        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Upload up to 6 images that appear in the gallery section on the homepage</div>
-        <div class="form-grid">
-          <div class="fg"><label class="fl">Section Eyebrow</label><input class="fi" id="galEyebrow" placeholder="Follow Us"/></div>
-          <div class="fg"><label class="fl">Section Title (use | for italic split)</label><input class="fi" id="galTitle" placeholder="Our Latest|Creations"/></div>
-          <div class="fg form-full"><label class="fl">Section Subtitle / Caption</label><input class="fi" id="galSub" placeholder="Tag us @aneesahampers and get featured!"/></div>
-          <div class="fg"><label class="fl">Instagram Handle</label><input class="fi" id="galHandle" placeholder="@aneesahampers"/></div>
+      <!-- ── PAYMENT TAB ── -->
+      <div id="stab-content-payment" style="display:none">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">💳 Payment Settings</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:20px">Manage UPI and Razorpay payment details</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">UPI ID</label><input class="fi" id="settUpiId" value="8639066613@ybl" placeholder="yourname@ybl"/></div>
+            <div class="fg"><label class="fl">UPI Display Name</label><input class="fi" id="settUpiName" value="Aneesa" placeholder="Business name"/></div>
+            <div class="fg form-full"><label class="fl">Razorpay Key ID</label><input class="fi" id="settRzpKey" placeholder="rzp_live_XXXXXXXXXXXXXXXX" style="font-family:monospace;font-size:.82rem;"/></div>
+          </div>
+          <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:12px 14px;font-size:.76rem;color:rgba(59,13,26,.55);line-height:1.8;margin-bottom:14px;">
+            💡 <strong>Razorpay Key:</strong> Get from <a href="https://dashboard.razorpay.com/app/website-app-settings/api-keys" target="_blank" style="color:var(--deep-rose)">dashboard.razorpay.com → Settings → API Keys</a><br/>
+            Use <code>rzp_test_</code> key for testing · <code>rzp_live_</code> key for real payments
+          </div>
+          <div style="background:#e8fdf0;border-radius:10px;padding:12px 14px;font-size:.76rem;color:#1a7a40;line-height:1.8;margin-bottom:14px;border:1px solid rgba(37,211,102,.2);">
+            ✅ <strong>Current key:</strong> <code style="background:rgba(37,211,102,.1);padding:2px 6px;border-radius:4px;">rzp_test_SSsuKE8gTf4gNV</code> (Test Mode)
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="toast('✅ Payment settings noted. Update cart.html RZP_KEY manually.')">💾 Save Payment Info</button>
         </div>
-        <div style="font-size:.78rem;font-weight:500;margin:14px 0 8px;color:rgba(59,13,26,.6);">Gallery Images (max 6)</div>
-        <div id="galleryEditorList" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
-          <!-- filled by JS -->
+
+        <!-- WhatsApp Number -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">💬 WhatsApp Number</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Number that receives order notifications</div>
+          <div class="fg"><label class="fl">WhatsApp Number (with country code)</label><input class="fi" id="settWaNum" value="918639066613" placeholder="919876543210"/></div>
+          <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:10px 14px;font-size:.72rem;color:rgba(59,13,26,.5);margin-bottom:12px;">
+            Format: country code + number, no + sign. Example: <code>918639066613</code> for India
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="toast('✅ WhatsApp number noted.')">💾 Save</button>
         </div>
-        <button onclick="addGalleryItem()" style="width:100%;padding:9px;background:rgba(192,100,122,.08);border:1.5px dashed rgba(192,100,122,.3);border-radius:10px;color:var(--deep-rose);font-family:inherit;font-size:.75rem;cursor:pointer;margin-bottom:12px;">+ Add Image</button>
-        <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveGallery()">💾 Save Gallery</button>
       </div>
 
     </div>
 
   </div>
 </main>
+
 </div><!-- /adminDash -->
 
 <!-- ═══ MODALS ═══ -->
@@ -854,6 +885,16 @@ const PAGE_TITLES = {
   banners:'Homepage <em>Banners</em>',
   settings:'Site <em>Settings</em>'
 };
+// Settings tabs
+window.switchSettingsTab = function(tab) {
+  ['promotions','homepage','payment'].forEach(function(t) {
+    var btn = document.getElementById('stab-'+t);
+    var sec = document.getElementById('stab-content-'+t);
+    if (btn) { btn.style.background = t===tab ? 'var(--burgundy)' : 'rgba(59,13,26,.1)'; btn.style.color = t===tab ? 'white' : 'var(--burgundy)'; }
+    if (sec) sec.style.display = t===tab ? 'block' : 'none';
+  });
+};
+
 window.switchPage = function(pg) {
   document.querySelectorAll('.sb-item[data-pg]').forEach(el => el.classList.toggle('active', el.dataset.pg===pg));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -1314,11 +1355,11 @@ window.saveCat = async function() {
   try {
     if(_catEditMode){
       await updateDoc(doc(db,'categories',document.getElementById('catEditId').value),{...data,updatedAt:serverTimestamp()});
-      toast('✅ Category updated! Cover photo live on site.'); setTimeout(()=>closeModal('catModal'), 400);
+      toast('✅ Category updated!');
     } else {
       if(_cats.find(c=>(c.slug||c.id)===slug)){toast('⚠️ Slug already exists','err');return;}
       await setDoc(doc(db,'categories',slug),{...data,createdAt:serverTimestamp()});
-      toast(`✅ Category "${name}" created!`); setTimeout(()=>closeModal('catModal'), 400);
+      toast(`✅ Category "${name}" created!`);
     }
     closeModal('catModal');
   } catch(e){toast('❌ '+e.message,'err');}
@@ -1528,10 +1569,7 @@ window.uploadCatCover = async function(input) {
     if (urlInput) urlInput.value = url;
     // Show preview + reset position
     _showCatCoverPreview(url, true);
-    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position then click Save Category.'; }
-    // Flash the preview box to show it's ready
-    const prevBox = document.getElementById('catCoverPreviewBox');
-    if (prevBox) { prevBox.style.boxShadow='0 0 0 3px var(--deep-rose)'; setTimeout(()=>prevBox.style.boxShadow='',1200); }
+    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position using sliders below.'; }
     setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 5000);
   } catch(e) {
     if (statusEl) { statusEl.style.color='#e05050'; statusEl.textContent = '❌ Upload failed: ' + e.message; }
