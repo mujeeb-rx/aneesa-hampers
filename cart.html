@@ -472,7 +472,7 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
     <li><a href="index.html">Home</a></li>
     <li><a href="products.html">Collections</a></li>
     <li><a href="orders.html">My Orders</a></li>
-    <li><a href="track.html">Track Order</a></li>
+    
     <li><a href="cart.html" class="active">Cart</a></li>
     <li><a href="login.html" id="navAccountLink">Account</a></li>
   </ul>
@@ -678,7 +678,7 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
       <!-- Action buttons -->
       <div class="conf-actions" id="confActions" style="display:none">
         <a href="products.html" class="btn-p">🛍️ Continue Shopping</a>
-        <a href="#" class="btn-rose" id="trackOrderLink">📍 Track Order</a>
+        <a href="orders.html" class="btn-rose">📦 My Orders</a>
         <a href="#" class="btn-g"    id="confirmWA">💬 WhatsApp Us</a>
       </div>
 
@@ -688,7 +688,7 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
         <div id="successOrderId" style="font-size:.82rem;color:var(--deep-rose);font-weight:700;letter-spacing:2px;margin-bottom:14px;cursor:pointer;" onclick="copyTracking(this)"></div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <a href="products.html" class="btn-p">Continue Shopping</a>
-          <a href="#" class="btn-rose" id="trackOrderLink2">📍 Track Order</a>
+          <a href="orders.html" class="btn-rose">📦 My Orders</a>
         </div>
       </div>
 
@@ -1098,8 +1098,8 @@ function _showConfirmationRazorpay(trackingId, paymentId) {
   var ca = document.getElementById('confActions'); if (ca) ca.style.display = 'flex';
 
   // ── Update action links ──
-  var tl = document.getElementById('trackOrderLink');  if (tl) tl.href = 'track.html?id=' + trackingId;
-  var tl2 = document.getElementById('trackOrderLink2'); if (tl2) tl2.href = 'track.html?id=' + trackingId;
+  // track links replaced with orders.html
+
   var wa = document.getElementById('confirmWA');
   if (wa) wa.href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent('Hi! I just placed an order on Aneesa Hampers.\nTracking ID: ' + trackingId + '\nPayment ID: ' + paymentId);
 
@@ -2166,8 +2166,8 @@ function _buildOrderItems(items, total, trackingId, delivery) {
     }).join('');
   }
   var tv = document.getElementById('confTotalVal'); if (tv) tv.textContent = '₹' + total.toLocaleString('en-IN');
-  var tl = document.getElementById('trackOrderLink');  if (tl) tl.href = 'track.html?id=' + trackingId;
-  var tl2 = document.getElementById('trackOrderLink2'); if (tl2) tl2.href = 'track.html?id=' + trackingId;
+  // track links replaced with orders.html
+
 }
 
 window.copyTracking = function(el) {
@@ -2210,7 +2210,7 @@ window.confirmPaid = async function() {
       document.getElementById('summaryBox').style.display = 'none';
       window.scrollTo({top:0,behavior:'smooth'});
       var soId=document.getElementById('successOrderId'); if(soId) soId.textContent='Tracking ID: '+trackingId;
-      var trl2=document.getElementById('trackOrderLink2'); if(trl2) trl2.href='track.html?id='+trackingId;
+
       _buildOrderItems(bnItems, bnTotal, trackingId, 'standard');
       var lines=bnItems.map(function(i){return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+(i.price*(i.qty||1)).toLocaleString('en-IN');}).join('\n');
       var waMsg='🎁 *New Order — Aneesa Hampers*\n━━━━━━━\n👤 '+bnData.customerName+'\n📞 '+bnData.customerPhone+'\n📍 '+bnData.address+', '+bnData.city+(bnData.state?', '+bnData.state:'')+(bnData.zipCode?' - '+bnData.zipCode:'')+'\n🌍 '+bnData.country+'\n'+(bnData.giftMessage?'💌 '+bnData.giftMessage+'\n':'')+'━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+bnTotal.toLocaleString('en-IN')+'*\n🔖 Tracking: '+trackingId+'\n⚠️ Awaiting payment screenshot.';

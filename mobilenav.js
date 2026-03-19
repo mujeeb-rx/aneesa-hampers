@@ -272,9 +272,7 @@
           <span class="mn-icon">🛒</span> Cart
           ${cc > 0 ? '<span class="mn-badge">' + cc + '</span>' : ''}
         </a>
-        <a href="track.html" class="mn-link ${isActive("track.html")}">
-          <span class="mn-icon">📍</span> Track Order
-        </a>
+
 
         <div class="mn-section-lbl">Support</div>
         <a href="https://wa.me/918639066613" target="_blank" class="mn-link">

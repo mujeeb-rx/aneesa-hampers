@@ -161,7 +161,7 @@
     <li><a href="index.html">Home</a></li>
     <li><a href="products.html">Collections</a></li>
     <li><a href="orders.html" class="active">My Orders</a></li>
-    <li><a href="track.html">Track Order</a></li>
+    
     <li><a href="cart.html">Cart</a></li>
   </ul>
   <div class="nav-right">
@@ -517,7 +517,7 @@ function buildOrderCard(o) {
       <!-- ACTIONS -->
       <div class="order-actions">
         <a href="https://wa.me/${WA}?text=${waMsg}" target="_blank" class="oa-btn oa-wa">💬 WhatsApp Support</a>
-        <a href="track.html?id=${o.id.slice(-6).toUpperCase()}" class="oa-btn oa-track">📍 Track Order</a>
+        <a href="account.html#orders" class="oa-btn oa-track">📦 My Orders</a>
         <button class="oa-btn oa-reorder" onclick="reorder('${o.id}')">🔁 Reorder</button>
       </div>
     </div>

@@ -24,8 +24,8 @@
   var TABS = [
     { href: "index.html",    icon: "🏠", label: "Home" },
     { href: "products.html", icon: "🎁", label: "Shop" },
-    { href: "track.html",    icon: "📍", label: "Track" },
     { href: "cart.html",     icon: "🛒", label: "Cart",   isCart: true },
+    { href: "orders.html",   icon: "📦", label: "Orders" },
     { href: "account.html",  icon: "👤", label: "Account" },
   ];
 
