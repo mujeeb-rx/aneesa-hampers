@@ -522,6 +522,12 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
       </div>
 
       <!-- ── ADDRESS FORM (shown when no address, or editing) ── -->
+      <!-- Loading indicator while fetching from Firestore -->
+      <div id="cartAddrLoading" style="display:none;text-align:center;padding:24px;margin-bottom:16px;">
+        <div style="font-size:1.4rem;margin-bottom:8px;">⏳</div>
+        <div style="font-size:.82rem;opacity:.5;">Loading your saved address…</div>
+      </div>
+
       <div id="cartAddrFormSection" style="display:none;margin-bottom:16px;">
         <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.4);font-weight:600;margin-bottom:8px;" id="cartAddrFormLabel">📍 Add Delivery Address</div>
         <input class="form-input" id="fName"    placeholder="Full Name *"        autocomplete="name"    style="margin-bottom:8px;"/>
@@ -1249,22 +1255,17 @@ onAuthStateChanged(auth, async function(user) {
       var stored = JSON.parse(localStorage.getItem("ah_user") || "{}");
       if (stored.phone) document.getElementById("fPhone").value = stored.phone;
     } catch(e3) {}
-    // Auto-fill delivery address from saved address
+    // Load address from localStorage OR Firestore (users + customers collections)
     try {
       var savedAddr = JSON.parse(localStorage.getItem('ah_saved_address') || 'null');
-      if (!savedAddr && currentUser) {
-        // Try to load from Firestore
-        getDoc(doc(db, 'customers', user.uid)).then(function(snap) {
-          if (snap.exists() && snap.data().savedAddress) {
-            var a = snap.data().savedAddress;
-            localStorage.setItem('ah_saved_address', JSON.stringify(a));
-            _fillDeliveryForm(a);
-          }
-        }).catch(function(){});
-      } else if (savedAddr) {
+      if (savedAddr && savedAddr.addr) {
+        // Already in localStorage — use it
         _fillDeliveryForm(savedAddr);
+      } else {
+        // Try Firestore — check 'users' first (where account.html saves), then 'customers'
+        _loadAddressFromFirestore(user.uid);
       }
-    } catch(e4) {}
+    } catch(e4) { _loadAddressFromFirestore(user.uid); }
   } else {
     gate.style.display = "block";
     document.getElementById("userStrip").style.display = "none";
@@ -1806,12 +1807,13 @@ function _cartRenderAddress() {
   var formSec   = document.getElementById("cartAddrFormSection");
   var cancelBtn = document.getElementById("cartCancelEdit");
 
-  if (addr && addr.name && addr.addr && addr.city) {
+  if (addr && addr.addr && addr.city) {
+    // ── Has saved address — show card ──
     if (savedSec)  savedSec.style.display  = "block";
     if (formSec)   formSec.style.display   = "none";
     if (cancelBtn) cancelBtn.style.display = "none";
     var set = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v||""; };
-    set("cSavedName",  addr.name);
+    set("cSavedName",  addr.name || "");
     set("cSavedPhone", addr.phone || "");
     set("cSavedAddr",
       (addr.addr||"") +
@@ -1821,12 +1823,33 @@ function _cartRenderAddress() {
       ", "+(addr.country||"India")
     );
     _cartFillForm(addr);
+  } else if (currentUser) {
+    // ── No local address — try loading from Firestore first ──
+    if (savedSec)  savedSec.style.display  = "none";
+    if (formSec)   formSec.style.display   = "none"; // hide both while loading
+    if (cancelBtn) cancelBtn.style.display = "none";
+    // Show loading indicator
+    var loadingEl = document.getElementById("cartAddrLoading");
+    if (loadingEl) loadingEl.style.display = "block";
+
+    _loadAddressFromFirestore(currentUser.uid).then(function() {
+      if (loadingEl) loadingEl.style.display = "none";
+      var freshAddr = _loadSavedAddress();
+      if (freshAddr && freshAddr.addr && freshAddr.city) {
+        // Firestore had address — re-render with it
+        _cartRenderAddress();
+      } else {
+        // Nothing in Firestore either — show empty form
+        if (formSec) formSec.style.display = "block";
+        var nameEl = document.getElementById("fName");
+        if (nameEl && !nameEl.value && currentUser.displayName) nameEl.value = currentUser.displayName;
+      }
+    });
   } else {
+    // ── Not logged in — show form ──
     if (savedSec)  savedSec.style.display  = "none";
     if (formSec)   formSec.style.display   = "block";
     if (cancelBtn) cancelBtn.style.display = "none";
-    var nameEl = document.getElementById("fName");
-    if (nameEl && !nameEl.value && currentUser && currentUser.displayName) nameEl.value = currentUser.displayName;
   }
 }
 
@@ -2321,6 +2344,40 @@ var _bnItem = null; // current buy-now product
 function _loadSavedAddress() {
   try { return JSON.parse(localStorage.getItem('ah_saved_address') || 'null'); } catch(e) { return null; }
 }
+
+// Load address from Firestore — checks 'users' (account.html) then 'customers' (cart saves)
+async function _loadAddressFromFirestore(uid) {
+  if (!uid) return;
+  try {
+    // 1. Try 'users' collection (account.html saves here)
+    var usersSnap = await getDoc(doc(db, 'users', uid));
+    if (usersSnap.exists()) {
+      var d = usersSnap.data();
+      // account.html stores: address, city, state, pincode, country, landmark, name, phone
+      if (d.address || d.city) {
+        var a = {
+          name:    d.name    || '',
+          phone:   d.phone   || '',
+          addr:    d.address || '',
+          city:    d.city    || '',
+          state:   d.state   || '',
+          pin:     d.pincode || '',
+          country: d.country || 'India'
+        };
+        localStorage.setItem('ah_saved_address', JSON.stringify(a));
+        _fillDeliveryForm(a);
+        return;
+      }
+    }
+    // 2. Try 'customers' collection (cart saves here)
+    var custSnap = await getDoc(doc(db, 'customers', uid));
+    if (custSnap.exists() && custSnap.data().savedAddress) {
+      var a2 = custSnap.data().savedAddress;
+      localStorage.setItem('ah_saved_address', JSON.stringify(a2));
+      _fillDeliveryForm(a2);
+    }
+  } catch(e) { console.warn('_loadAddressFromFirestore:', e); }
+}
 function _saveAddress(addr) {
   localStorage.setItem('ah_saved_address', JSON.stringify(addr));
   // Also persist to Firestore if logged in
@@ -2386,17 +2443,27 @@ function _bnRenderAddress() {
       ', ' + (addr.country || 'India')
     );
 
+  } else if (currentUser) {
+    // ── No local address — try Firestore (profile) first ──
+    if (savedSection) savedSection.style.display = 'none';
+    if (formSection)  formSection.style.display  = 'none';
+    if (cancelBtn)    cancelBtn.style.display     = 'none';
+    _loadAddressFromFirestore(currentUser.uid).then(function() {
+      var fresh = _loadSavedAddress();
+      if (fresh && fresh.addr && fresh.city) {
+        _bnRenderAddress(); // re-render with loaded address
+      } else {
+        // Nothing anywhere — show empty form
+        if (formSection) formSection.style.display = 'block';
+        var nameEl = document.getElementById('bnName');
+        if (nameEl && !nameEl.value && currentUser.displayName) nameEl.value = currentUser.displayName;
+      }
+    });
   } else {
-    // ── NO SAVED ADDRESS → show form directly ──
+    // ── Not logged in — show empty form ──
     if (savedSection) savedSection.style.display = 'none';
     if (formSection)  formSection.style.display  = 'block';
     if (cancelBtn)    cancelBtn.style.display     = 'none';
-
-    // Pre-fill name if user is logged in
-    var nameEl = document.getElementById('bnName');
-    if (nameEl && !nameEl.value && currentUser && currentUser.displayName) {
-      nameEl.value = currentUser.displayName;
-    }
   }
 }
 
