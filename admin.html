@@ -953,7 +953,7 @@ function startListeners() {
   });
   // CATEGORIES
   onSnapshot(query(collection(db,'categories'), orderBy('order','asc')), snap => {
-    if (snap.empty) { seedCats(); return; }
+    if (snap.empty) { renderCats(); return; } // no auto-seed — admin adds their own
     _cats = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderCats();
     refreshCatDropdowns();
@@ -1238,6 +1238,11 @@ function refreshCatDropdowns() {
 // ── CATEGORIES ──
 function renderCats() {
   const grid = document.getElementById('catGrid');
+  if (!grid) return;
+  if (!_cats || !_cats.length) {
+    grid.innerHTML = '<div style="opacity:.45;padding:50px;text-align:center;grid-column:1/-1;font-size:.84rem;line-height:1.8;">No categories yet.<br/>Click <strong>+ New Category</strong> to add your first one.</div>';
+    return;
+  }
   if (!_cats.length) { grid.innerHTML='<div style="opacity:.4;padding:40px;text-align:center;grid-column:1/-1">No categories</div>'; return; }
   grid.innerHTML = _cats.map((c,i) => {
     const topContent = c.coverImage
@@ -1262,10 +1267,8 @@ function renderCats() {
   }).join('');
 }
 
-async function seedCats() {
-  const defaults=[{slug:'wedding',name:'Wedding Hampers',emoji:'💍',color:'#f9e4e9',desc:'',order:0,visible:true},{slug:'birthday',name:'Birthday Hampers',emoji:'🎂',color:'#fef3e8',desc:'',order:1,visible:true},{slug:'couple',name:'Couple Hampers',emoji:'❤️',color:'#fde8f4',desc:'',order:2,visible:true},{slug:'money',name:'Money Bouquets',emoji:'💸',color:'#e8fdf0',desc:'',order:3,visible:true}];
-  for(const c of defaults) await setDoc(doc(db,'categories',c.slug),{...c,createdAt:serverTimestamp()});
-}
+// seedCats removed — admin creates their own categories
+
 
 function setupCatModal() {
   document.getElementById('catName').addEventListener('input', function() {

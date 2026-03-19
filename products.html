@@ -264,14 +264,9 @@
   <p>Handcrafted with love · Kadapa, Andhra Pradesh</p>
 </div>
 
-<div class="filters-bar">
-  <button class="filter-pill active" data-cat="all">✨ All</button>
-  <button class="filter-pill" data-cat="mens">👔 Men's</button>
-  <button class="filter-pill" data-cat="couple">💑 Couple</button>
-  <button class="filter-pill" data-cat="bouquet">💐 Bouquets</button>
-  <button class="filter-pill" data-cat="birthday">🎂 Birthday</button>
-  <button class="filter-pill" data-cat="wedding">💍 Wedding</button>
-  <button class="filter-pill" data-cat="money">💵 Money</button>
+<div class="filters-bar" id="filtersBar">
+  <button class="filter-pill active" data-cat="all" onclick="setCat('all',this)">✨ All</button>
+  <!-- dynamic category pills injected here by Firebase -->
   <div class="filter-right">
     <select class="sort-select" id="sortSelect">
       <option value="newest">Newest First</option>
@@ -376,7 +371,7 @@ let currentSearch = '';
 const urlCat    = new URLSearchParams(location.search).get('cat');
 const urlSearch = new URLSearchParams(location.search).get('search');
 const urlFilter = new URLSearchParams(location.search).get('filter'); // new | bestseller | offers
-if(urlCat){ currentCat=urlCat; document.querySelectorAll('.filter-pill').forEach(p=>{ p.classList.toggle('active',p.dataset.cat===urlCat); }); }
+if(urlCat){ currentCat=urlCat; } // pills updated after dynamic load
 if(urlSearch){
   currentSearch = urlSearch.trim().toLowerCase();
   // Fill any search inputs on page
@@ -525,14 +520,13 @@ function startAutoSlide(products){
 }
 
 // FILTERS
-document.querySelectorAll('.filter-pill').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+// setCat — used by both static "All" pill and dynamic pills
+window.setCat = function(cat, btn) {
+  document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    currentCat = btn.dataset.cat;
+    currentCat = cat;
     renderProducts();
-  });
-});
+};
 document.getElementById('sortSelect').addEventListener('change', renderProducts);
 
 // FLASH SALE
@@ -566,6 +560,35 @@ onSnapshot(q, snap=>{
   renderProducts();
   setTimeout(()=>startAutoSlide(allProducts),600);
 });
+
+// ── Dynamic category pills from Firestore ──
+import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+getDocs(query(collection(db,'categories'), orderBy('order','asc'))).then(snap => {
+  const bar = document.getElementById('filtersBar');
+  if (!bar) return;
+  const cats = snap.docs
+    .map(d => ({id:d.id, ...d.data()}))
+    .filter(c => c.visible !== false);
+
+  // Build pill for each real category
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-pill';
+    btn.dataset.cat = cat.slug || cat.id;
+    btn.textContent = (cat.emoji || '') + ' ' + cat.name;
+    btn.onclick = function() { setCat(cat.slug || cat.id, btn); };
+    // Insert before the .filter-right div
+    const rightDiv = bar.querySelector('.filter-right');
+    bar.insertBefore(btn, rightDiv);
+  });
+
+  // Now activate correct pill based on URL
+  if (urlCat) {
+    document.querySelectorAll('.filter-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.cat === urlCat);
+    });
+  }
+}).catch(() => {});
 </script>
 <script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
