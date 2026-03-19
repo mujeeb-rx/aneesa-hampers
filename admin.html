@@ -647,6 +647,33 @@ textarea.fi{resize:vertical;min-height:80px;}
       <div class="fg"><label class="fl">Background Color</label><div style="display:flex;gap:8px;align-items:center"><input type="color" id="catColor" value="#f9e4e9" style="width:42px;height:38px;border:1.5px solid rgba(192,100,122,.2);border-radius:9px;cursor:pointer;padding:2px"/><input class="fi" id="catColorHex" placeholder="#f9e4e9" style="flex:1" oninput="syncColorHex()"/></div></div>
       <div class="fg"><label class="fl">Visibility</label><select class="fi" id="catVisible"><option value="true">✅ Visible</option><option value="false">🚫 Hidden</option></select></div>
     </div>
+    <!-- Shape Selector -->
+    <div class="fg">
+      <label class="fl">Cover Image Shape</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;" id="catShapePicker">
+        <div onclick="selectCatShape('circle')" id="shape-circle"
+          style="border:2px solid rgba(192,100,122,.2);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f9e4e9,#e8a0b0);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🎁</div>
+          <div style="font-size:.7rem;font-weight:600;color:var(--burgundy);">Circle</div>
+          <div style="font-size:.58rem;opacity:.4;margin-top:2px;">Story style</div>
+        </div>
+        <div onclick="selectCatShape('square')" id="shape-square"
+          style="border:2px solid rgba(192,100,122,.2);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#f9e4e9,#e8a0b0);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🎁</div>
+          <div style="font-size:.7rem;font-weight:600;color:var(--burgundy);">Square</div>
+          <div style="font-size:.58rem;opacity:.4;margin-top:2px;">Clean tiles</div>
+        </div>
+        <div onclick="selectCatShape('rectangle')" id="shape-rectangle"
+          style="border:2px solid rgba(192,100,122,.2);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="width:52px;height:34px;border-radius:8px;background:linear-gradient(135deg,#f9e4e9,#e8a0b0);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎁</div>
+          <div style="font-size:.7rem;font-weight:600;color:var(--burgundy);">Rectangle</div>
+          <div style="font-size:.58rem;opacity:.4;margin-top:2px;">Wide banner</div>
+        </div>
+      </div>
+      <input type="hidden" id="catShape" value="rectangle"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    </div>
     <div class="fg">
       <label class="fl">Quick Pick Emoji</label>
       <div class="epick-grid">
@@ -1282,6 +1309,20 @@ window.syncColorHex = function() {
   if(/^#[0-9a-f]{6}$/i.test(v)) document.getElementById('catColor').value=v;
 };
 
+window.selectCatShape = function(shape) {
+  document.getElementById('catShape').value = shape;
+  ['circle','square','rectangle'].forEach(s => {
+    const el = document.getElementById('shape-'+s);
+    if (!el) return;
+    el.style.border    = s===shape ? '2px solid var(--deep-rose)' : '2px solid rgba(192,100,122,.2)';
+    el.style.background = s===shape ? 'rgba(192,100,122,.06)' : 'transparent';
+    const inner = el.querySelector('div:first-child');
+    if (inner) {
+      if (s==='circle') inner.style.borderRadius = s===shape ? '50%' : '50%';
+    }
+  });
+};
+
 function setupEmojiPicker() {
   const grid = document.querySelector('.epick-grid');
   if (!grid) return;
@@ -1293,6 +1334,7 @@ window.openAddCat = function() {
   _catEditMode = false;
   document.getElementById('catEditId').value='';
   document.getElementById('catModalTitle').innerHTML='New <em>Category</em>';
+  selectCatShape('rectangle');
   document.getElementById('catSaveBtn').textContent='Save Category ✓';
   ['catName','catSlug','catDesc','catCoverUrl'].forEach(id=>document.getElementById(id).value='');
   const _pw=document.getElementById('catCoverPreviewWrap');if(_pw)_pw.style.display='none';
@@ -1314,6 +1356,7 @@ window.openEditCat = function(id) {
   document.getElementById('catSaveBtn').textContent='Update Category ✓';
   document.getElementById('catName').value=c.name||'';
   document.getElementById('catSlug').value=c.slug||c.id||'';
+  selectCatShape(c.shape||'rectangle');
   document.getElementById('catDesc').value=c.desc||'';
   document.getElementById('catEmoji').value=c.emoji||'';
   const col=c.color||'#f9e4e9';
@@ -1344,10 +1387,11 @@ window.openEditCat = function(id) {
 window.saveCat = async function() {
   const name=document.getElementById('catName').value.trim();
   const slug=document.getElementById('catSlug').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const shape=document.getElementById('catShape').value||'rectangle';
   if(!name){toast('⚠️ Name required','err');return;}
   if(!slug){toast('⚠️ Slug required','err');return;}
   const data={
-    name, slug, emoji:document.getElementById('catEmoji').value.trim()||'🎁',
+    name, slug, shape, emoji:document.getElementById('catEmoji').value.trim()||'🎁',
     color:document.getElementById('catColorHex').value.trim()||'#f9e4e9',
     desc:document.getElementById('catDesc').value.trim(),
     visible:document.getElementById('catVisible').value==='true',

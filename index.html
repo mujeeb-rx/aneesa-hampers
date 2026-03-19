@@ -126,17 +126,64 @@ a{text-decoration:none;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,2.8vw,2.8rem);font-weight:300;margin-bottom:12px;line-height:1.2;}
 .sec-title em{font-style:italic;color:var(--deep-rose);}
 .sec-sub{font-size:.86rem;opacity:.55;font-weight:300;line-height:1.8;max-width:500px;margin:0 auto;}
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-.cat-card{border-radius:20px;overflow:hidden;background:white;display:block;transition:transform .35s,box-shadow .35s;position:relative;}
-.cat-card:hover{transform:translateY(-7px);box-shadow:0 24px 55px rgba(192,100,122,.2);}
+/* ── CATEGORY GRID ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+
+/* ── RECTANGLE card (default) ── */
+.cat-card{border-radius:20px;overflow:hidden;background:white;display:block;
+  transition:transform .35s,box-shadow .35s;position:relative;text-decoration:none;
+  box-shadow:0 4px 18px rgba(59,13,26,.07);}
+.cat-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(192,100,122,.22);}
 .cat-card.span2{grid-column:span 2;}
-.cat-img{height:190px;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
-.cat-card.span2 .cat-img{height:230px;font-size:5.5rem;}
-.cat-info{padding:18px 20px 22px;}
-.cat-name{font-family:'Cormorant Garamond',serif;font-size:1.22rem;margin-bottom:4px;color:var(--burgundy);}
-.cat-desc{font-size:.76rem;opacity:.5;line-height:1.6;color:var(--burgundy);}
-.cat-arrow{position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;opacity:0;transition:opacity .25s;}
-.cat-card:hover .cat-arrow{opacity:1;}
+.cat-img{height:200px;position:relative;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
+.cat-card.span2 .cat-img{height:240px;}
+/* Gradient overlay on image cards */
+.cat-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(59,13,26,.72) 0%,rgba(59,13,26,.1) 55%,transparent 100%);z-index:1;}
+/* Name on image */
+.cat-img-label{position:absolute;bottom:0;left:0;right:0;padding:14px 18px;z-index:2;
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;
+  color:white;letter-spacing:.3px;line-height:1.2;}
+.cat-img-label small{display:block;font-family:'Jost',sans-serif;font-size:.62rem;
+  letter-spacing:2px;text-transform:uppercase;opacity:.7;font-weight:400;margin-bottom:3px;}
+/* Arrow badge */
+.cat-arrow{position:absolute;top:12px;right:12px;width:30px;height:30px;
+  background:rgba(255,255,255,.88);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;z-index:3;opacity:0;transition:opacity .25s,transform .25s;
+  box-shadow:0 2px 8px rgba(59,13,26,.15);}
+.cat-card:hover .cat-arrow{opacity:1;transform:scale(1.1);}
+/* Old cat-info (fallback for emoji-only) */
+.cat-info{padding:14px 18px 18px;}
+.cat-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;margin-bottom:3px;color:var(--burgundy);}
+.cat-desc{font-size:.74rem;opacity:.45;line-height:1.5;color:var(--burgundy);}
+
+/* ── CIRCLE shape ── */
+.cat-circles-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+.cat-circle-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;
+  text-decoration:none;cursor:pointer;transition:transform .25s;}
+.cat-circle-wrap:hover{transform:translateY(-4px);}
+.cat-circle-img{width:88px;height:88px;border-radius:50%;overflow:hidden;
+  border:3px solid rgba(192,100,122,.25);
+  display:flex;align-items:center;justify-content:center;font-size:2.4rem;
+  box-shadow:0 6px 20px rgba(59,13,26,.12);
+  transition:border-color .25s,box-shadow .25s;}
+.cat-circle-wrap:hover .cat-circle-img{border-color:#c0647a;box-shadow:0 10px 28px rgba(192,100,122,.3);}
+.cat-circle-img img{width:100%;height:100%;object-fit:cover;}
+.cat-circle-lbl{font-family:'Jost',sans-serif;font-size:.72rem;font-weight:600;
+  color:var(--burgundy);text-align:center;max-width:80px;line-height:1.3;}
+
+/* ── SQUARE shape ── */
+.cat-squares-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;}
+.cat-square-wrap{border-radius:16px;overflow:hidden;position:relative;
+  text-decoration:none;display:block;aspect-ratio:1;
+  box-shadow:0 4px 16px rgba(59,13,26,.1);
+  transition:transform .25s,box-shadow .25s;}
+.cat-square-wrap:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(192,100,122,.25);}
+.cat-square-img{width:100%;height:100%;object-fit:cover;}
+.cat-square-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(59,13,26,.78) 0%,transparent 60%);}
+.cat-square-lbl{position:absolute;bottom:10px;left:0;right:0;text-align:center;
+  font-family:'Jost',sans-serif;font-size:.74rem;font-weight:700;
+  color:white;letter-spacing:.5px;padding:0 6px;line-height:1.3;}
 
 /* PRODUCTS */
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
@@ -1037,7 +1084,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <!-- MARQUEE STRIP -->
 <div class="marquee-strip">
   <div class="marquee-inner">
-    <span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Same Day Delivery in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span><span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Same Day Delivery in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span>
+    <span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span><span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span>
   </div>
 </div>
 <!-- ═══════ CATEGORY CIRCLES ═══════ -->
@@ -1090,9 +1137,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   </div>
   <div class="cat-grid" id="catGrid">
     <!-- filled by Firebase -->
-    <a href="products.html?cat=wedding" class="cat-card span2 reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fde8ed,#f5c5d0)">💍</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Wedding Hampers</div><p class="cat-desc">Luxurious gifts for the bride and groom</p></div></a>
-    <a href="products.html?cat=birthday" class="cat-card reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fdf0e0,#edd5a5)">🎂</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Birthday Hampers</div><p class="cat-desc">Make every birthday truly magical</p></div></a>
-    <a href="products.html?cat=couple" class="cat-card reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fde8ed,#e8a0b0)">❤️</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Couple Hampers</div><p class="cat-desc">Perfect romantic gifts for two</p></div></a>
+    <!-- dynamic categories loaded by Firebase JS -->
   </div>
 </section>
 
@@ -1110,7 +1155,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <!-- PROMO -->
 <div class="promo-strip reveal">
   <div class="promo-item"><div class="promo-icon">🎀</div><div class="promo-title">Handcrafted</div><p class="promo-text">Every hamper assembled by hand with premium materials.</p></div>
-  <div class="promo-item"><div class="promo-icon">🚚</div><div class="promo-title">Same Day Delivery</div><p class="promo-text">Order before 2 PM for same day delivery in Kadapa city.</p></div>
+  <div class="promo-item"><div class="promo-icon">🚚</div><div class="promo-title">Within 24 Hours</div><p class="promo-text">Order today and receive within 24 hours anywhere in Kadapa city.</p></div>
   <div class="promo-item"><div class="promo-icon">⭐</div><div class="promo-title">Premium Quality</div><p class="promo-text">Only the finest products make it into our curated hampers.</p></div>
 </div>
 
@@ -1130,7 +1175,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
     <div class="why-card reveal">
       <div class="why-icon-wrap">🚀</div>
       <div class="why-title">Same Day Delivery</div>
-      <p class="why-text">Order before 2 PM and we'll deliver the same day within Kadapa city — guaranteed.</p>
+      <p class="why-text">Order today and we deliver within 24 hours to your doorstep anywhere in Kadapa — guaranteed.</p>
     </div>
     <div class="why-card reveal">
       <div class="why-icon-wrap">💎</div>
@@ -1226,33 +1271,77 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   </div>
 </div>
 
-<!-- FAQ -->
+<!-- FAQ & POLICIES -->
 <section class="sec-wrap">
   <div class="sec-head reveal">
     <div class="sec-eyebrow">Got Questions?</div>
     <h2 class="sec-title">Frequently Asked <em>Questions</em></h2>
   </div>
   <div class="faq-wrap">
+
+    <!-- Delivery -->
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Do you deliver outside Kadapa?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a"><p>Yes! We deliver across Andhra Pradesh and can ship pan-India for select hampers. WhatsApp us for delivery details outside Kadapa city limits and we'll confirm availability and timelines for your area.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">🚚 How soon will my order be delivered?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Within Kadapa city, we deliver within 24 hours of order confirmation — no cut-off time, just order and we deliver. Outside Kadapa, delivery depends on your pincode: Andhra Pradesh 1–2 days, South India 2–3 days, North/East India 3–5 days. Enter your pincode on our homepage to see your exact estimated date.</p></div>
     </div>
+
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Can I customise a hamper?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a"><p>Absolutely! Custom hampers are one of our specialties. Simply WhatsApp us with your occasion, budget, and preferences — we'll put together something beautiful and unique just for you.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">📍 Do you deliver outside Kadapa?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Yes! We deliver pan-India. Delivery charges and timelines vary by location — enter your pincode on the homepage to get an instant estimate. WhatsApp us for international shipping queries.</p></div>
     </div>
+
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">What payment methods do you accept?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a"><p>We accept UPI (GPay, PhonePe, Paytm), NEFT/IMPS bank transfers, and cash on delivery for orders within Kadapa. Payment details are shared via WhatsApp after order confirmation.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">🎁 Can I customise a hamper?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Absolutely! Custom hampers are our specialty. WhatsApp us with your occasion, budget, and preferences — we'll create something beautiful and unique just for you.</p></div>
     </div>
+
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How soon will my order be delivered?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a"><p>For Kadapa city orders placed before 2 PM, we guarantee same day delivery. For custom hampers or bulk orders, we typically need 24–48 hours for preparation. We'll always confirm the timeline via WhatsApp.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">💳 What payment methods do you accept?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>We accept all major payment methods — UPI (GPay, PhonePe, Paytm, BHIM), credit/debit cards, and net banking via Razorpay. All payments are secured with 256-bit SSL encryption.</p></div>
     </div>
+
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Do you do bulk or corporate orders?</span><span class="faq-icon">+</span></div>
-      <div class="faq-a"><p>Yes, we love corporate gifting! We offer special pricing for bulk orders (10+). Ideal for Diwali, New Year, employee gifting, and event hampers. Contact us on WhatsApp for a custom quote.</p></div>
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">🏢 Do you do bulk or corporate orders?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Yes! We love corporate gifting. Special pricing for bulk orders of 10+. Perfect for Diwali, New Year, employee appreciation, and events. WhatsApp us for a custom quote.</p></div>
     </div>
+
+  </div>
+</section>
+
+<!-- RETURN & REFUND POLICY -->
+<section class="sec-wrap alt">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow">Our Policies</div>
+    <h2 class="sec-title">Returns &amp; <em>Refunds</em></h2>
+  </div>
+  <div class="faq-wrap">
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">❌ Do you accept returns?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">
+        <p style="color:#e05050;font-weight:500;margin-bottom:8px;">⚠️ All sales are final. We do not accept returns.</p>
+        <p>Our hampers are handcrafted, perishable gifting products made fresh for each order. Due to their custom nature and food-safety standards, we are unable to accept returns once delivered. Please review your order carefully before confirming.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">💰 Do you offer refunds?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a">
+        <p style="color:#e05050;font-weight:500;margin-bottom:8px;">⚠️ We do not offer refunds after delivery.</p>
+        <p>Refunds are only considered in cases where: (1) your order was not delivered at all, or (2) the product delivered was significantly different from what was ordered. In such cases, please contact us within 2 hours of the expected delivery time via WhatsApp with photos. We review each case individually.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">🔄 Can I cancel my order?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Orders can be cancelled within 1 hour of placing them, before preparation begins. To cancel, WhatsApp us immediately with your order number. Once the hamper is being prepared, cancellations are not possible.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">📞 How do I contact support?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>The fastest way to reach us is WhatsApp at <strong>+91 86390 66613</strong> — we typically respond within minutes. For order issues, please have your order number ready. We're available every day from 8 AM to 10 PM.</p></div>
+    </div>
+
   </div>
 </section>
 
@@ -1538,49 +1627,93 @@ let _bx=0;
 document.getElementById('bannerCarousel').addEventListener('touchstart',e=>{_bx=e.changedTouches[0].clientX;},{passive:true});
 document.getElementById('bannerCarousel').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-_bx;if(Math.abs(dx)>40){clearInterval(_bT);goSlide(dx<0?_bi+1:_bi-1);startAuto();}},{passive:true});
 
-// CATEGORIES (from Firestore — with emoji + cover photo)
+// CATEGORIES — shape-aware rendering
 onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
   const cats=snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.visible!==false);
   if(!cats.length) return;
-
-  // ── Category grid (existing card layout) ──
   const grid=document.getElementById('catGrid');
-  const visible=cats.slice(0,5);
-  grid.innerHTML=visible.map((c,i)=>{
-    const span=i===0||i===4?'span2':'';
-    const bg=c.color||'#f9e4e9';
-    // Support cover photo
-    const imgContent=c.coverImage
-      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
-      : (c.emoji||'🎁');
-    return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal">
-      <div class="cat-img" style="background:linear-gradient(135deg,${bg},${bg}dd)">${imgContent}</div>
-      <div class="cat-arrow">→</div>
-      <div class="cat-info"><div class="cat-name">${c.name}</div><p class="cat-desc">${c.desc||''}</p></div>
-    </a>`;
-  }).join('');
+  if(!grid) return;
 
-  // ── Category circles (horizontal scroll) ──
+  // Detect dominant shape (most common among cats, default rectangle)
+  const shapeCounts={circle:0,square:0,rectangle:0};
+  cats.forEach(c=>{ const s=c.shape||'rectangle'; shapeCounts[s]=(shapeCounts[s]||0)+1; });
+  const domShape=Object.entries(shapeCounts).sort((a,b)=>b[1]-a[1])[0][0];
+
+  if(domShape==='circle') {
+    // ── CIRCLE layout — story-style horizontal row ──
+    grid.style.display='block';
+    grid.innerHTML='<div class="cat-circles-row">'+cats.map(c=>{
+      const bg=c.color||'#f9e4e9';
+      const imgInner=c.coverImage
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'}"/>`
+        : `<span>${c.emoji||'🎁'}</span>`;
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-wrap reveal">
+        <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${imgInner}</div>
+        <span class="cat-circle-lbl">${c.name}</span>
+      </a>`;
+    }).join('')+'</div>';
+
+  } else if(domShape==='square') {
+    // ── SQUARE layout — equal grid tiles ──
+    grid.style.display='grid';
+    grid.style.gridTemplateColumns='repeat(auto-fill,minmax(130px,1fr))';
+    grid.style.gap='14px';
+    grid.innerHTML=cats.map(c=>{
+      const bg=c.color||'#f9e4e9';
+      const pos=c.coverPosition||'50% 50%';
+      const inner=c.coverImage
+        ? `<img class="cat-square-img" src="${c.coverImage}" alt="${c.name}" style="object-position:${pos}"/>
+           <div class="cat-square-overlay"></div>
+           <div class="cat-square-lbl">${c.emoji||''} ${c.name}</div>`
+        : `<div style="width:100%;height:100%;background:linear-gradient(135deg,${bg},${bg}dd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+             <span style="font-size:2.4rem">${c.emoji||'🎁'}</span>
+             <span style="font-family:'Jost',sans-serif;font-size:.76rem;font-weight:600;color:var(--burgundy);text-align:center;padding:0 8px">${c.name}</span>
+           </div>`;
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-square-wrap reveal"
+        style="background:${c.coverImage?'#f5e8ec':bg}">${inner}</a>`;
+    }).join('');
+
+  } else {
+    // ── RECTANGLE layout (default) — rich cards with overlay text ──
+    grid.style.display='grid';
+    grid.style.gridTemplateColumns='repeat(3,1fr)';
+    grid.style.gap='18px';
+    const visible=cats.slice(0,5);
+    grid.innerHTML=visible.map((c,i)=>{
+      const span=i===0||i===4?'span2':'';
+      const bg=c.color||'#f9e4e9';
+      const pos=c.coverPosition||'50% 50%';
+      const hasImg=!!c.coverImage;
+      const imgContent=hasImg
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${pos};display:block;"/>
+           <div class="cat-img-overlay"></div>
+           <div class="cat-img-label"><small>${c.emoji||''}</small>${c.name}</div>`
+        : `<span style="font-size:${span?'5rem':'3.8rem'}">${c.emoji||'🎁'}</span>
+           <div class="cat-img-overlay" style="background:linear-gradient(to top,${bg}ee 0%,transparent 70%)"></div>
+           <div class="cat-img-label"><small>${c.desc||''}</small>${c.name}</div>`;
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal"
+        style="background:${hasImg?'#f5e8ec':bg}">
+        <div class="cat-img" style="background:${hasImg?'#f5e8ec':bg}">${imgContent}</div>
+        <div class="cat-arrow">→</div>
+      </a>`;
+    }).join('');
+  }
+
+  // ── Also update circle scroll (products page / other pages) ──
   const scroll=document.getElementById('catCirclesScroll');
   if(scroll){
     scroll.innerHTML=cats.map(c=>{
       const bg=c.color||'#f9e4e9';
       const inner=c.coverImage
-        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>`
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
         : `<span>${c.emoji||'🎁'}</span>`;
       return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-item">
         <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${inner}</div>
         <span class="cat-circle-label">${c.name}</span>
       </a>`;
     }).join('');
-    // Highlight active
-    const urlCat=new URLSearchParams(location.search).get('cat');
-    if(urlCat) scroll.querySelectorAll('.cat-circle-item').forEach(el=>{
-      if(el.href&&el.href.includes('cat='+urlCat)) el.classList.add('active');
-    });
   }
 
-  // re-observe reveals
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 });
 
@@ -1829,36 +1962,60 @@ setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
 // ═══════════════════════════════════════════════
 (function(){
   // Estimate delivery days based on Indian pincode
-  function estimateDeliveryDays(pin){
-    if(!pin || pin.length < 6) return 1;
-    var p = pin.toString();
-    var first2 = parseInt(p.substring(0,2));
-    // Kadapa & nearby (516xxx) = same/next day
-    if(p.startsWith('516')) return 0; // same day
-    // Andhra Pradesh (500-535) = 1 day
-    if(first2 >= 50 && first2 <= 53) return 1;
-    // Karnataka, TN, Telangana = 1-2 days
-    if((first2 >= 56 && first2 <= 59) || (first2 >= 60 && first2 <= 64)) return 2;
-    // South India (Kerala, etc) = 2 days
-    if(first2 >= 67 && first2 <= 69) return 2;
-    // North India = 3-4 days
-    if(first2 >= 10 && first2 <= 25) return 4;
-    if(first2 >= 30 && first2 <= 49) return 3;
-    // East India
-    if(first2 >= 70 && first2 <= 74) return 4;
-    // West India
-    if(first2 >= 40 && first2 <= 42) return 3;
-    return 2; // default
+  // ── Delivery estimation by pincode ──
+  function estimateDelivery(pin) {
+    if (!pin || pin.length < 5) return { days:2, label:'2-3 days', zone:'Other' };
+    var p = pin.toString().trim();
+    var f2 = parseInt(p.substring(0,2));
+    // Kadapa city (516001–516004, 516007)
+    if (p === '516001'||p === '516002'||p === '516003'||p === '516004'||p === '516007')
+      return { days:1, label:'Within 24 hours', zone:'Kadapa City' };
+    // Kadapa district (516xxx)
+    if (p.startsWith('516'))
+      return { days:1, label:'Within 24 hours', zone:'Kadapa District' };
+    // Rest of Andhra Pradesh (500–535)
+    if (f2 >= 50 && f2 <= 53)
+      return { days:2, label:'1–2 days', zone:'Andhra Pradesh' };
+    // Telangana (500–509)
+    if (f2 >= 50 && f2 <= 50)
+      return { days:2, label:'1–2 days', zone:'Telangana' };
+    // Karnataka (560–591)
+    if (f2 >= 56 && f2 <= 59)
+      return { days:2, label:'2 days', zone:'Karnataka' };
+    // Tamil Nadu (600–643)
+    if (f2 >= 60 && f2 <= 64)
+      return { days:2, label:'2 days', zone:'Tamil Nadu' };
+    // Kerala (670–695)
+    if (f2 >= 67 && f2 <= 69)
+      return { days:3, label:'2–3 days', zone:'Kerala' };
+    // Maharashtra (400–445)
+    if (f2 >= 40 && f2 <= 44)
+      return { days:3, label:'3 days', zone:'Maharashtra' };
+    // Gujarat (360–396)
+    if (f2 >= 36 && f2 <= 39)
+      return { days:3, label:'3 days', zone:'Gujarat' };
+    // Delhi/NCR (110–119)
+    if (f2 >= 11 && f2 <= 11)
+      return { days:4, label:'3–4 days', zone:'Delhi / NCR' };
+    // North India (10–29)
+    if (f2 >= 10 && f2 <= 29)
+      return { days:4, label:'4 days', zone:'North India' };
+    // Rajasthan, MP, UP (20–49)
+    if (f2 >= 20 && f2 <= 49)
+      return { days:3, label:'3 days', zone:'Central India' };
+    // East India (70–74, 80–85)
+    if ((f2 >= 70 && f2 <= 74) || (f2 >= 80 && f2 <= 85))
+      return { days:4, label:'4–5 days', zone:'East India' };
+    return { days:3, label:'2–3 days', zone:'India' };
   }
 
-  function getDeliveryDateForPin(pin){
-    var days = estimateDeliveryDays(pin);
-    if(days === 0) return 'Today (Same Day)';
+  function getDeliveryDateForPin(pin) {
+    var est = estimateDelivery(pin);
     var d = new Date();
-    d.setDate(d.getDate() + days);
-    var label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-    if(days === 1) return 'Tomorrow, ' + label;
-    return label + ' (' + days + '-day delivery)';
+    d.setDate(d.getDate() + est.days);
+    var dayLabel = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+    if (est.days === 1) return '📦 ' + est.label + ' · ' + est.zone;
+    return '📦 By ' + dayLabel + ' · ' + est.label + ' · ' + est.zone;
   }
 
   var savedPin = localStorage.getItem('ah_pincode') || '516001';
