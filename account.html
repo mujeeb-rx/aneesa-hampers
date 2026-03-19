@@ -552,7 +552,9 @@ window.selectLang = function(code) {
   _selLang = code;
   localStorage.setItem('ah_lang', code);
   renderLangGrid();
-  toast('✅ Language saved!');
+  // Apply translation immediately
+  if (window.AH_applyLang) window.AH_applyLang(code);
+  toast('✅ Language changed!');
 };
 
 const COUNTRY_CURRENCY = {
@@ -571,7 +573,9 @@ window.savePreferences = function() {
   const country  = document.getElementById('prefCountry').value;
   const currency = document.getElementById('prefCurrency').value;
   localStorage.setItem('ah_prefs', JSON.stringify({lang:_selLang, country, currency, savedAt:Date.now()}));
-  toast('🌍 Language & region saved!');
+  // Apply currency conversion immediately across all pages
+  if (window.AH_applyCurrency) window.AH_applyCurrency(currency);
+  toast('🌍 Region saved! Prices updated.');
 };
 
 function loadPreferences() {
@@ -820,5 +824,6 @@ window.doLogout = async function() {
   window.location.href='index.html';
 };
 </script>
+<script src="lang-currency.js"></script>
 </body>
 </html>
