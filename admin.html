@@ -680,58 +680,98 @@ textarea.fi{resize:vertical;min-height:80px;}
         🎁 🎀 💍 🎂 🎉 🎊 🌹 🕯️ ☕ 🍫 🍬 🌸 💝 💐 🎈 🎆 🧸 🛍️ 💎 🪷 🎠 🎟️ 🏮 🧧
       </div>
     </div>
+    <!-- COVER PHOTO — drag to crop -->
     <div class="fg">
-      <label class="fl">Cover Photo (replaces emoji on site)</label>
-      <div style="display:flex;gap:8px;align-items:flex-start;">
-        <div style="flex:1;">
-          <input class="fi" id="catCoverUrl" placeholder="Paste image URL or upload →" style="margin-bottom:6px;" oninput="previewCatCover(this.value)"/>
-          <!-- Preview + Position Adjuster -->
-          <div id="catCoverPreviewWrap" style="display:none;">
-            <!-- Live preview of how it looks on site -->
-            <div style="margin-bottom:8px;">
-              <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.45;margin-bottom:6px;font-weight:600;">Preview (as seen on site)</div>
-              <div id="catCoverPreviewBox" style="width:100%;height:130px;border-radius:12px;overflow:hidden;border:1.5px solid rgba(192,100,122,.2);position:relative;background:var(--blush);">
-                <img id="catCoverPreview" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;transition:object-position .2s;"/>
-              </div>
-            </div>
-            <!-- Position controls -->
-            <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:12px;border:1px solid rgba(192,100,122,.12);">
-              <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.45;margin-bottom:10px;font-weight:600;">🎯 Adjust Photo Position</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-                <div>
-                  <label style="font-size:.6rem;opacity:.45;display:block;margin-bottom:3px;">Horizontal</label>
-                  <input type="range" id="catPosX" min="0" max="100" value="50" style="width:100%;accent-color:var(--deep-rose);" oninput="updateCoverPos()"/>
-                  <div style="display:flex;justify-content:space-between;font-size:.58rem;opacity:.3;margin-top:1px;"><span>Left</span><span>Right</span></div>
-                </div>
-                <div>
-                  <label style="font-size:.6rem;opacity:.45;display:block;margin-bottom:3px;">Vertical</label>
-                  <input type="range" id="catPosY" min="0" max="100" value="50" style="width:100%;accent-color:var(--deep-rose);" oninput="updateCoverPos()"/>
-                  <div style="display:flex;justify-content:space-between;font-size:.58rem;opacity:.3;margin-top:1px;"><span>Top</span><span>Bottom</span></div>
-                </div>
-              </div>
-              <!-- Quick position presets -->
-              <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                <button onclick="setCoverPos(50,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">⬆ Top</button>
-                <button onclick="setCoverPos(50,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">🎯 Center</button>
-                <button onclick="setCoverPos(50,100)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">⬇ Bottom</button>
-                <button onclick="setCoverPos(0,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">◀ Left</button>
-                <button onclick="setCoverPos(100,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">▶ Right</button>
-                <button onclick="setCoverPos(100,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">↗ Top-Right</button>
-                <button onclick="setCoverPos(0,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">↖ Top-Left</button>
-              </div>
-              <div style="font-size:.62rem;opacity:.35;margin-top:6px;">Adjust until the most important part of your photo is visible in the box above.</div>
-            </div>
-            <button onclick="clearCatCover()" style="margin-top:8px;font-size:.68rem;color:rgba(200,60,60,.7);background:none;border:none;cursor:pointer;">✕ Remove photo</button>
-          </div>
-        </div>
-        <label style="display:flex;align-items:center;gap:5px;background:var(--burgundy);color:white;border-radius:9px;padding:10px 14px;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;height:40px;">
+      <label class="fl">Cover Photo</label>
+
+      <!-- Upload row -->
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <input class="fi" id="catCoverUrl" placeholder="Paste image URL…" style="margin-bottom:0;flex:1;"
+          oninput="previewCatCover(this.value)"/>
+        <label style="display:flex;align-items:center;gap:5px;background:var(--burgundy);color:white;
+          border-radius:9px;padding:10px 14px;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;
+          cursor:pointer;white-space:nowrap;flex-shrink:0;">
           📷 Upload
           <input type="file" accept="image/*" style="display:none" onchange="uploadCatCover(this)"/>
         </label>
       </div>
-      <div id="catCoverStatus" style="font-size:.7rem;opacity:.45;margin-top:4px;min-height:14px;"></div>
-      <!-- Hidden field stores cover position — pre-placed so JS can always find it -->
+      <div id="catCoverStatus" style="font-size:.7rem;opacity:.45;margin-top:-6px;margin-bottom:8px;min-height:14px;"></div>
+
+      <!-- Crop tool — shown after image loaded -->
+      <div id="cropTool" style="display:none;">
+
+        <!-- Drag canvas -->
+        <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;
+          color:rgba(59,13,26,.4);font-weight:600;margin-bottom:8px;">
+          ✋ Drag photo to crop — fits your selected shape
+        </div>
+        <div id="cropContainer" style="position:relative;width:100%;height:220px;
+          background:#1a0810;border-radius:14px;overflow:hidden;cursor:grab;
+          border:2px solid rgba(192,100,122,.25);user-select:none;touch-action:none;">
+          <!-- Full image that user drags -->
+          <img id="cropImg" src="" draggable="false"
+            style="position:absolute;transform-origin:top left;pointer-events:none;"/>
+          <!-- Shape overlay mask -->
+          <div id="cropMask" style="position:absolute;inset:0;pointer-events:none;"></div>
+          <!-- Grid guide lines -->
+          <div style="position:absolute;inset:0;pointer-events:none;opacity:.12;"
+            id="cropGrid"></div>
+        </div>
+
+        <!-- Zoom slider -->
+        <div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px;">
+          <span style="font-size:.9rem;opacity:.4;">🔍</span>
+          <input type="range" id="cropZoom" min="100" max="300" value="100" step="1"
+            style="flex:1;accent-color:var(--deep-rose);"
+            oninput="cropZoomChanged()"/>
+          <span style="font-size:.9rem;opacity:.4;">🔎</span>
+        </div>
+
+        <!-- 3-shape live previews -->
+        <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;
+          color:rgba(59,13,26,.4);font-weight:600;margin:12px 0 8px;">
+          Live Preview in All Shapes
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+          <!-- Circle preview -->
+          <div style="text-align:center;">
+            <div id="prevCircle"
+              style="width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto 6px;
+              border:2.5px solid rgba(192,100,122,.3);background:#f5e8ec;">
+              <img id="prevCircleImg" src="" style="width:100%;height:100%;object-fit:cover;"/>
+            </div>
+            <div style="font-size:.65rem;font-weight:600;color:var(--burgundy);">Circle</div>
+          </div>
+          <!-- Square preview -->
+          <div style="text-align:center;">
+            <div id="prevSquare"
+              style="width:72px;height:72px;border-radius:12px;overflow:hidden;margin:0 auto 6px;
+              border:2.5px solid rgba(192,100,122,.3);background:#f5e8ec;">
+              <img id="prevSquareImg" src="" style="width:100%;height:100%;object-fit:cover;"/>
+            </div>
+            <div style="font-size:.65rem;font-weight:600;color:var(--burgundy);">Square</div>
+          </div>
+          <!-- Rectangle preview -->
+          <div style="text-align:center;">
+            <div id="prevRect"
+              style="width:100%;height:52px;border-radius:8px;overflow:hidden;margin-bottom:6px;
+              border:2.5px solid rgba(192,100,122,.3);background:#f5e8ec;">
+              <img id="prevRectImg" src="" style="width:100%;height:100%;object-fit:cover;"/>
+            </div>
+            <div style="font-size:.65rem;font-weight:600;color:var(--burgundy);">Rectangle</div>
+          </div>
+        </div>
+
+        <button onclick="clearCatCover()"
+          style="font-size:.68rem;color:rgba(200,60,60,.7);background:none;border:none;cursor:pointer;">
+          ✕ Remove photo
+        </button>
+      </div>
+
+      <!-- Hidden fields -->
       <input type="hidden" id="catCoverPos" value="50% 50%"/>
+      <input type="hidden" id="catPosX" value="50"/>
+      <input type="hidden" id="catPosY" value="50"/>
     </div>
     <button class="btn btn-primary" style="width:100%;padding:12px;margin-top:4px" onclick="saveCat()" id="catSaveBtn">Save Category ✓</button>
   </div>
@@ -1375,7 +1415,7 @@ window.openEditCat = function(id) {
     const pyEl = document.getElementById('catPosY');
     if (pxEl) pxEl.value = parseInt(parts[0]) || 50;
     if (pyEl) pyEl.value = parseInt(parts[1]) || 50;
-    _showCatCoverPreview(coverUrl, false); // false = don't reset sliders
+    window._showCatCoverPreview(coverUrl, false, c.coverPosition || '50% 50%');
   } else {
     const pw = document.getElementById('catCoverPreviewWrap');
     if (pw) pw.style.display = 'none';
@@ -1602,88 +1642,238 @@ window.savePopupSettings = async function() {
 // ═══════════════════════════════════════════════
 // CATEGORY COVER PHOTO — UPLOAD + POSITION
 // ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// COVER PHOTO — DRAG-TO-CROP ENGINE
+// ════════════════════════════════════════════════
+var _crop = {
+  url: '', imgW: 0, imgH: 0,
+  offsetX: 0, offsetY: 0,    // current offset px
+  zoom: 1,                    // current zoom factor
+  dragging: false, startX: 0, startY: 0, startOX: 0, startOY: 0
+};
+
+function _cropContainerSize() {
+  var el = document.getElementById('cropContainer');
+  return el ? { w: el.offsetWidth, h: el.offsetHeight } : { w: 320, h: 220 };
+}
+
+function _cropClampOffset() {
+  var cs = _cropContainerSize();
+  var iw = _crop.imgW * _crop.zoom;
+  var ih = _crop.imgH * _crop.zoom;
+  // max offset so image doesn't leave container
+  var maxX = 0, minX = cs.w - iw;
+  var maxY = 0, minY = cs.h - ih;
+  _crop.offsetX = Math.min(maxX, Math.max(minX, _crop.offsetX));
+  _crop.offsetY = Math.min(maxY, Math.max(minY, _crop.offsetY));
+}
+
+function _cropApply() {
+  var img = document.getElementById('cropImg');
+  if (!img) return;
+  img.style.left   = _crop.offsetX + 'px';
+  img.style.top    = _crop.offsetY + 'px';
+  img.style.width  = (_crop.imgW * _crop.zoom) + 'px';
+  img.style.height = (_crop.imgH * _crop.zoom) + 'px';
+  // Update all 3 live previews
+  _cropUpdatePreviews();
+  // Save position as percentage for Firestore
+  _cropSavePos();
+}
+
+function _cropUpdatePreviews() {
+  var cs = _cropContainerSize();
+  var iw = _crop.imgW * _crop.zoom;
+  var ih = _crop.imgH * _crop.zoom;
+  // percentage of image visible in container
+  var px = cs.w > 0 && iw > cs.w ? ((-_crop.offsetX) / (iw - cs.w) * 100) : 50;
+  var py = cs.h > 0 && ih > cs.h ? ((-_crop.offsetY) / (ih - cs.h) * 100) : 50;
+  px = Math.round(Math.min(100, Math.max(0, px)));
+  py = Math.round(Math.min(100, Math.max(0, py)));
+  ['prevCircleImg','prevSquareImg','prevRectImg'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.src = _crop.url; el.style.objectPosition = px + '% ' + py + '%'; }
+  });
+}
+
+function _cropSavePos() {
+  var cs = _cropContainerSize();
+  var iw = _crop.imgW * _crop.zoom;
+  var ih = _crop.imgH * _crop.zoom;
+  var px = cs.w > 0 && iw > cs.w ? ((-_crop.offsetX) / (iw - cs.w) * 100) : 50;
+  var py = cs.h > 0 && ih > cs.h ? ((-_crop.offsetY) / (ih - cs.h) * 100) : 50;
+  px = Math.round(Math.min(100, Math.max(0, px)));
+  py = Math.round(Math.min(100, Math.max(0, py)));
+  var hf  = document.getElementById('catCoverPos');
+  var hpx = document.getElementById('catPosX');
+  var hpy = document.getElementById('catPosY');
+  if (hf)  hf.value  = px + '% ' + py + '%';
+  if (hpx) hpx.value = px;
+  if (hpy) hpy.value = py;
+}
+
+function _cropInitFromPos(posStr) {
+  var parts = (posStr || '50% 50%').split(' ');
+  var px = parseFloat(parts[0]) || 50;
+  var py = parseFloat(parts[1]) || 50;
+  var cs = _cropContainerSize();
+  var iw = _crop.imgW * _crop.zoom;
+  var ih = _crop.imgH * _crop.zoom;
+  _crop.offsetX = iw > cs.w ? -(px / 100) * (iw - cs.w) : (cs.w - iw) / 2;
+  _crop.offsetY = ih > cs.h ? -(py / 100) * (ih - cs.h) : (cs.h - ih) / 2;
+  _cropClampOffset();
+  _cropApply();
+}
+
+function _cropLoadImage(url, savedPos) {
+  _crop.url = url;
+  var img = document.getElementById('cropImg');
+  var container = document.getElementById('cropTool');
+  if (!img || !container) return;
+  var tmp = new Image();
+  tmp.crossOrigin = 'anonymous';
+  tmp.onload = function() {
+    _crop.imgW = tmp.naturalWidth;
+    _crop.imgH = tmp.naturalHeight;
+    img.src = url;
+    // Set initial zoom to fill container
+    var cs = _cropContainerSize();
+    var scaleW = cs.w / _crop.imgW;
+    var scaleH = cs.h / _crop.imgH;
+    var initScale = Math.max(scaleW, scaleH);
+    _crop.zoom = initScale;
+    document.getElementById('cropZoom').value = Math.round(initScale * 100);
+    document.getElementById('cropZoom').min   = Math.round(initScale * 100);
+    document.getElementById('cropZoom').max   = Math.round(initScale * 300);
+    container.style.display = 'block';
+    if (savedPos) {
+      _cropInitFromPos(savedPos);
+    } else {
+      // Center
+      var iw = _crop.imgW * _crop.zoom;
+      var ih = _crop.imgH * _crop.zoom;
+      _crop.offsetX = (cs.w - iw) / 2;
+      _crop.offsetY = (cs.h - ih) / 2;
+      _cropClampOffset();
+      _cropApply();
+    }
+  };
+  tmp.onerror = function() {
+    var st = document.getElementById('catCoverStatus');
+    if (st) { st.style.color='#e05050'; st.textContent='❌ Could not load image — check URL'; }
+  };
+  tmp.src = url;
+}
+
+// ── Mouse events ──
+(function() {
+  function getContainer() { return document.getElementById('cropContainer'); }
+  function onDown(e) {
+    if (!document.getElementById('cropTool') || document.getElementById('cropTool').style.display==='none') return;
+    var cc = getContainer(); if (!cc) return;
+    _crop.dragging = true;
+    var t = e.touches ? e.touches[0] : e;
+    _crop.startX = t.clientX; _crop.startY = t.clientY;
+    _crop.startOX = _crop.offsetX; _crop.startOY = _crop.offsetY;
+    cc.style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+  function onMove(e) {
+    if (!_crop.dragging) return;
+    var t = e.touches ? e.touches[0] : e;
+    var dx = t.clientX - _crop.startX;
+    var dy = t.clientY - _crop.startY;
+    _crop.offsetX = _crop.startOX + dx;
+    _crop.offsetY = _crop.startOY + dy;
+    _cropClampOffset();
+    _cropApply();
+    e.preventDefault();
+  }
+  function onUp() {
+    _crop.dragging = false;
+    var cc = getContainer(); if (cc) cc.style.cursor = 'grab';
+  }
+  document.addEventListener('mousedown',  function(e){ if(e.target.closest('#cropContainer')) onDown(e); });
+  document.addEventListener('mousemove',  onMove);
+  document.addEventListener('mouseup',    onUp);
+  document.addEventListener('touchstart', function(e){ if(e.target.closest('#cropContainer')) onDown(e); }, {passive:false});
+  document.addEventListener('touchmove',  onMove, {passive:false});
+  document.addEventListener('touchend',   onUp);
+})();
+
+window.cropZoomChanged = function() {
+  var z = parseInt(document.getElementById('cropZoom').value) / 100;
+  // Keep image centered on same point
+  var cs = _cropContainerSize();
+  var oldW = _crop.imgW * _crop.zoom;
+  var oldH = _crop.imgH * _crop.zoom;
+  var cx = cs.w / 2 - _crop.offsetX; // point in image coords
+  var cy = cs.h / 2 - _crop.offsetY;
+  var ratioX = cx / oldW;
+  var ratioY = cy / oldH;
+  _crop.zoom = z;
+  var newW = _crop.imgW * z;
+  var newH = _crop.imgH * z;
+  _crop.offsetX = cs.w / 2 - ratioX * newW;
+  _crop.offsetY = cs.h / 2 - ratioY * newH;
+  _cropClampOffset();
+  _cropApply();
+};
+
+// ── Public API (called from HTML / openEditCat) ──
 window.uploadCatCover = async function(input) {
-  const file = input.files[0]; if (!file) return;
-  const statusEl = document.getElementById('catCoverStatus');
-  if (statusEl) { statusEl.style.color=''; statusEl.textContent = '⏳ Uploading photo…'; }
+  var file = input.files[0]; if (!file) return;
+  var statusEl = document.getElementById('catCoverStatus');
+  if (statusEl) { statusEl.style.color=''; statusEl.textContent='⏳ Uploading photo…'; }
   try {
     if (file.size > 10*1024*1024) throw new Error('File too large. Max 10MB.');
-    const url = await uploadToImgbb(file, p => {
-      if (statusEl) statusEl.textContent = '⏳ ' + Math.round(p) + '% uploaded…';
+    var url = await uploadToImgbb(file, function(p) {
+      if (statusEl) statusEl.textContent='⏳ '+Math.round(p)+'% uploaded…';
     });
-    // Put URL into input field
-    const urlInput = document.getElementById('catCoverUrl');
-    if (urlInput) urlInput.value = url;
-    // Show preview + reset position
-    _showCatCoverPreview(url, true);
-    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position using sliders below.'; }
-    setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 5000);
+    document.getElementById('catCoverUrl').value = url;
+    _cropLoadImage(url, null);
+    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent='✅ Uploaded! Drag to crop.'; }
+    setTimeout(function(){ if(statusEl) statusEl.textContent=''; }, 4000);
   } catch(e) {
-    if (statusEl) { statusEl.style.color='#e05050'; statusEl.textContent = '❌ Upload failed: ' + e.message; }
-    console.error('uploadCatCover error:', e);
+    if (statusEl) { statusEl.style.color='#e05050'; statusEl.textContent='❌ '+e.message; }
   }
-  input.value = '';
+  input.value='';
 };
 
-// Called when URL is typed/pasted into the URL field
 window.previewCatCover = function(url) {
-  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-    _showCatCoverPreview(url, true);
+  if (url && (url.startsWith('http')||url.startsWith('https'))) {
+    _cropLoadImage(url, null);
   } else {
-    const pw = document.getElementById('catCoverPreviewWrap');
-    if (pw) pw.style.display = 'none';
+    document.getElementById('cropTool').style.display='none';
   }
 };
 
-// Core function — shows preview + optionally resets sliders
-function _showCatCoverPreview(url, resetSliders) {
-  const pw = document.getElementById('catCoverPreviewWrap');
-  const pi = document.getElementById('catCoverPreview');
-  if (pw) pw.style.display = 'block';
-  if (pi) {
-    pi.src = url;
-    pi.onerror = function() { pi.src = ''; if(pw) pw.style.display='none'; };
-  }
-  if (resetSliders) {
-    const px = document.getElementById('catPosX');
-    const py = document.getElementById('catPosY');
-    if (px) px.value = 50;
-    if (py) py.value = 50;
-    _saveCoverPos(50, 50);
-  }
-  window.updateCoverPos();
-}
-// Keep showCoverPreview as alias for backward compat
-window.showCoverPreview = function(url) { _showCatCoverPreview(url, false); };
-
-function _saveCoverPos(x, y) {
-  const hf = document.getElementById('catCoverPos');
-  if (hf) hf.value = x + '% ' + y + '%';
-}
-
-window.updateCoverPos = function() {
-  const px = parseInt((document.getElementById('catPosX') || {}).value || 50);
-  const py = parseInt((document.getElementById('catPosY') || {}).value || 50);
-  const pi = document.getElementById('catCoverPreview');
-  if (pi) pi.style.objectPosition = px + '% ' + py + '%';
-  _saveCoverPos(px, py);
+// Called from openEditCat with saved position
+window._showCatCoverPreview = function(url, resetSliders, savedPos) {
+  document.getElementById('catCoverUrl').value = url;
+  _cropLoadImage(url, resetSliders ? null : (savedPos || null));
 };
-
-window.setCoverPos = function(x, y) {
-  const px = document.getElementById('catPosX');
-  const py = document.getElementById('catPosY');
-  if (px) px.value = x;
-  if (py) py.value = y;
-  window.updateCoverPos();
-};
+window.showCoverPreview = window._showCatCoverPreview;
 
 window.clearCatCover = function() {
-  const ui = document.getElementById('catCoverUrl');
-  if (ui) ui.value = '';
-  const pw = document.getElementById('catCoverPreviewWrap');
-  if (pw) pw.style.display = 'none';
-  const hf = document.getElementById('catCoverPos');
-  if (hf) hf.value = '50% 50%';
+  _crop.url='';
+  document.getElementById('catCoverUrl').value='';
+  document.getElementById('cropTool').style.display='none';
+  document.getElementById('cropImg').src='';
+  document.getElementById('catCoverPos').value='50% 50%';
+  ['prevCircleImg','prevSquareImg','prevRectImg'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.src='';
+  });
+};
+
+// Backward compat stubs
+window.updateCoverPos = function() { _cropApply(); };
+window.setCoverPos    = function(x,y) {
+  var cs=_cropContainerSize();
+  var iw=_crop.imgW*_crop.zoom, ih=_crop.imgH*_crop.zoom;
+  _crop.offsetX = iw>cs.w ? -(x/100)*(iw-cs.w) : (cs.w-iw)/2;
+  _crop.offsetY = ih>cs.h ? -(y/100)*(ih-cs.h) : (cs.h-ih)/2;
+  _cropClampOffset(); _cropApply();
 };
 
 // ═══════════════════════════════════════════════
