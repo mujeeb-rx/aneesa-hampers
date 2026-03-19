@@ -392,20 +392,46 @@ textarea.fi{resize:vertical;min-height:80px;}
         <div class="banner-form" id="bannerFormWrap" style="display:none;">
           <div style="font-size:.82rem;font-weight:600;margin-bottom:12px" id="bannerFormTitle">➕ Add New Banner</div>
           <input type="hidden" id="bannerEditIdx" value="-1"/>
-          <div class="form-grid">
-            <div class="fg"><label class="fl">Tag / Label</label><input class="fi" id="bTag" placeholder="e.g. 🎉 Eid Special"/></div>
-            <div class="fg"><label class="fl">Button Text</label><input class="fi" id="bBtn" placeholder="Shop Now"/></div>
-            <div class="fg form-full"><label class="fl">Heading</label><input class="fi" id="bTitle" placeholder="Celebrate with Love"/></div>
-            <div class="fg form-full"><label class="fl">Subtitle</label><input class="fi" id="bSub" placeholder="Up to 30% off all hampers!"/></div>
-            <div class="fg form-full">
-              <label class="fl">Banner Image</label>
-              <div style="display:flex;gap:8px;">
-                <input class="fi" id="bImgUrl" placeholder="Paste URL or upload →" style="flex:1"/>
-                <label style="display:flex;align-items:center;gap:5px;background:var(--burgundy);color:white;border-radius:9px;padding:0 14px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;">📷 Upload<input type="file" accept="image/*" style="display:none" onchange="uploadBannerImg(this)"/></label>
-              </div>
-              <div id="bImgStatus" style="font-size:.72rem;opacity:.5;margin-top:4px;min-height:14px"></div>
-              <div id="bImgPreview" style="display:none;margin-top:8px;"><img id="bPreviewImg" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px"/></div>
+          <!-- ── IMAGE ONLY TOGGLE — Banner section only ── -->
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(192,100,122,.06);
+            border-radius:10px;padding:12px 14px;margin-bottom:14px;border:1.5px solid rgba(192,100,122,.15);">
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;cursor:pointer;">
+              <input type="checkbox" id="bHideText" style="opacity:0;width:0;height:0;position:absolute;"
+                onchange="toggleBannerTextFields()"/>
+              <span id="bToggleTrack" style="position:absolute;inset:0;background:rgba(192,100,122,.25);
+                border-radius:24px;transition:.3s;"></span>
+              <span id="bToggleThumb" style="position:absolute;left:3px;top:3px;width:18px;height:18px;
+                background:white;border-radius:50%;transition:.3s;
+                box-shadow:0 1px 4px rgba(0,0,0,.2);"></span>
+            </label>
+            <div>
+              <div style="font-size:.8rem;font-weight:600;color:var(--burgundy);">🖼️ Image only — hide all text</div>
+              <div style="font-size:.68rem;opacity:.5;margin-top:2px;">Turn ON to post just the image with no title, subtitle or button</div>
             </div>
+          </div>
+
+          <!-- Text fields — hidden when toggle is ON -->
+          <div id="bTextFields">
+            <div class="form-grid">
+              <div class="fg"><label class="fl">Tag / Label</label><input class="fi" id="bTag" placeholder="e.g. 🎉 Eid Special"/></div>
+              <div class="fg"><label class="fl">Button Text</label><input class="fi" id="bBtn" placeholder="Shop Now"/></div>
+              <div class="fg form-full"><label class="fl">Heading <span style="font-weight:400;opacity:.45;font-size:.7rem;">(optional)</span></label><input class="fi" id="bTitle" placeholder="Celebrate with Love"/></div>
+              <div class="fg form-full"><label class="fl">Subtitle <span style="font-weight:400;opacity:.45;font-size:.7rem;">(optional)</span></label><input class="fi" id="bSub" placeholder="Up to 30% off all hampers!"/></div>
+            </div>
+          </div>
+
+          <!-- Image upload — always visible -->
+          <div class="fg form-full" style="margin-top:12px;">
+            <label class="fl">Banner Image <span style="color:var(--deep-rose);">*</span></label>
+            <div style="display:flex;gap:8px;">
+              <input class="fi" id="bImgUrl" placeholder="Paste URL or upload →" style="flex:1"/>
+              <label style="display:flex;align-items:center;gap:5px;background:var(--burgundy);color:white;border-radius:9px;padding:0 14px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                📷 Upload
+                <input type="file" accept="image/*" style="display:none" onchange="uploadBannerImg(this)"/>
+              </label>
+            </div>
+            <div id="bImgStatus" style="font-size:.72rem;opacity:.5;margin-top:4px;min-height:14px"></div>
+            <div id="bImgPreview" style="display:none;margin-top:8px;"><img id="bPreviewImg" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px"/></div>
           </div>
           <div style="display:flex;gap:8px;margin-top:10px;">
             <button class="btn btn-primary" style="flex:1" onclick="saveBanner()"><span id="bSaveTxt">➕ Add Banner</span></button>
@@ -1472,7 +1498,7 @@ function renderBannerList() {
   if(!_adminBanners.length){list.innerHTML='<div style="opacity:.35;text-align:center;padding:20px;font-size:.82rem">No banners yet</div>';return;}
   list.innerHTML=_adminBanners.map((b,i)=>`<div class="banner-card">
     ${b.image?`<img class="banner-thumb" src="${b.image}" alt=""/>`:'<div class="banner-thumb">🎉</div>'}
-    <div class="banner-info"><strong>${b.tag||'Untitled'}</strong><span>${b.title||''}</span></div>
+    <div class="banner-info"><strong>${b.tag||b.title||'📷 Image Banner'}</strong><span>${b.title||''}</span></div>
     <div class="banner-acts">
       <button class="btn btn-edit btn-sm" onclick="editBanner(${i})">✏️</button>
       <button class="btn btn-sm" style="background:var(--cream);border:1px solid rgba(192,100,122,.2)" onclick="moveBanner(${i},-1)">↑</button>
@@ -1481,33 +1507,61 @@ function renderBannerList() {
     </div>
   </div>`).join('');
 }
+window.toggleBannerTextFields = function() {
+  const cb     = document.getElementById('bHideText');
+  const fields = document.getElementById('bTextFields');
+  const track  = document.getElementById('bToggleTrack');
+  const thumb  = document.getElementById('bToggleThumb');
+  const on = cb && cb.checked;
+  if (fields) fields.style.display = on ? 'none' : 'block';
+  if (track)  track.style.background = on ? '#c0647a' : 'rgba(192,100,122,.25)';
+  if (thumb)  thumb.style.left = on ? '23px' : '3px';
+};
+
 window.saveBanner = function() {
-  const idx=parseInt(document.getElementById('bannerEditIdx').value);
-  const title=document.getElementById('bTitle').value.trim();
-  if(!title){toast('⚠️ Title required','err');return;}
-  const b={active:true,tag:document.getElementById('bTag').value.trim(),title,subtitle:document.getElementById('bSub').value.trim(),btnText:document.getElementById('bBtn').value.trim(),image:document.getElementById('bImgUrl').value.trim()};
+  const idx      = parseInt(document.getElementById('bannerEditIdx').value);
+  const hideText = document.getElementById('bHideText').checked;
+  const image    = document.getElementById('bImgUrl').value.trim();
+  if (!image) { toast('⚠️ Please upload or add a banner image','err'); return; }
+  const title = hideText ? '' : document.getElementById('bTitle').value.trim();
+  const b = {
+    active:   true,
+    hideText: hideText,
+    tag:      hideText ? '' : document.getElementById('bTag').value.trim(),
+    title:    title,
+    subtitle: hideText ? '' : document.getElementById('bSub').value.trim(),
+    btnText:  hideText ? '' : document.getElementById('bBtn').value.trim(),
+    image:    image
+  };
   if(idx>=0){_adminBanners[idx]=b;toast('Banner updated! Click Save & Publish.');}
   else{_adminBanners.push(b);toast('Banner added! Click Save & Publish.');}
   clearBannerForm(); renderBannerList();
 };
 window.editBanner = function(i) {
-  const b=_adminBanners[i];
-  document.getElementById('bannerEditIdx').value=i;
-  document.getElementById('bTag').value=b.tag||'';
-  document.getElementById('bTitle').value=b.title||'';
-  document.getElementById('bSub').value=b.subtitle||'';
-  document.getElementById('bBtn').value=b.btnText||'';
-  document.getElementById('bImgUrl').value=b.image||'';
-  if(b.image){document.getElementById('bPreviewImg').src=b.image;document.getElementById('bImgPreview').style.display='block';}
-  document.getElementById('bannerFormTitle').textContent='✏️ Edit Banner';
-  document.getElementById('bSaveTxt').textContent='✅ Update Banner';
-  document.getElementById('bCancelBtn').style.display='inline-block';
-  document.getElementById('bannerFormWrap').style.display='block';
+  const b = _adminBanners[i];
+  document.getElementById('bannerEditIdx').value   = i;
+  document.getElementById('bTag').value            = b.tag      || '';
+  document.getElementById('bTitle').value          = b.title    || '';
+  document.getElementById('bSub').value            = b.subtitle || '';
+  document.getElementById('bBtn').value            = b.btnText  || '';
+  document.getElementById('bImgUrl').value         = b.image    || '';
+  // Restore toggle state
+  const cb = document.getElementById('bHideText');
+  if (cb) { cb.checked = !!b.hideText; toggleBannerTextFields(); }
+  if (b.image) {
+    document.getElementById('bPreviewImg').src = b.image;
+    document.getElementById('bImgPreview').style.display = 'block';
+  }
+  document.getElementById('bannerFormTitle').textContent = '✏️ Edit Banner';
+  document.getElementById('bSaveTxt').textContent        = '✅ Update Banner';
+  document.getElementById('bCancelBtn').style.display    = 'inline-block';
+  document.getElementById('bannerFormWrap').style.display = 'block';
 };
 window.cancelBannerEdit = clearBannerForm;
 function clearBannerForm() {
   document.getElementById('bannerEditIdx').value='-1';
   ['bTag','bTitle','bSub','bBtn','bImgUrl'].forEach(id=>document.getElementById(id).value='');
+  const _cb=document.getElementById('bHideText'); if(_cb){_cb.checked=false;toggleBannerTextFields();}
   document.getElementById('bImgPreview').style.display='none';
   document.getElementById('bImgStatus').textContent='';
   document.getElementById('bannerFormTitle').textContent='➕ Add New Banner';

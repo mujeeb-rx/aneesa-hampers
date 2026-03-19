@@ -70,10 +70,9 @@ a{text-decoration:none;}
 .fs-timer span{font-weight:700;margin-left:4px;}
 
 /* BANNER CAROUSEL */
-#bannerCarousel{display:none;position:relative;overflow:hidden;margin-top:108px;}
+#bannerCarousel{display:none;position:relative;overflow:hidden;}
 #bannerCarousel.show{display:block;}
-#annBar.show ~ * #bannerCarousel,
-#annBar.show + #flashStrip + #bannerCarousel{margin-top:0;}
+/* banner margin handled by flow — no hack needed */
 .btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
 .bslide{min-width:100%;height:420px;position:relative;overflow:hidden;display:flex;align-items:center;background:linear-gradient(135deg,var(--burgundy),#5a1528);}
 .bslide-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
@@ -397,24 +396,46 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 #ah-delivery-bar .dlv-pin:hover{background:var(--blush);}
 #ah-delivery-bar .dlv-offers{font-size:.67rem;color:rgba(59,13,26,.45);display:flex;align-items:center;gap:6px;}
 .pin-popup{
-  display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;
-  border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(59,13,26,.18);
-  border:1px solid rgba(192,100,122,.12);width:260px;z-index:9500;
+  display:none;position:fixed;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  background:white;border-radius:16px;padding:22px 20px;
+  box-shadow:0 20px 60px rgba(59,13,26,.25);
+  border:1px solid rgba(192,100,122,.15);
+  width:300px;max-width:90vw;z-index:99999;
 }
 .pin-popup.show{display:block;}
-.pin-popup.show{display:block;}
+/* Backdrop */
+.pin-popup-backdrop{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);
+  z-index:99998;backdrop-filter:blur(3px);
+}
+.pin-popup-backdrop.show{display:block;}
+.pin-popup-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  color:var(--burgundy);margin-bottom:4px;font-weight:600;
+}
+.pin-popup-sub{
+  font-size:.72rem;color:rgba(59,13,26,.45);margin-bottom:14px;
+}
 .pin-popup input{
-  width:100%;padding:10px 14px;border:1.5px solid rgba(192,100,122,.2);
-  border-radius:10px;font-family:'Jost',sans-serif;font-size:.84rem;
-  outline:none;margin-bottom:9px;
+  width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.25);
+  border-radius:10px;font-family:'Jost',sans-serif;font-size:.92rem;
+  outline:none;margin-bottom:10px;box-sizing:border-box;
+  letter-spacing:2px;text-align:center;
 }
-.pin-popup input:focus{border-color:#c0647a;}
+.pin-popup input:focus{border-color:#c0647a;box-shadow:0 0 0 3px rgba(192,100,122,.1);}
 .pin-popup button{
-  width:100%;padding:10px;background:#3b0d1a;color:white;border:none;
-  border-radius:10px;font-family:'Jost',sans-serif;font-size:.76rem;
-  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  width:100%;padding:12px;background:#3b0d1a;color:white;border:none;
+  border-radius:10px;font-family:'Jost',sans-serif;font-size:.78rem;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:600;
 }
 .pin-popup button:hover{background:#c0647a;}
+.pin-popup-close{
+  position:absolute;top:12px;right:14px;background:none;border:none;
+  font-size:1.1rem;cursor:pointer;color:rgba(59,13,26,.35);line-height:1;
+  padding:4px;
+}
+.pin-popup-close:hover{color:var(--deep-rose);}
 @media(max-width:768px){
   #ah-delivery-bar{padding:8px 14px;display:none;}
 }
@@ -535,7 +556,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 /* ═══════════════════════════════════════════════
    CATEGORY CIRCLES (horizontal scroll)
 ═══════════════════════════════════════════════ */
-.cat-circles-wrap{padding:36px 52px 28px;background:white;}
+.cat-circles-wrap{padding:28px 52px 20px;background:white;}
 .cat-circles-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .cat-circles-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#3b0d1a;}
 .cat-circles-view{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:#c0647a;text-decoration:none;}
@@ -732,7 +753,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   footer{padding:46px 28px 26px;}
   .foot-grid{grid-template-columns:1fr 1fr;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
-  #bannerCarousel{margin-top:68px!important;}
+  #bannerCarousel{margin-top:0!important;}
 }
 @media(max-width:600px){
   body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
@@ -757,7 +778,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .bslide-overlay{padding:0 16px;}
   .bslide-title{font-size:1.6rem;}
   .barrow{display:none;}
-  #bannerCarousel{margin-top:56px;}
+  #bannerCarousel{margin-top:0;}
   #floatWA{display:none!important;}
 }
 @media(pointer:coarse){
@@ -927,12 +948,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <!-- ═══════ DELIVERY BAR ═══════ -->
 <div id="ah-delivery-bar">
   <div class="dlv-text">🚚 <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to pincode <strong id="dlv-pin-display">516001</strong></span></div>
-  <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup()">📍 Change Pincode ▾
-    <div class="pin-popup" id="pin-popup" onclick="event.stopPropagation()">
-      <input type="text" id="pin-input" placeholder="Enter pincode (e.g. 516001)" maxlength="6" inputmode="numeric"/>
-      <button onclick="updatePin()">Check Delivery</button>
-    </div>
-  </div>
+  <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">📍 Change Pincode ▾</div>
   <div class="dlv-offers">✨ Free delivery above ₹999</div>
 </div>
 
@@ -1011,13 +1027,21 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   <div class="dlv-text">&#128666; <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to <strong id="dlv-pin-display">516001</strong></span></div>
   <div style="position:relative;">
     <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">&#128205; Change Pincode &#9660;</div>
-    <div class="pin-popup" id="pin-popup">
-      <p style="font-size:.7rem;color:rgba(59,13,26,.5);margin-bottom:10px;letter-spacing:.5px;">Enter your pincode to check delivery</p>
-      <input type="text" id="pin-input" placeholder="e.g. 516001" maxlength="6" inputmode="numeric"/>
-      <button onclick="updatePin()">Check Delivery</button>
-    </div>
+    <!-- Pin popup modal -->
   </div>
   <div class="dlv-offers">&#10024; Free delivery above &#8377;999</div>
+</div>
+
+<!-- PIN POPUP MODAL — centred, always visible -->
+<div class="pin-popup-backdrop" id="pin-backdrop" onclick="closePinPopup()"></div>
+<div class="pin-popup" id="pin-popup" onclick="event.stopPropagation()">
+  <button class="pin-popup-close" onclick="closePinPopup()">✕</button>
+  <div class="pin-popup-title">📍 Check Delivery</div>
+  <div class="pin-popup-sub">Enter your pincode to see estimated delivery date</div>
+  <input type="text" id="pin-input" placeholder="e.g. 516001" maxlength="6"
+    inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+    onkeydown="if(event.key==='Enter')updatePin()"/>
+  <button onclick="updatePin()">✅ Check Delivery</button>
 </div>
 
 <div class="loader" id="loader"><div class="ldr-brand"><span>Aneesa</span> Hampers</div><div class="spinner"></div></div>
@@ -1060,43 +1084,16 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   </div>
 </div>
 
-<!-- ANNOUNCEMENT BAR -->
+<!-- ANNOUNCEMENT BAR — fixed top bar -->
 <div id="annBar">
   <span id="annText">Free delivery on orders above ₹999 in Kadapa!</span>
   <button class="ann-close" id="annClose">✕</button>
 </div>
 
-<!-- FLASH SALE -->
+<!-- FLASH SALE STRIP -->
 <div id="flashStrip">
   <div class="fs-left"><div class="fs-bolt">⚡</div><div><div class="fs-head">Flash Sale — <strong id="flashPct">20%</strong> OFF Sitewide!</div><div class="fs-note" id="flashNote">Limited time</div></div></div>
   <div style="display:flex;align-items:center;gap:12px"><div class="fs-badge" id="flashBadge">20% OFF</div><div class="fs-timer">Ends in<span id="flashTimer">—</span></div></div>
-</div>
-
-
-<!-- STATS BAR (dynamic from siteSettings) -->
-<div class="stats-bar" id="statsBarWrap" style="display:none;">
-  <div class="stat-item" id="statItem0"><div class="stat-num" id="statNum0">—</div><div class="stat-lbl" id="statLbl0">—</div></div>
-  <div class="stat-item" id="statItem1"><div class="stat-num" id="statNum1">—</div><div class="stat-lbl" id="statLbl1">—</div></div>
-  <div class="stat-item" id="statItem2"><div class="stat-num" id="statNum2">—</div><div class="stat-lbl" id="statLbl2">—</div></div>
-  <div class="stat-item" id="statItem3"><div class="stat-num" id="statNum3">—</div><div class="stat-lbl" id="statLbl3">—</div></div>
-</div>
-
-<!-- MARQUEE STRIP -->
-<div class="marquee-strip">
-  <div class="marquee-inner">
-    <span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span><span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span>
-  </div>
-</div>
-<!-- ═══════ CATEGORY CIRCLES ═══════ -->
-<div class="cat-circles-wrap">
-  <div class="cat-circles-head">
-    <div class="cat-circles-title">Shop by Category</div>
-    <a href="products.html" class="cat-circles-view">View All &#8594;</a>
-  </div>
-  <div class="cat-circles-scroll" id="catCirclesScroll">
-    <!-- Filled dynamically from Firestore categories -->
-    <div style="display:flex;gap:18px;align-items:center;padding:8px 0;opacity:.35;font-size:.8rem">Loading categories…</div>
-  </div>
 </div>
 
 <!-- BANNER CAROUSEL -->
@@ -1127,6 +1124,32 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
     </div>
   </div>
 </section>
+
+<!-- MARQUEE STRIP -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span><span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Delivery Within 24 Hrs in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span>
+  </div>
+</div>
+
+<!-- CATEGORY CIRCLES -->
+<div class="cat-circles-wrap">
+  <div class="cat-circles-head">
+    <div class="cat-circles-title">Shop by Category</div>
+    <a href="products.html" class="cat-circles-view">View All &#8594;</a>
+  </div>
+  <div class="cat-circles-scroll" id="catCirclesScroll">
+    <div style="display:flex;gap:18px;align-items:center;padding:8px 0;opacity:.35;font-size:.8rem">Loading categories…</div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="statsBarWrap" style="display:none;">
+  <div class="stat-item" id="statItem0"><div class="stat-num" id="statNum0">—</div><div class="stat-lbl" id="statLbl0">—</div></div>
+  <div class="stat-item" id="statItem1"><div class="stat-num" id="statNum1">—</div><div class="stat-lbl" id="statLbl1">—</div></div>
+  <div class="stat-item" id="statItem2"><div class="stat-num" id="statNum2">—</div><div class="stat-lbl" id="statLbl2">—</div></div>
+  <div class="stat-item" id="statItem3"><div class="stat-num" id="statNum3">—</div><div class="stat-lbl" id="statLbl3">—</div></div>
+</div>
 
 <!-- CATEGORIES (dynamic from Firestore) -->
 <section class="sec-wrap alt" id="categories">
@@ -1605,12 +1628,13 @@ function renderBanners(banners){
   _bct=banners.length; _bi=0;
   track.innerHTML=banners.map((b,i)=>`<div class="bslide">
     ${b.image?`<img class="bslide-bg" src="${b.image}" alt="" loading="${i===0?'eager':'lazy'}"/>`:''}
+    ${b.hideText ? '' : `
     <div class="bslide-overlay">
       ${b.tag?`<div class="bslide-tag">${b.tag}</div>`:''}
       <div class="bslide-title">${b.title||'Aneesa Hampers'}</div>
       ${b.subtitle?`<div class="bslide-sub">${b.subtitle}</div>`:''}
       <a href="${b.link||'products.html'}" class="bslide-cta">${b.btnText||'Shop Now'} →</a>
-    </div>
+    </div>`}
   </div>`).join('');
   dots.innerHTML=banners.map((_,j)=>`<button class="bdot${j===0?' active':''}" onclick="goSlide(${j})"></button>`).join('');
   document.getElementById('bPrev').style.display=banners.length>1?'flex':'none';
@@ -1742,14 +1766,16 @@ onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')), snap =>
         <div class="prod-name">${p.name||''}</div>
         <div class="prod-row">
           <div>
-            <div class="price-now">₹${price.toLocaleString('en-IN')}</div>
-            ${disc>0?`<div class="price-was">₹${Number(p.price).toLocaleString('en-IN')}</div>`:''}
+            <div class="price-now" data-inr="${price}">₹${price.toLocaleString('en-IN')}</div>
+            ${disc>0?`<div class="price-was" data-inr="${Number(p.price)}">₹${Number(p.price).toLocaleString('en-IN')}</div>`:''}
           </div>
           <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.id}','${sname}',${price},'${simg}')" aria-label="Add to cart">+</button>
         </div>
       </div>
     </div>`;
   }).join('');
+  // Re-apply currency AFTER products are in the DOM
+  setTimeout(function(){ if(window.AH_reapplyCurrency) window.AH_reapplyCurrency(); }, 100);
 });
 
 // REVEAL
@@ -2029,23 +2055,45 @@ setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
   window.togglePinPopup = function(e){
     if(e) e.stopPropagation();
     var pp = document.getElementById('pin-popup');
-    if(pp){ pp.classList.toggle('show'); }
+    var bd = document.getElementById('pin-backdrop');
+    if(!pp) return;
+    var isOpen = pp.classList.contains('show');
+    if(isOpen) {
+      pp.classList.remove('show');
+      if(bd) bd.classList.remove('show');
+    } else {
+      // Pre-fill with current pin
+      var cur = localStorage.getItem('ah_pincode') || '516001';
+      var inp = document.getElementById('pin-input');
+      if(inp) { inp.value = cur; setTimeout(function(){ inp.select(); inp.focus(); }, 100); }
+      pp.classList.add('show');
+      if(bd) bd.classList.add('show');
+    }
   };
-  document.addEventListener('click', function(){
+  window.closePinPopup = function() {
     var pp = document.getElementById('pin-popup');
+    var bd = document.getElementById('pin-backdrop');
     if(pp) pp.classList.remove('show');
+    if(bd) bd.classList.remove('show');
+  };
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') window.closePinPopup();
   });
 
   window.updatePin = function(){
     var val = (document.getElementById('pin-input').value||'').trim();
-    if(!val || val.length < 5){ alert('Please enter a valid pincode'); return; }
+    if(!val || val.length < 5){ 
+      var inp = document.getElementById('pin-input');
+      if(inp) { inp.style.borderColor='#e05050'; setTimeout(function(){ inp.style.borderColor=''; },2000); }
+      return; 
+    }
     localStorage.setItem('ah_pincode', val);
-    if(pinDisp) pinDisp.textContent = val;
-    if(esbPin) esbPin.textContent = val;
     var newDate = getDeliveryDateForPin(val);
-    if(dlvDate) dlvDate.textContent = newDate;
-    var pp = document.getElementById('pin-popup');
-    if(pp) pp.classList.remove('show');
+    // Update ALL instances of these elements on the page
+    document.querySelectorAll('#dlv-pin-display, [id="dlv-pin-display"]').forEach(function(el){ el.textContent = val; });
+    document.querySelectorAll('#dlv-date, [id="dlv-date"]').forEach(function(el){ el.textContent = newDate; });
+    document.querySelectorAll('#esb-pin-lbl').forEach(function(el){ el.textContent = val; });
+    window.closePinPopup();
     toast('📍 Delivery to ' + val + ' — ' + newDate);
   };
 })();
@@ -2399,6 +2447,7 @@ window.addEventListener('scroll',()=>{
   loadReviews();
 })();
 </script>
+<script src="lang-currency.js"></script>
 <script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
 
