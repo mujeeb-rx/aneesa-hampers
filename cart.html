@@ -2349,11 +2349,10 @@ function _loadSavedAddress() {
 async function _loadAddressFromFirestore(uid) {
   if (!uid) return;
   try {
-    // 1. Try 'users' collection (account.html saves here)
+    // 1. Try 'users' collection (profile/account.html saves here)
     var usersSnap = await getDoc(doc(db, 'users', uid));
     if (usersSnap.exists()) {
       var d = usersSnap.data();
-      // account.html stores: address, city, state, pincode, country, landmark, name, phone
       if (d.address || d.city) {
         var a = {
           name:    d.name    || '',
@@ -2365,16 +2364,14 @@ async function _loadAddressFromFirestore(uid) {
           country: d.country || 'India'
         };
         localStorage.setItem('ah_saved_address', JSON.stringify(a));
-        _fillDeliveryForm(a);
-        return;
+        return; // caller will re-render
       }
     }
-    // 2. Try 'customers' collection (cart saves here)
+    // 2. Try 'customers' collection (cart saves here after order)
     var custSnap = await getDoc(doc(db, 'customers', uid));
     if (custSnap.exists() && custSnap.data().savedAddress) {
       var a2 = custSnap.data().savedAddress;
       localStorage.setItem('ah_saved_address', JSON.stringify(a2));
-      _fillDeliveryForm(a2);
     }
   } catch(e) { console.warn('_loadAddressFromFirestore:', e); }
 }

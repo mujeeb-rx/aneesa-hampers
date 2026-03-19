@@ -205,14 +205,8 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
         <span class="acc-nav-icon">📦</span><span>My Orders</span>
       </div>
       <div class="acc-nav-item" onclick="showPanel('wishlist')">
-        <span class="acc-nav-icon">❤️</span><span>My Wishlist</span>
+        <span class="acc-nav-icon">❤️</span><span>Wishlist</span>
         <span class="acc-nav-badge" id="wishBadge" style="display:none;background:var(--deep-rose);color:white;font-size:.6rem;padding:2px 7px;border-radius:10px;margin-left:auto;font-weight:700;"></span>
-      </div>
-      <div class="acc-nav-item" onclick="showPanel('address')">
-        <span class="acc-nav-icon">📍</span><span>My Address</span>
-      </div>
-      <div class="acc-nav-item" onclick="showPanel('preferences')">
-        <span class="acc-nav-icon">🌍</span><span>Language &amp; Region</span>
       </div>
     </div>
     <button class="acc-nav-logout" onclick="doLogout()">
@@ -223,67 +217,59 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
   <!-- CONTENT -->
   <div class="acc-content">
 
-    <!-- PROFILE PANEL -->
+    <!-- ══ PROFILE PANEL — Personal Info + Address + Language + Security ══ -->
     <div class="acc-panel active" id="panel-profile">
       <div class="panel-title">My <em>Profile</em></div>
-      <div class="panel-sub">Manage your personal information</div>
+      <div class="panel-sub">Manage all your account details in one place</div>
+
+      <!-- Personal Info -->
       <div class="profile-card">
         <h3>👤 Personal Information</h3>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">Full Name</div><input class="field-input" id="profName" placeholder="Your name"/></div>
-          <div class="field-group"><div class="field-label">Email Address</div><input class="field-input" id="profEmail" type="email" placeholder="email@example.com" readonly style="opacity:.6;background:#f5f0f2;"/></div>
+          <div class="field-group">
+            <div class="field-label">Full Name</div>
+            <input class="field-input" id="profName" placeholder="Your name"/>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Email Address</div>
+            <input class="field-input" id="profEmail" type="email" readonly style="opacity:.6;background:#f5f0f2;"/>
+          </div>
         </div>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">Phone Number</div><input class="field-input" id="profPhone" type="tel" placeholder="+91 98765 43210"/></div>
-          <div class="field-group"><div class="field-label">Date of Birth</div><input class="field-input" id="profDob" type="date"/></div>
+          <div class="field-group">
+            <div class="field-label">Phone Number</div>
+            <input class="field-input" id="profPhone" type="tel" placeholder="+91 98765 43210"/>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Date of Birth</div>
+            <input class="field-input" id="profDob" type="date"/>
+          </div>
         </div>
         <button class="save-btn" onclick="saveProfile()">💾 Save Profile</button>
       </div>
-      <div class="profile-card">
-        <h3>🔒 Account Security</h3>
-        <div style="font-size:.82rem;opacity:.55;line-height:1.7;margin-bottom:14px">To change your password, we'll send a reset link to your email address.</div>
-        <button class="save-btn" style="background:var(--blush);color:var(--deep-rose)" onclick="sendPwReset()">📧 Send Password Reset Email</button>
-      </div>
-    </div>
 
-    <!-- ORDERS PANEL -->
-    <div class="acc-panel" id="panel-orders">
-      <div class="panel-title">My <em>Orders</em></div>
-      <div class="panel-sub">Track, manage and view your order history</div>
-      <div id="ordersContainer"><div style="text-align:center;opacity:.4;padding:40px">Loading your orders…</div></div>
-    </div>
-
-    <!-- WISHLIST PANEL -->
-    <div class="acc-panel" id="panel-wishlist">
-      <div class="panel-title">My <em>Wishlist</em></div>
-      <div class="panel-sub">Products you've saved — ready to order anytime 🌸</div>
-      <div id="wishlistContainer">
-        <div style="text-align:center;opacity:.4;padding:40px">Loading wishlist…</div>
-      </div>
-    </div>
-
-    <!-- ADDRESS PANEL -->
-    <div class="acc-panel" id="panel-address">
-      <div class="panel-title">My <em>Address</em></div>
-      <div class="panel-sub">Manage your delivery address</div>
+      <!-- Delivery Address -->
       <div class="profile-card">
         <h3>📍 Delivery Address</h3>
         <div class="field-row full">
-          <div class="field-group"><div class="field-label">Full Address / Flat / Building</div><textarea class="field-input" id="addrLine" rows="2" placeholder="Flat no, Building name, Street…"></textarea></div>
+          <div class="field-group">
+            <div class="field-label">Full Address / Flat / Building</div>
+            <textarea class="field-input" id="addrLine" rows="2" placeholder="Flat no, Building name, Street…"></textarea>
+          </div>
         </div>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">City</div><input class="field-input" id="addrCity" placeholder="City"/></div>
-          <div class="field-group"><div class="field-label">State / Region</div><input class="field-input" id="addrState" placeholder="State or Region"/></div>
+          <div class="field-group"><div class="field-label">City</div><input class="field-input" id="addrCity" placeholder="e.g. Kadapa"/></div>
+          <div class="field-group"><div class="field-label">State / Region</div><input class="field-input" id="addrState" placeholder="e.g. Andhra Pradesh"/></div>
         </div>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">ZIP / PIN Code</div><input class="field-input" id="addrPin" placeholder="e.g. 516001 or 10001"/></div>
-          <div class="field-group"><div class="field-label">Country</div>
+          <div class="field-group"><div class="field-label">ZIP / PIN Code</div><input class="field-input" id="addrPin" placeholder="e.g. 516001"/></div>
+          <div class="field-group">
+            <div class="field-label">Country</div>
             <select class="field-input" id="addrCountry">
-              <option value="">Select Country</option>
               <option value="India">🇮🇳 India</option>
               <option value="United States">🇺🇸 United States</option>
               <option value="United Kingdom">🇬🇧 United Kingdom</option>
-              <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+              <option value="United Arab Emirates">🇦🇪 UAE</option>
               <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
               <option value="Qatar">🇶🇦 Qatar</option>
               <option value="Kuwait">🇰🇼 Kuwait</option>
@@ -295,7 +281,6 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
               <option value="Malaysia">🇲🇾 Malaysia</option>
               <option value="Germany">🇩🇪 Germany</option>
               <option value="France">🇫🇷 France</option>
-              <option value="Netherlands">🇳🇱 Netherlands</option>
               <option value="New Zealand">🇳🇿 New Zealand</option>
               <option value="South Africa">🇿🇦 South Africa</option>
               <option value="Other">🌍 Other</option>
@@ -303,36 +288,30 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
           </div>
         </div>
         <div class="field-row full">
-          <div class="field-group"><div class="field-label">Landmark (optional)</div><input class="field-input" id="addrLandmark" placeholder="Near temple, school, etc."/></div>
+          <div class="field-group"><div class="field-label">Landmark (optional)</div><input class="field-input" id="addrLandmark" placeholder="Near temple, school…"/></div>
         </div>
         <button class="save-btn" onclick="saveAddress()">💾 Save Address</button>
       </div>
-    </div>
 
-    <!-- LANGUAGE & REGION PANEL -->
-    <div class="acc-panel" id="panel-preferences">
-      <div class="panel-title">Language &amp; <em>Region</em></div>
-      <div class="panel-sub">Set your preferred language, country and currency for a personalised experience 🌍</div>
-
+      <!-- Language & Region -->
       <div class="profile-card">
-        <h3>🗣️ Preferred Language</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;" id="langGrid">
-          <!-- filled by JS -->
-        </div>
-        <div style="font-size:.72rem;opacity:.4;margin-top:-4px;">Your selected language will be remembered for future visits.</div>
-      </div>
+        <h3>🌍 Language &amp; Region</h3>
+        <div style="font-size:.78rem;opacity:.45;margin-bottom:16px;line-height:1.6;">Choose your preferred language and display currency. Payments are always charged in INR.</div>
 
-      <div class="profile-card">
-        <h3>🌍 Country &amp; Region</h3>
+        <!-- Language picker -->
+        <div class="field-label" style="margin-bottom:10px;">Preferred Language</div>
+        <div id="langGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:20px;"></div>
+
+        <!-- Country + Currency -->
         <div class="field-row">
           <div class="field-group">
-            <div class="field-label">Country</div>
+            <div class="field-label">Your Country</div>
             <select class="field-input" id="prefCountry" onchange="updateCurrencyFromCountry()">
-              <option value="">Select your country</option>
+              <option value="">Select country</option>
               <option value="IN">🇮🇳 India</option>
               <option value="US">🇺🇸 United States</option>
               <option value="GB">🇬🇧 United Kingdom</option>
-              <option value="AE">🇦🇪 United Arab Emirates</option>
+              <option value="AE">🇦🇪 UAE</option>
               <option value="SA">🇸🇦 Saudi Arabia</option>
               <option value="QA">🇶🇦 Qatar</option>
               <option value="KW">🇰🇼 Kuwait</option>
@@ -347,13 +326,13 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
               <option value="NL">🇳🇱 Netherlands</option>
               <option value="NZ">🇳🇿 New Zealand</option>
               <option value="ZA">🇿🇦 South Africa</option>
+              <option value="JP">🇯🇵 Japan</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="KR">🇰🇷 South Korea</option>
               <option value="PK">🇵🇰 Pakistan</option>
               <option value="BD">🇧🇩 Bangladesh</option>
               <option value="LK">🇱🇰 Sri Lanka</option>
               <option value="NP">🇳🇵 Nepal</option>
-              <option value="JP">🇯🇵 Japan</option>
-              <option value="CN">🇨🇳 China</option>
-              <option value="KR">🇰🇷 South Korea</option>
               <option value="OTHER">🌍 Other</option>
             </select>
           </div>
@@ -363,48 +342,59 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
               <option value="INR">🇮🇳 INR — Indian Rupee (₹)</option>
               <option value="USD">🇺🇸 USD — US Dollar ($)</option>
               <option value="GBP">🇬🇧 GBP — British Pound (£)</option>
-              <option value="AED">🇦🇪 AED — UAE Dirham (د.إ)</option>
-              <option value="SAR">🇸🇦 SAR — Saudi Riyal (﷼)</option>
-              <option value="QAR">🇶🇦 QAR — Qatari Riyal (﷼)</option>
-              <option value="KWD">🇰🇼 KWD — Kuwaiti Dinar (KD)</option>
-              <option value="BHD">🇧🇭 BHD — Bahraini Dinar (BD)</option>
-              <option value="OMR">🇴🇲 OMR — Omani Rial (﷼)</option>
-              <option value="CAD">🇨🇦 CAD — Canadian Dollar (CA$)</option>
-              <option value="AUD">🇦🇺 AUD — Australian Dollar (A$)</option>
-              <option value="SGD">🇸🇬 SGD — Singapore Dollar (S$)</option>
-              <option value="MYR">🇲🇾 MYR — Malaysian Ringgit (RM)</option>
+              <option value="AED">🇦🇪 AED — UAE Dirham</option>
+              <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
+              <option value="QAR">🇶🇦 QAR — Qatari Riyal</option>
+              <option value="KWD">🇰🇼 KWD — Kuwaiti Dinar</option>
+              <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+              <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+              <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
               <option value="EUR">🇪🇺 EUR — Euro (€)</option>
-              <option value="NZD">🇳🇿 NZD — New Zealand Dollar (NZ$)</option>
-              <option value="ZAR">🇿🇦 ZAR — South African Rand (R)</option>
               <option value="JPY">🇯🇵 JPY — Japanese Yen (¥)</option>
             </select>
           </div>
         </div>
-        <div style="background:rgba(192,100,122,.06);border-radius:12px;padding:14px;font-size:.78rem;color:rgba(59,13,26,.55);line-height:1.7;margin-top:4px;">
-          💡 All prices are in INR (Indian Rupees). The display currency shows an approximate converted amount for reference. Final payment is always charged in INR.
-        </div>
-        <button class="save-btn" style="margin-top:16px;" onclick="savePreferences()">🌍 Save Region Settings</button>
-      </div>
+        <button class="save-btn" style="margin-top:4px;" onclick="savePreferences()">🌍 Save Language &amp; Region</button>
 
-      <div class="profile-card">
-        <h3>📦 Shipping Note</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div style="background:var(--blush);border-radius:14px;padding:16px;text-align:center;">
-            <div style="font-size:1.6rem;margin-bottom:6px;">🇮🇳</div>
-            <div style="font-weight:700;font-size:.84rem;margin-bottom:3px;">India</div>
-            <div style="font-size:.72rem;opacity:.55;line-height:1.5;">FREE delivery · 2–5 days · All states</div>
+        <!-- Worldwide shipping note -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+          <div style="background:var(--blush);border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:1.4rem;margin-bottom:4px;">🇮🇳</div>
+            <div style="font-weight:700;font-size:.82rem;margin-bottom:2px;">India</div>
+            <div style="font-size:.7rem;opacity:.55;">FREE · 2–5 days</div>
           </div>
-          <div style="background:rgba(201,169,110,.1);border-radius:14px;padding:16px;text-align:center;border:1px solid rgba(201,169,110,.2);">
-            <div style="font-size:1.6rem;margin-bottom:6px;">🌍</div>
-            <div style="font-weight:700;font-size:.84rem;margin-bottom:3px;">Worldwide</div>
-            <div style="font-size:.72rem;opacity:.55;line-height:1.5;">7–14 days · Charges apply · WhatsApp us for quote</div>
+          <div style="background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.25);border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:1.4rem;margin-bottom:4px;">🌍</div>
+            <div style="font-weight:700;font-size:.82rem;margin-bottom:2px;">Worldwide</div>
+            <div style="font-size:.7rem;opacity:.55;">7–14 days · WhatsApp</div>
           </div>
         </div>
-        <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20need%20international%20shipping%20details." target="_blank"
-          style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:12px;background:#25D366;color:white;border-radius:12px;text-decoration:none;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;">
-          💬 WhatsApp for International Shipping Quote
+        <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20need%20international%20shipping%20info." target="_blank"
+          style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:11px;background:#25D366;color:white;border-radius:10px;text-decoration:none;font-size:.76rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;">
+          💬 WhatsApp for International Shipping
         </a>
       </div>
+
+      <!-- Security -->
+      <div class="profile-card">
+        <h3>🔒 Account Security</h3>
+        <div style="font-size:.82rem;opacity:.55;line-height:1.7;margin-bottom:14px;">To change your password, we'll send a reset link to your email.</div>
+        <button class="save-btn" style="background:var(--blush);color:var(--deep-rose);" onclick="sendPwReset()">📧 Send Password Reset Email</button>
+      </div>
+    </div>
+
+    <!-- ══ ORDERS PANEL ══ -->
+    <div class="acc-panel" id="panel-orders">
+      <div class="panel-title">My <em>Orders</em></div>
+      <div class="panel-sub">Track and manage your order history</div>
+      <div id="ordersContainer"><div style="text-align:center;opacity:.4;padding:40px">Loading your orders…</div></div>
+    </div>
+
+    <!-- ══ WISHLIST PANEL ══ -->
+    <div class="acc-panel" id="panel-wishlist">
+      <div class="panel-title">My <em>Wishlist</em></div>
+      <div class="panel-sub">Products you've saved — ready to order anytime 🌸</div>
+      <div id="wishlistContainer"><div style="text-align:center;opacity:.4;padding:40px">Loading wishlist…</div></div>
     </div>
 
   </div>
@@ -493,68 +483,78 @@ function initAccountFromSession(s) {
 }
 
 function populateProfile(data) {
-  if(data.name) document.getElementById('profName').value=data.name;
-  if(data.phone) document.getElementById('profPhone').value=data.phone;
-  if(data.dob) document.getElementById('profDob').value=data.dob;
-  if(data.address) document.getElementById('addrLine').value=data.address;
-  if(data.city) document.getElementById('addrCity').value=data.city;
-  if(data.state) document.getElementById('addrState').value=data.state;
-  if(data.pincode) document.getElementById('addrPin').value=data.pincode;
-  if(data.landmark) document.getElementById('addrLandmark').value=data.landmark;
-  // Update avatar
-  const n = data.name||'A';
+  const set = (id, v) => { const el = document.getElementById(id); if(el && v) el.value = v; };
+  set('profName',    data.name);
+  set('profPhone',   data.phone);
+  set('profDob',     data.dob);
+  set('addrLine',    data.address);
+  set('addrCity',    data.city);
+  set('addrState',   data.state);
+  set('addrPin',     data.pincode);
+  set('addrLandmark',data.landmark);
+  set('addrCountry', data.country || 'India');
+  const n = data.name || 'A';
   document.getElementById('avCircle').textContent = n.charAt(0).toUpperCase();
   document.getElementById('avName').textContent   = n;
 }
 
 // PANEL NAVIGATION
 window.showPanel = function(id) {
-// ── LANGUAGES ──
-const LANGUAGES = [
-  {code:'en', flag:'🇬🇧', name:'English'},
-  {code:'hi', flag:'🇮🇳', name:'हिंदी'},
-  {code:'te', flag:'🇮🇳', name:'తెలుగు'},
-  {code:'ta', flag:'🇮🇳', name:'தமிழ்'},
-  {code:'ur', flag:'🇵🇰', name:'اردو'},
-  {code:'ar', flag:'🇸🇦', name:'العربية'},
-  {code:'fr', flag:'🇫🇷', name:'Français'},
-  {code:'de', flag:'🇩🇪', name:'Deutsch'},
-  {code:'es', flag:'🇪🇸', name:'Español'},
-  {code:'zh', flag:'🇨🇳', name:'中文'},
-  {code:'ja', flag:'🇯🇵', name:'日本語'},
-  {code:'ko', flag:'🇰🇷', name:'한국어'},
-  {code:'ms', flag:'🇲🇾', name:'Melayu'},
-  {code:'ml', flag:'🇮🇳', name:'മലയാളം'},
-  {code:'kn', flag:'🇮🇳', name:'ಕನ್ನಡ'},
-  {code:'bn', flag:'🇧🇩', name:'বাংলা'},
-  {code:'nl', flag:'🇳🇱', name:'Nederlands'},
-  {code:'pt', flag:'🇧🇷', name:'Português'},
-];
+  document.querySelectorAll('.acc-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.acc-nav-item').forEach(i => i.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  // Highlight correct nav item — only 3 tabs: profile, orders, wishlist
+  const map = { profile:0, orders:1, wishlist:2 };
+  const items = document.querySelectorAll('.acc-nav-item');
+  if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active');
+  if (id === 'wishlist') _renderWishlist();
+  if (id === 'profile') { renderLangGrid(); loadPreferences(); }
+};
 
+// ── LANGUAGES & PREFERENCES ──
+const LANGUAGES = [
+  {code:'en',flag:'🇬🇧',name:'English'},
+  {code:'hi',flag:'🇮🇳',name:'हिंदी'},
+  {code:'te',flag:'🇮🇳',name:'తెలుగు'},
+  {code:'ta',flag:'🇮🇳',name:'தமிழ்'},
+  {code:'ar',flag:'🇸🇦',name:'العربية'},
+  {code:'ur',flag:'🇵🇰',name:'اردو'},
+  {code:'fr',flag:'🇫🇷',name:'Français'},
+  {code:'de',flag:'🇩🇪',name:'Deutsch'},
+  {code:'es',flag:'🇪🇸',name:'Español'},
+  {code:'zh',flag:'🇨🇳',name:'中文'},
+  {code:'ja',flag:'🇯🇵',name:'日本語'},
+  {code:'ko',flag:'🇰🇷',name:'한국어'},
+  {code:'ms',flag:'🇲🇾',name:'Melayu'},
+  {code:'ml',flag:'🇮🇳',name:'മലയാളം'},
+  {code:'bn',flag:'🇧🇩',name:'বাংলা'},
+  {code:'pt',flag:'🇧🇷',name:'Português'},
+];
 let _selLang = localStorage.getItem('ah_lang') || 'en';
 
 function renderLangGrid() {
   const grid = document.getElementById('langGrid');
   if (!grid) return;
-  grid.innerHTML = LANGUAGES.map(l => `
-    <div onclick="selectLang('${l.code}')" id="lang_${l.code}"
-      style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;
-      border:2px solid ${_selLang===l.code?'var(--deep-rose)':'rgba(192,100,122,.15)'};
-      background:${_selLang===l.code?'rgba(192,100,122,.08)':'white'};
-      cursor:pointer;transition:all .2s;font-size:.82rem;font-weight:${_selLang===l.code?'600':'400'};
-      color:${_selLang===l.code?'var(--deep-rose)':'var(--burgundy)'};">
-      <span style="font-size:1.2rem">${l.flag}</span>${l.name}
-      ${_selLang===l.code?'<span style="margin-left:auto;font-size:.7rem">✓</span>':''}
-    </div>`).join('');
+  grid.innerHTML = LANGUAGES.map(l =>
+    `<div onclick="selectLang('${l.code}')" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;
+    border:2px solid ${_selLang===l.code?'var(--deep-rose)':'rgba(192,100,122,.15)'};
+    background:${_selLang===l.code?'rgba(192,100,122,.06)':'white'};
+    cursor:pointer;font-size:.82rem;font-weight:${_selLang===l.code?'600':'400'};
+    color:${_selLang===l.code?'var(--deep-rose)':'var(--burgundy)'};transition:all .18s;">
+      <span style="font-size:1.1rem">${l.flag}</span>${l.name}
+      ${_selLang===l.code?'<span style="margin-left:auto;font-size:.7rem;color:var(--deep-rose)">✓</span>':''}
+    </div>`
+  ).join('');
 }
+
 window.selectLang = function(code) {
   _selLang = code;
   localStorage.setItem('ah_lang', code);
   renderLangGrid();
-  toast('✅ Language preference saved!');
+  toast('✅ Language saved!');
 };
 
-// Country → Currency auto-fill
 const COUNTRY_CURRENCY = {
   IN:'INR',US:'USD',GB:'GBP',AE:'AED',SA:'SAR',QA:'QAR',
   KW:'KWD',BH:'BHD',OM:'OMR',CA:'CAD',AU:'AUD',SG:'SGD',
@@ -564,44 +564,28 @@ const COUNTRY_CURRENCY = {
 window.updateCurrencyFromCountry = function() {
   const cc = document.getElementById('prefCountry').value;
   const cur = COUNTRY_CURRENCY[cc];
-  if (cur) {
-    const sel = document.getElementById('prefCurrency');
-    if (sel) sel.value = cur;
-  }
+  if (cur) { const s = document.getElementById('prefCurrency'); if(s) s.value = cur; }
 };
 
 window.savePreferences = function() {
   const country  = document.getElementById('prefCountry').value;
   const currency = document.getElementById('prefCurrency').value;
-  const prefs = { lang:_selLang, country, currency, savedAt:Date.now() };
-  localStorage.setItem('ah_prefs', JSON.stringify(prefs));
-  toast('🌍 Region settings saved!');
+  localStorage.setItem('ah_prefs', JSON.stringify({lang:_selLang, country, currency, savedAt:Date.now()}));
+  toast('🌍 Language & region saved!');
 };
 
 function loadPreferences() {
   try {
-    const p = JSON.parse(localStorage.getItem('ah_prefs')||'{}');
-    if (p.country)  { const s=document.getElementById('prefCountry');  if(s) s.value=p.country; }
-    if (p.currency) { const s=document.getElementById('prefCurrency'); if(s) s.value=p.currency; }
-    if (p.lang) { _selLang = p.lang; localStorage.setItem('ah_lang', p.lang); }
+    const p = JSON.parse(localStorage.getItem('ah_prefs') || '{}');
+    if (p.country)  { const s = document.getElementById('prefCountry');  if(s) s.value = p.country; }
+    if (p.currency) { const s = document.getElementById('prefCurrency'); if(s) s.value = p.currency; }
+    if (p.lang) _selLang = p.lang;
   } catch(e) {}
   renderLangGrid();
 }
-
-// run on load
-setTimeout(loadPreferences, 300);
-
-// ── PANEL SWITCHING ──
-  document.querySelectorAll('.acc-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.acc-nav-item').forEach(i=>i.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  // highlight nav item
-  const items = document.querySelectorAll('.acc-nav-item');
-  const map = {profile:0, orders:1, wishlist:2, address:3};
-  if(map[id]!==undefined) items[map[id]].classList.add('active');
-  // Load wishlist when tab is opened
-  if(id === 'wishlist') _renderWishlist();
-};
+// Init on load
+renderLangGrid();
+loadPreferences();
 
 // ════════════════════════════════════════
 // WISHLIST
@@ -739,8 +723,28 @@ window.saveProfile = async function() {
 
 // SAVE ADDRESS
 window.saveAddress = async function() {
-  if(!_uid){toast('⚠️ Not logged in');return;}
-  await setDoc(doc(db,'users',_uid),{address:document.getElementById('addrLine').value.trim(),city:document.getElementById('addrCity').value.trim(),state:document.getElementById('addrState').value.trim(),pincode:document.getElementById('addrPin').value.trim(),landmark:document.getElementById('addrLandmark').value.trim(),updatedAt:serverTimestamp()},{merge:true});
+  if (!_uid) { toast('⚠️ Not logged in'); return; }
+  const g = id => (document.getElementById(id)||{}).value?.trim() || '';
+  const addrData = {
+    address:  g('addrLine'),
+    city:     g('addrCity'),
+    state:    g('addrState'),
+    pincode:  g('addrPin'),
+    country:  g('addrCountry') || 'India',
+    landmark: g('addrLandmark'),
+    updatedAt: serverTimestamp()
+  };
+  await setDoc(doc(db,'users',_uid), addrData, {merge:true});
+  // Also save to ah_saved_address so cart picks it up
+  localStorage.setItem('ah_saved_address', JSON.stringify({
+    name:    (document.getElementById('profName')||{}).value?.trim() || '',
+    phone:   (document.getElementById('profPhone')||{}).value?.trim() || '',
+    addr:    addrData.address,
+    city:    addrData.city,
+    state:   addrData.state,
+    pin:     addrData.pincode,
+    country: addrData.country
+  }));
   toast('✅ Address saved!');
 };
 
