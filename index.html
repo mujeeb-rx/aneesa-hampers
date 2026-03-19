@@ -16,7 +16,7 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;padding-top:108px;}
 img{max-width:100%;display:block;}
 a{text-decoration:none;}
 
@@ -739,6 +739,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 @media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){
   .topnav{padding:0 14px;top:0!important;}
+  body{padding-top:56px!important;}
   .nav-links{display:none;}
   .nav-wa{display:none;}
   .ham-btn{display:flex;}
@@ -1451,6 +1452,21 @@ window._ahFirebase = { db, auth };
 const C=document.getElementById('cursor'),R=document.getElementById('cursorRing');
 if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';setTimeout(()=>{R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';},80)});}
 
+// Adjust body top padding based on visible fixed bars
+function adjustBodyPadding() {
+  var dlv  = document.getElementById('ah-delivery-bar');
+  var dlvH = (dlv && window.getComputedStyle(dlv).display !== 'none') ? (dlv.offsetHeight || 40) : 0;
+  var navH = 68;
+  var total = dlvH + navH;
+  document.body.style.paddingTop = total + 'px';
+  var nav = document.querySelector('.topnav');
+  if (nav) nav.style.top = dlvH + 'px';
+}
+// Run on load and resize
+document.addEventListener('DOMContentLoaded', adjustBodyPadding);
+window.addEventListener('resize', adjustBodyPadding);
+setTimeout(adjustBodyPadding, 100);
+
 function toast(m){const t=document.getElementById('ah-toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
 
 // CART
@@ -1494,7 +1510,7 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
   if(cfg.announcement?.active&&cfg.announcement?.text){
     document.getElementById('annText').textContent=cfg.announcement.text;
     document.getElementById('annBar').classList.add('show');
-    document.getElementById('annClose').onclick=()=>document.getElementById('annBar').classList.remove('show');
+    document.getElementById('annClose').onclick=()=>{document.getElementById('annBar').classList.remove('show');};
   }
 
   // ── Flash sale ──
