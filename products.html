@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover"/>
   <title>Collections — Aneesa Hampers | Premium Gift Hampers</title>
   <meta name="description" content="Browse our full collection of premium handcrafted gift hampers — wedding, birthday, couple and more. Made with love in Kadapa."/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
@@ -87,18 +87,24 @@
       height:260px;
       overflow:hidden;
       background:#f5e8ec;
+      -webkit-transform:translateZ(0);transform:translateZ(0);
     }
     .prod-img-wrap img{
       width:100%;height:100%;
       object-fit:contain;
+      object-position:center center;
       padding:8px;
+      max-width:100%;max-height:100%;
+      display:block;
+      -webkit-transform:translateZ(0);transform:translateZ(0);
+      transition:-webkit-transform .5s cubic-bezier(.4,0,.2,1);
       transition:transform .5s cubic-bezier(.4,0,.2,1);
     }
-    .prod-card:hover .prod-img-wrap img{transform:scale(1.05);}
+    .prod-card:hover .prod-img-wrap img{transform:scale(1.04);}
 
     /* MULTI IMAGE */
     .multi-img-wrap{position:relative;width:100%;height:100%;background:#f5e8ec;}
-    .multi-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:8px;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.4,0,.2,1);}
+    .multi-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;padding:8px;max-width:100%;max-height:100%;-webkit-transform:translateZ(0);transform:translateZ(0);opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.4,0,.2,1);}
     .multi-img-wrap img.shown{opacity:1;}
     .prod-card:hover .multi-img-wrap img.shown{transform:scale(1.05);}
     .img-dots{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:3;}
@@ -206,33 +212,118 @@
     #floatWA{position:fixed;bottom:28px;right:28px;z-index:500;display:flex;align-items:center;gap:9px;background:var(--green);color:white;border-radius:50px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;text-decoration:none;box-shadow:0 8px 32px rgba(37,211,102,.42);animation:floatAnim 2.5s ease-in-out infinite;}
     @keyframes floatAnim{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-    /* RESPONSIVE */
+    /* ══════════════════════════════════════════════
+       RESPONSIVE — LARGEST TO SMALLEST (correct cascade)
+       1400px+ : Large desktop
+       1200px  : Standard desktop
+       1024px  : Laptop / small desktop
+       900px   : Tablet landscape / iPad Pro
+       768px   : Tablet portrait / iPad
+       600px   : Large phone (iPhone Plus, Pixel)
+       480px   : Standard phone (iPhone 14, Galaxy S)
+       390px   : Small phone (iPhone SE, Galaxy A)
+       360px   : Extra small (budget Android)
+    ══════════════════════════════════════════════ */
+
+    /* ── Large desktop 1400px+ ── */
+    @media(min-width:1400px){
+      .products-section{padding:40px 80px 120px;}
+      .prod-grid{grid-template-columns:repeat(4,1fr);gap:28px;}
+      .prod-img-wrap{height:280px;}
+      .page-hero{padding:150px 80px 70px;}
+    }
+
+    /* ── Standard desktop / laptop 1024–1399px (default styles cover this) ── */
+
+    /* ── Small laptop 900–1023px ── */
+    @media(max-width:1024px){
+      .products-section{padding:28px 40px 120px;}
+      .prod-grid{grid-template-columns:repeat(3,1fr);gap:20px;}
+    }
+
+    /* ── Tablet landscape / iPad Pro 768–899px ── */
     @media(max-width:900px){
       nav{padding:0 16px 0 68px;height:60px;}
-      .nav-links{display:none;}.nav-right{display:none;}
+      .nav-links{display:none;}
+      .nav-right{display:none;}
       #navLogoutBtn{display:none!important;}
-      .page-hero{padding:96px 20px 44px;}
+      .page-hero{padding:96px 24px 48px;}
+      .page-hero h1{font-size:2.6rem;}
       .filters-bar{padding:14px 20px;top:60px;overflow-x:auto;flex-wrap:nowrap;}
       .filter-pill{white-space:nowrap;flex-shrink:0;}
-      .products-section{padding:24px 16px 110px;}
-      .prod-grid{grid-template-columns:1fr 1fr;gap:14px;}
+      .products-section{padding:24px 20px 110px;}
+      .prod-grid{grid-template-columns:repeat(2,1fr);gap:16px;}
+      .prod-img-wrap{height:220px;}
       #floatWA{display:none!important;}
     }
+
+    /* ── Tablet portrait / iPad mini 600–767px ── */
+    @media(max-width:768px){
+      .page-hero{padding:90px 20px 42px;}
+      .page-hero h1{font-size:2.2rem;}
+      .filters-bar{top:60px;}
+      .products-section{padding:20px 16px 110px;}
+      .prod-grid{grid-template-columns:repeat(2,1fr);gap:14px;}
+      .prod-img-wrap{height:200px;}
+      .prod-body{padding:12px 14px 14px;}
+    }
+
+    /* ── Large phone 480–599px ── */
     @media(max-width:600px){
-      .products-section{padding:12px 10px 110px;}
-      .filters-bar{padding:10px 10px;gap:6px;top:60px;}
-      .filter-pill{padding:6px 12px;font-size:.62rem;}
-      .page-hero{padding:88px 16px 34px;}
+      .page-hero{padding:86px 16px 36px;}
       .page-hero h1{font-size:2rem;}
-      .prod-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .filters-bar{padding:10px 12px;gap:6px;top:60px;}
+      .filter-pill{padding:7px 14px;font-size:.64rem;}
+      .products-section{padding:14px 12px 110px;}
+      .prod-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
       .prod-card{border-radius:var(--radius-md);}
-      .prod-img-wrap{height:170px;}
+      .prod-img-wrap{height:185px;}
       .prod-body{padding:10px 12px 12px;}
-      .prod-name{font-size:.92rem;margin-bottom:6px;}
-      .prod-atc-float{display:none !important;}
+      .prod-name{font-size:.95rem;margin-bottom:6px;}
+      .prod-atc-float{display:none!important;}
       .prod-mobile-atc{display:block;}
       .prod-rating{margin-bottom:6px;}
       .prod-price-current{font-size:1rem;}
+    }
+
+    /* ── Standard phone 390–479px ── */
+    @media(max-width:480px){
+      .page-hero{padding:82px 14px 30px;}
+      .page-hero h1{font-size:1.8rem;}
+      .filters-bar{padding:8px 10px;gap:5px;}
+      .filter-pill{padding:6px 12px;font-size:.62rem;}
+      .products-section{padding:12px 10px 110px;}
+      .prod-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .prod-img-wrap{height:165px;}
+      .prod-body{padding:9px 10px 11px;}
+      .prod-name{font-size:.88rem;}
+      .prod-price-current{font-size:.95rem;}
+    }
+
+    /* ── Small phone 360–389px ── */
+    @media(max-width:390px){
+      .prod-grid{gap:8px;}
+      .prod-img-wrap{height:150px;}
+      .prod-name{font-size:.84rem;}
+      .prod-body{padding:8px 9px 10px;}
+      .prod-price-current{font-size:.9rem;}
+    }
+
+    /* ── Extra small 320–359px (Galaxy A03 core, budget) ── */
+    @media(max-width:360px){
+      .prod-grid{gap:6px;}
+      .prod-img-wrap{height:135px;}
+      .prod-name{font-size:.8rem;}
+      .prod-body{padding:7px 8px 9px;}
+      .page-hero h1{font-size:1.6rem;}
+      .filter-pill{padding:5px 10px;font-size:.6rem;}
+    }
+
+    /* ── Touch devices — always show add to cart button ── */
+    @media(pointer:coarse){
+      .prod-atc-float{display:none!important;}
+      .prod-mobile-atc{display:block!important;}
+      .prod-wish{opacity:1!important;}
     }
   </style>
 </head>
@@ -475,8 +566,8 @@ function renderProducts(){
     // Price section
     const priceHtml = `
       <div class="prod-price-row">
-        <span class="prod-price-current">₹${effectivePrice.toLocaleString()}</span>
-        ${effDiscount>0 ? `<span class="prod-price-original">₹${Number(p.price).toLocaleString()}</span><span class="prod-price-off">${effDiscount}% OFF</span>` : ''}
+        <span class="prod-price-current" data-inr="${effectivePrice}">₹${effectivePrice.toLocaleString()}</span>
+        ${effDiscount>0 ? `<span class="prod-price-original" data-inr="${Number(p.price)}">₹${Number(p.price).toLocaleString()}</span><span class="prod-price-off">${effDiscount}% OFF</span>` : ''}
       </div>`;
 
     return `
@@ -558,6 +649,7 @@ const q = query(collection(db,'products'), orderBy('createdAt','desc'));
 onSnapshot(q, snap=>{
   allProducts = snap.docs.map(d=>({id:d.id,...d.data()}));
   renderProducts();
+  setTimeout(function(){ if(window.AH_reapplyCurrency) window.AH_reapplyCurrency(); }, 200);
   setTimeout(()=>startAutoSlide(allProducts),600);
 });
 

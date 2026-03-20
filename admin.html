@@ -85,7 +85,7 @@ body{font-family:'Jost',sans-serif;background:#f0e8ea;color:var(--burgundy);disp
 @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* STAT CARDS */
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px;}
 .stat{background:white;border-radius:16px;padding:18px 20px;box-shadow:0 2px 16px rgba(59,13,26,.06);position:relative;overflow:hidden;transition:transform .2s;}
 .stat:hover{transform:translateY(-3px);}
 .stat::after{content:'';position:absolute;bottom:-16px;right:-16px;width:64px;height:64px;border-radius:50%;opacity:.07;}
@@ -94,6 +94,7 @@ body{font-family:'Jost',sans-serif;background:#f0e8ea;color:var(--burgundy);disp
 .stat.green::after{background:#2d7a4f;}
 .stat.blue::after{background:#2080d0;}
 .stat.red::after{background:#e05050;}
+.stat.purple::after{background:#7c3aed;}
 .stat-icon{font-size:1.4rem;margin-bottom:10px;}
 .stat-lbl{font-size:.63rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:4px;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;}
@@ -207,7 +208,7 @@ textarea.fi{resize:vertical;min-height:80px;}
 .banner-form{background:rgba(192,100,122,.05);border:1px solid rgba(192,100,122,.14);border-radius:14px;padding:18px;margin-bottom:14px;}
 
 /* RESPONSIVE */
-@media(max-width:1200px){.stats-row{grid-template-columns:repeat(3,1fr);}
+@media(max-width:1200px){.stats-row{grid-template-columns:repeat(3,1fr);gap:10px;}
   .prod-grid{grid-template-columns:repeat(2,1fr);}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
 }
@@ -322,6 +323,7 @@ textarea.fi{resize:vertical;min-height:80px;}
       <div class="stats-row">
         <div class="stat rose"><div class="stat-icon">📦</div><div class="stat-lbl">Total Orders</div><div class="stat-val" id="st-total">0</div><div class="stat-note">All time</div></div>
         <div class="stat gold"><div class="stat-icon">💰</div><div class="stat-lbl">Total Revenue</div><div class="stat-val" id="st-rev">₹0</div><div class="stat-note">Delivered orders</div></div>
+        <div class="stat purple"><div class="stat-icon">📅</div><div class="stat-lbl">This Month</div><div class="stat-val" id="st-month-rev">₹0</div><div class="stat-note" id="st-month-lbl">Monthly revenue</div></div>
         <div class="stat blue"><div class="stat-icon">⏳</div><div class="stat-lbl">Pending Orders</div><div class="stat-val" id="st-pending">0</div><div class="stat-note warn">Needs action</div></div>
         <div class="stat green"><div class="stat-icon">✅</div><div class="stat-lbl">Delivered</div><div class="stat-val" id="st-delivered">0</div><div class="stat-note">Completed</div></div>
         <div class="stat red"><div class="stat-icon">❌</div><div class="stat-lbl">Cancelled</div><div class="stat-val" id="st-cancelled">0</div><div class="stat-note bad">Refund needed</div></div>
@@ -1060,11 +1062,30 @@ function updateStats() {
   const delivered = _orders.filter(o => o.status==='delivered').length;
   const cancelled = _orders.filter(o => o.status==='cancelled').length;
   const revenue   = _orders.filter(o => o.status==='delivered').reduce((s,o) => s+(Number(o.total)||0), 0);
+
+  // ── This month's revenue — delivered orders in current calendar month ──
+  const now   = new Date();
+  const thisY = now.getFullYear();
+  const thisM = now.getMonth();
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthOrders = _orders.filter(o => {
+    if (o.status !== 'delivered') return false;
+    let d = null;
+    if (o.createdAt?.toDate)      d = o.createdAt.toDate();
+    else if (o.createdAt?.seconds) d = new Date(o.createdAt.seconds * 1000);
+    else if (o.createdAt)          d = new Date(o.createdAt);
+    if (!d || isNaN(d)) return false;
+    return d.getFullYear() === thisY && d.getMonth() === thisM;
+  });
+  const monthRev = monthOrders.reduce((s,o) => s+(Number(o.total)||0), 0);
+
   document.getElementById('st-total').textContent     = total;
   document.getElementById('st-pending').textContent   = pending;
   document.getElementById('st-delivered').textContent = delivered;
   document.getElementById('st-cancelled').textContent = cancelled;
   document.getElementById('st-rev').textContent       = '₹' + revenue.toLocaleString('en-IN');
+  document.getElementById('st-month-rev').textContent = '₹' + monthRev.toLocaleString('en-IN');
+  document.getElementById('st-month-lbl').textContent = monthNames[thisM] + ' ' + thisY + ' revenue';
   document.getElementById('pendingBadge').textContent = pending;
 }
 

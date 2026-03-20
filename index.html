@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover"/>
 <title>Aneesa Hampers — Premium Gift Hampers | Kadapa</title>
 <meta name="description" content="Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -69,23 +69,63 @@ a{text-decoration:none;}
 .fs-timer{font-size:.7rem;opacity:.85;}
 .fs-timer span{font-weight:700;margin-left:4px;}
 
-/* BANNER CAROUSEL */
-#bannerCarousel{display:none;position:relative;overflow:hidden;}
+/* ── BANNER CAROUSEL ── */
+#bannerCarousel{display:none;position:relative;overflow:hidden;width:100%;}
 #bannerCarousel.show{display:block;}
-/* banner margin handled by flow — no hack needed */
 .btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
-.bslide{min-width:100%;height:420px;position:relative;overflow:hidden;display:flex;align-items:center;background:linear-gradient(135deg,var(--burgundy),#5a1528);}
-.bslide-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.bslide-overlay{position:relative;z-index:2;padding:0 60px;max-width:620px;}
+
+/* Slide — 350px desktop, responsive on mobile */
+.bslide{
+  min-width:100%;
+  height:350px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--burgundy),#5a1528);
+}
+
+/* Image — contain keeps full image visible without cropping */
+.bslide-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;        /* full image visible — no crop */
+  object-position:center center;
+  background:inherit;        /* fallback colour behind transparent areas */
+}
+
+/* Image-only banner — no text overlay — centre image perfectly */
+.bslide.image-only .bslide-bg{
+  object-fit:contain;
+  width:100%;
+  height:100%;
+}
+
+/* Text overlay — centred safe zone, never clips content */
+.bslide-overlay{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:700px;
+  padding:0 52px;
+  text-align:left;
+}
 .bslide-tag{display:inline-block;background:rgba(255,255,255,.15);color:white;font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:13px;}
-.bslide-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);color:white;font-weight:300;line-height:1.15;margin-bottom:11px;}
-.bslide-sub{font-size:.88rem;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.7;}
+.bslide-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.8rem);color:white;font-weight:300;line-height:1.2;margin-bottom:10px;}
+.bslide-sub{font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:20px;line-height:1.7;}
 .bslide-cta{display:inline-block;background:white;color:var(--burgundy);padding:10px 26px;border-radius:30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
 .bslide-cta:hover{opacity:.88;}
+
+/* Arrows */
 .barrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:40px;height:40px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);color:white;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s;}
 .barrow:hover{background:rgba(255,255,255,.32);}
 .barrow.prev{left:18px;}
 .barrow.next{right:18px;}
+
+/* Dots & progress */
 .bdots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;}
 .bdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none;padding:0;}
 .bdot.active{background:white;transform:scale(1.3);}
@@ -191,8 +231,18 @@ a{text-decoration:none;}
 .view-all-lnk:hover{opacity:1;}
 .prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
 .prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
-.prod-thumb{height:196px;position:relative;overflow:hidden;background:#f5e8ec;display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
-.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;padding:8px;background:#f5e8ec;}
+.prod-thumb{
+  height:196px;position:relative;overflow:hidden;
+  background:#f5e8ec;display:flex;align-items:center;justify-content:center;font-size:3.5rem;
+  -webkit-transform:translateZ(0);transform:translateZ(0); /* iOS GPU layer fix */
+}
+.prod-thumb img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;object-position:center;
+  padding:8px;background:#f5e8ec;
+  -webkit-transform:translateZ(0);transform:translateZ(0); /* iOS fix */
+  max-width:100%;max-height:100%; /* prevent overflow on iOS */
+}
 .tag-badge{position:absolute;top:10px;left:10px;background:var(--burgundy);color:white;font-size:.57rem;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:600;z-index:1;}
 .disc-badge{position:absolute;top:10px;right:10px;background:var(--deep-rose);color:white;font-size:.57rem;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:20px;font-weight:600;z-index:1;}
 .prod-info{padding:14px 16px 16px;}
@@ -631,6 +681,14 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 .nav-search-box.open{width:220px;}
 .nav-search-box input{border:none;outline:none;padding:8px 14px;font-family:'Jost',sans-serif;font-size:.8rem;color:var(--burgundy);background:transparent;width:100%;}
 .nav-search-box input::placeholder{color:rgba(59,13,26,.35);}
+.msb-input::placeholder{color:rgba(59,13,26,.32);}
+/* Animated placeholder via fake element */
+.search-placeholder-anim{
+  position:absolute;pointer-events:none;
+  font-family:'Jost',sans-serif;font-size:.8rem;
+  color:rgba(59,13,26,.38);white-space:nowrap;overflow:hidden;
+  transition:opacity .35s ease;
+}
 
 /* STATS BAR */
 .stats-bar{background:white;padding:28px 52px;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(192,100,122,.08);}
@@ -735,8 +793,18 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 .bn-label{font-size:.47rem;white-space:nowrap;margin-top:1px;}
 .bn-badge{position:absolute;top:4px;margin-left:2px;background:var(--deep-rose);color:white;font-size:.48rem;font-weight:700;min-width:15px;height:15px;border-radius:10px;padding:0 3px;display:none;align-items:center;justify-content:center;border:2px solid white;}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr);}}
+/* ═══════════════════════════════════════
+   FULLY RESPONSIVE — ALL DEVICES
+   Desktop 1200+ | Laptop 1100 | Tablet 768-1024
+   Mobile L 430 | Mobile M 390 | Mobile S 360
+═══════════════════════════════════════ */
+
+/* Laptop / small desktop */
+@media(max-width:1100px){
+  .prod-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* Tablet — iPad 768px, iPad Mini 768px */
 @media(max-width:900px){
   .topnav{padding:0 14px;top:0!important;}
   body{padding-top:56px!important;}
@@ -747,24 +815,27 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .hero{grid-template-columns:1fr;padding:54px 28px;min-height:auto;}
   .hero-visual{display:none;}
   .sec-wrap{padding:60px 28px;}
-  .prod-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:16px;}
+  .prod-thumb{height:180px;}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
-  .bslide{height:300px;}
-  .bslide-overlay{padding:0 28px;}
+  .bslide{height:260px;}
+  .bslide-overlay{padding:0 20px;}
   footer{padding:46px 28px 26px;}
   .foot-grid{grid-template-columns:1fr 1fr;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
   #bannerCarousel{margin-top:0!important;}
 }
+
+/* Large mobile — iPhone 14 Pro Max 430px, iPhone Plus */
 @media(max-width:600px){
-  body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
+  body{padding-top:56px!important;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
   .topnav{height:56px;top:0!important;}
   .hero{padding:32px 16px 40px;text-align:center;}
   .hero-btns{justify-content:center;}
-  .hero-title{font-size:2.8rem;}
+  .hero-title{font-size:2.6rem;}
   .sec-wrap{padding:44px 14px;}
   .prod-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .prod-thumb{height:152px;}
+  .prod-thumb{height:165px;}
   .prod-info{padding:10px 10px 12px;}
   .prod-name{font-size:.88rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
   .cat-grid{grid-template-columns:1fr 1fr;}
@@ -775,12 +846,46 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .foot-grid{grid-template-columns:1fr;gap:22px;}
   .foot-bottom{flex-direction:column;gap:4px;text-align:center;}
   footer{padding:36px 16px 70px;}
-  .bslide{height:220px;}
+  .bslide{height:210px;}
   .bslide-overlay{padding:0 16px;}
   .bslide-title{font-size:1.6rem;}
   .barrow{display:none;}
   #bannerCarousel{margin-top:0;}
   #floatWA{display:none!important;}
+}
+
+/* Standard mobile — iPhone 12/13/14 390px, Pixel 7 */
+@media(max-width:430px){
+  .prod-grid{grid-template-columns:1fr 1fr;gap:9px;}
+  .prod-thumb{height:155px;}
+  .prod-name{font-size:.85rem;}
+  .price-now{font-size:.88rem;}
+  .bslide{height:195px;}
+  .sec-wrap{padding:36px 12px;}
+}
+
+/* Small mobile — iPhone SE 375px, many Android budget phones */
+@media(max-width:390px){
+  .prod-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .prod-thumb{height:148px;}
+  .prod-name{font-size:.82rem;}
+  .price-now{font-size:.85rem;}
+  .add-btn{width:30px;height:30px;font-size:1.1rem;}
+  .bslide{height:185px;}
+  .sec-wrap{padding:32px 10px;}
+}
+
+/* Extra small — Galaxy A03, older Android 360px */
+@media(max-width:360px){
+  .prod-grid{grid-template-columns:1fr 1fr;gap:6px;}
+  .prod-thumb{height:135px;}
+  .prod-name{font-size:.78rem;}
+  .price-now{font-size:.82rem;}
+  .add-btn{width:28px;height:28px;font-size:1rem;}
+  .bslide{height:175px;}
+  .bslide-title{font-size:1.3rem;}
+  .sec-wrap{padding:28px 8px;}
+  .cat-circles-wrap{padding:18px 10px 14px;}
 }
 @media(pointer:coarse){
   body{cursor:auto!important;}
@@ -1467,6 +1572,81 @@ document.addEventListener('DOMContentLoaded', adjustBodyPadding);
 window.addEventListener('resize', adjustBodyPadding);
 setTimeout(adjustBodyPadding, 100);
 
+// ── Animated search placeholder cycling through category names ──
+var _searchAnimTimer = null;
+var _searchAnimIdx   = 0;
+var _searchAnimNames = [];
+
+function startSearchPlaceholderAnim(names) {
+  if (!names || !names.length) return;
+  // Add "Search for X" prefix to each name
+  _searchAnimNames = names.map(n => 'Search for ' + n + '…');
+  _searchAnimIdx   = 0;
+  if (_searchAnimTimer) clearInterval(_searchAnimTimer);
+  _setSearchPlaceholder(_searchAnimNames[0]);
+  _searchAnimTimer = setInterval(function() {
+    _searchAnimIdx = (_searchAnimIdx + 1) % _searchAnimNames.length;
+    _animatePlaceholderChange(_searchAnimNames[_searchAnimIdx]);
+  }, 2500);
+}
+
+function _setSearchPlaceholder(text) {
+  var inputs = [
+    document.getElementById('searchInput'),
+    document.getElementById('mobileSearchInput')
+  ];
+  inputs.forEach(function(inp) {
+    if (!inp) return;
+    inp.setAttribute('placeholder', text);
+  });
+}
+
+function _animatePlaceholderChange(text) {
+  var inputs = [
+    document.getElementById('searchInput'),
+    document.getElementById('mobileSearchInput')
+  ];
+  inputs.forEach(function(inp) {
+    if (!inp) return;
+    // Only animate if user hasn't typed anything
+    if (inp.value.trim()) return;
+    // Fade out current placeholder, change, fade in
+    inp.style.transition = 'opacity .3s';
+    inp.style.opacity = '0';
+    setTimeout(function() {
+      inp.setAttribute('placeholder', text);
+      inp.style.opacity = '1';
+    }, 320);
+  });
+}
+
+// Stop animation when user focuses, resume on blur
+(function() {
+  function pauseAnim(inp) {
+    inp.addEventListener('focus', function() {
+      if (_searchAnimTimer) { clearInterval(_searchAnimTimer); _searchAnimTimer = null; }
+      inp.setAttribute('placeholder', 'Search hampers…');
+      inp.style.opacity = '1';
+    });
+    inp.addEventListener('blur', function() {
+      if (!inp.value.trim() && _searchAnimNames.length) {
+        if (_searchAnimTimer) clearInterval(_searchAnimTimer);
+        _setSearchPlaceholder(_searchAnimNames[_searchAnimIdx]);
+        _searchAnimTimer = setInterval(function() {
+          _searchAnimIdx = (_searchAnimIdx + 1) % _searchAnimNames.length;
+          _animatePlaceholderChange(_searchAnimNames[_searchAnimIdx]);
+        }, 2500);
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var s1 = document.getElementById('searchInput');
+    var s2 = document.getElementById('mobileSearchInput');
+    if (s1) pauseAnim(s1);
+    if (s2) pauseAnim(s2);
+  });
+})();
+
 function toast(m){const t=document.getElementById('ah-toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
 
 // CART
@@ -1642,14 +1822,14 @@ function renderBanners(banners){
   const dots=document.getElementById('bdots');
   document.getElementById('heroSec').style.display='none';
   _bct=banners.length; _bi=0;
-  track.innerHTML=banners.map((b,i)=>`<div class="bslide">
+  track.innerHTML=banners.map((b,i)=>`<div class="bslide${b.hideText?' image-only':''}">
     ${b.image?`<img class="bslide-bg" src="${b.image}" alt="" loading="${i===0?'eager':'lazy'}"/>`:''}
     ${b.hideText ? '' : `
     <div class="bslide-overlay">
       ${b.tag?`<div class="bslide-tag">${b.tag}</div>`:''}
-      <div class="bslide-title">${b.title||'Aneesa Hampers'}</div>
+      ${b.title?`<div class="bslide-title">${b.title}</div>`:''}
       ${b.subtitle?`<div class="bslide-sub">${b.subtitle}</div>`:''}
-      <a href="${b.link||'products.html'}" class="bslide-cta">${b.btnText||'Shop Now'} →</a>
+      ${b.btnText?`<a href="${b.link||'products.html'}" class="bslide-cta">${b.btnText} →</a>`:''}
     </div>`}
   </div>`).join('');
   dots.innerHTML=banners.map((_,j)=>`<button class="bdot${j===0?' active':''}" onclick="goSlide(${j})"></button>`).join('');
@@ -1740,6 +1920,10 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
   }
 
   // ── Also update circle scroll (products page / other pages) ──
+  // ── Animated search placeholder from real category names ──
+  const _catNames = cats.map(cat => cat.name).filter(Boolean);
+  if (_catNames.length) startSearchPlaceholderAnim(_catNames);
+
   const scroll=document.getElementById('catCirclesScroll');
   if(scroll){
     scroll.innerHTML=cats.map(c=>{
