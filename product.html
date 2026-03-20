@@ -54,15 +54,33 @@
 
     /* ── IMAGE GALLERY ── */
     .img-col{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:88px;box-shadow:var(--shadow-sm);}
-    .slider-wrap{position:relative;height:430px;overflow:hidden;background:#f5e8ec;-webkit-transform:translateZ(0);transform:translateZ(0);}
-    .slider-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1);}
-    .slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem;flex-shrink:0;position:relative;}
+    .slider-wrap{
+      position:relative;height:430px;overflow:hidden;background:#f5e8ec;
+      -webkit-transform:translateZ(0);transform:translateZ(0);
+    }
+    .slider-track{
+      display:-webkit-box;display:-webkit-flex;display:flex;
+      height:100%;width:100%;
+      -webkit-transition:transform .45s cubic-bezier(.4,0,.2,1);
+      transition:transform .45s cubic-bezier(.4,0,.2,1);
+      will-change:transform;
+    }
+    .slide{
+      -webkit-flex:0 0 100%;flex:0 0 100%;
+      min-width:100%;width:100%;height:100%;
+      display:-webkit-flex;display:flex;
+      -webkit-align-items:center;align-items:center;
+      -webkit-justify-content:center;justify-content:center;
+      font-size:6rem;position:relative;overflow:hidden;
+      -webkit-transform:translateZ(0);transform:translateZ(0);
+    }
     .slide img{
+      position:absolute;inset:0;
       width:100%;height:100%;
       object-fit:contain;
       object-position:center center;
       padding:10px;
-      max-width:100%;max-height:100%;
+      box-sizing:border-box;
       display:block;
       -webkit-transform:translateZ(0);transform:translateZ(0);
     }
@@ -232,13 +250,13 @@
     .mini-orig{font-size:.73rem;text-decoration:line-through;opacity:.38;}
 
     /* REVIEWS */
-    .reviews-section{padding:0 60px 80px;}
+    .reviews-section{padding:0 60px 80px;max-width:100%;}
     .reviews-wrap{background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);}
     .reviews-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
     .reviews-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;}
     .reviews-title em{font-style:italic;color:var(--deep-rose);}
     .big-rating{font-family:'Cormorant Garamond',serif;font-size:3.6rem;font-weight:300;line-height:1;text-align:center;}
-    .rating-summary{display:flex;align-items:center;gap:22px;}
+    .rating-summary{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
     .rating-bars{min-width:190px;}
     .rating-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
     .rating-bar-label{font-size:.7rem;opacity:.5;width:28px;}
@@ -327,8 +345,16 @@
       .related-scroll{grid-template-columns:1fr 1fr;gap:12px;}
       .mini-img{height:160px;}
       .form-grid-2{grid-template-columns:1fr;}
-      .reviews-section{padding:0 16px 20px;}
+      .reviews-section{padding:0 16px 24px;}
       .related-section{padding:0 16px 20px;}
+      .reviews-wrap{padding:20px 16px;}
+      .reviews-header{flex-direction:column;gap:12px;}
+      .rating-summary{flex-direction:column;align-items:flex-start;gap:12px;}
+      .big-rating{font-size:2.8rem;}
+      .rating-bars{min-width:100%;}
+      .price-main{font-size:1.8rem;}
+      .prod-title{font-size:1.6rem;}
+      .detail-col{padding:20px 16px;}
     }
 
     /* ── Standard phone 390–479px ── */
