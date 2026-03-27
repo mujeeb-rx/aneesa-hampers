@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Scratch Card Reward — Aneesa Hampers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;
+  --burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Jost',sans-serif;
+  background:#f5eef1;
+  color:var(--burgundy);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Demo wrapper ── */
+.demo-wrap{
+  max-width:480px;
+  margin:0 auto;
+  padding:0 0 60px;
+}
+
+/* ── Success screen (simulated) ── */
+.success-banner{
+  background:linear-gradient(135deg,#3b0d1a 0%,#5a1a2e 100%);
+  padding:36px 20px 30px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.success-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at top right,rgba(232,160,176,.25),transparent 60%);
+}
+.tick-wrap{position:relative;z-index:1;margin-bottom:12px;}
+.tick{
+  width:60px;height:60px;background:rgba(255,255,255,.15);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;margin:0 auto;
+  animation:tickPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes tickPop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;font-style:italic;
+  color:white;position:relative;z-index:1;margin-bottom:6px;
+}
+.success-title em{color:var(--rose);}
+.success-sub{font-size:.8rem;color:rgba(255,255,255,.6);position:relative;z-index:1;line-height:1.6;}
+.tracking-pill{
+  display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+  background:rgba(255,255,255,.12);border-radius:20px;padding:7px 18px;
+  font-size:.78rem;color:rgba(255,255,255,.8);cursor:pointer;position:relative;z-index:1;
+  letter-spacing:1px;
+}
+
+/* ── Card sections ── */
+.co-section{background:white;margin:0 0 8px;padding:16px;}
+.section-lbl{
+  font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(59,13,26,.4);font-weight:600;margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.section-lbl span{font-size:.85rem;}
+.order-item{display:flex;align-items:center;gap:12px;}
+.order-img{width:50px;height:50px;border-radius:10px;background:#f5e8ec;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.order-name{font-size:.85rem;font-weight:600;}
+.order-sub{font-size:.72rem;opacity:.4;margin-top:2px;}
+.order-price{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--deep-rose);margin-left:auto;}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;border-top:1px solid rgba(192,100,122,.1);margin-top:12px;}
+.total-lbl{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;opacity:.5;}
+.total-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--deep-rose);}
+
+/* ── Reward banner (post-scratch) ── */
+#confRewardBanner{
+  background:linear-gradient(135deg,#fdf0f4,#fff9f5);
+  border:1.5px solid rgba(192,100,122,.2);
+  border-radius:14px;
+  padding:14px 18px;
+  margin:8px 16px 0;
+  display:none;
+  align-items:center;
+  gap:12px;
+}
+#confRewardBanner.show{display:flex;}
+
+/* ── Action buttons ── */
+.conf-actions{display:flex;flex-direction:column;gap:10px;padding:16px;}
+.btn-wa{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#25D366;color:white;border:none;border-radius:14px;
+  padding:14px;font-family:'Jost',sans-serif;font-size:.74rem;
+  letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;
+  text-decoration:none;
+}
+.btn-track{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:none;color:var(--burgundy);border:1.5px solid rgba(192,100,122,.2);
+  border-radius:14px;padding:14px;font-family:'Jost',sans-serif;font-size:.74rem;
+  letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;
+}
+
+/* ── Trigger button (demo) ── */
+.demo-trigger{
+  margin:0 16px 16px;
+  background:linear-gradient(135deg,#c0647a,#a04060);
+  color:white;border:none;border-radius:14px;padding:15px 24px;
+  font-family:'Jost',sans-serif;font-size:.74rem;letter-spacing:2px;
+  text-transform:uppercase;font-weight:600;cursor:pointer;width:calc(100% - 32px);
+  box-shadow:0 6px 20px rgba(192,100,122,.3);
+  transition:transform .18s;animation:pulseBtn 2s ease-in-out infinite;
+}
+@keyframes pulseBtn{0%,100%{box-shadow:0 6px 20px rgba(192,100,122,.3)}50%{box-shadow:0 8px 32px rgba(192,100,122,.5)}}
+.demo-trigger:hover{transform:translateY(-2px);}
+
+/* ═══════════════════════════════════════════
+   SCRATCH CARD OVERLAY
+═══════════════════════════════════════════ */
+#ah-scratch-overlay{
+  position:fixed;inset:0;z-index:8000;
+  background:rgba(20,5,12,.88);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+#ah-scratch-overlay.show{
+  display:flex;
+  animation:scrOverlayIn .4s ease both;
+}
+@keyframes scrOverlayIn{from{opacity:0}to{opacity:1}}
+
+#ah-scratch-box{
+  background:linear-gradient(160deg,#fdf0f4 0%,#fdf6f0 100%);
+  border-radius:24px;width:100%;max-width:360px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(59,13,26,.35),0 0 0 1px rgba(192,100,122,.15);
+  animation:scrBoxIn .5s cubic-bezier(.34,1.56,.64,1) both .1s;
+}
+@keyframes scrBoxIn{from{transform:scale(.7) translateY(40px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+
+.scr-header{
+  background:linear-gradient(135deg,#3b0d1a 0%,#6a1f38 100%);
+  padding:22px 24px 18px;text-align:center;position:relative;overflow:hidden;
+}
+.scr-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at top right,rgba(232,160,176,.3),transparent 65%);
+}
+.scr-gift{font-size:2.4rem;display:block;margin-bottom:8px;position:relative;z-index:1;animation:giftBounce 1.2s ease-in-out infinite;}
+@keyframes giftBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.scr-header h2{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-style:italic;color:white;position:relative;z-index:1;margin-bottom:4px;}
+.scr-header h2 em{color:#e8a0b0;font-style:normal;}
+.scr-header p{font-size:.72rem;letter-spacing:1px;color:rgba(255,255,255,.55);position:relative;z-index:1;}
+
+.scr-body{padding:24px;}
+
+.scr-canvas-wrap{
+  position:relative;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(59,13,26,.12);
+  cursor:crosshair;user-select:none;-webkit-user-select:none;touch-action:none;
+}
+.scr-prize-layer{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#fff5f8 0%,#fff9f5 100%);
+  gap:6px;padding:16px;
+}
+.scr-prize-icon{font-size:2.8rem;}
+.scr-prize-label{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;color:#c0647a;line-height:1;}
+.scr-prize-desc{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(59,13,26,.45);}
+.scr-prize-min{font-size:.63rem;color:rgba(59,13,26,.35);text-align:center;margin-top:4px;}
+
+#ah-scratch-canvas{display:block;position:relative;z-index:2;}
+
+.scr-hint{
+  text-align:center;margin-top:12px;
+  font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(59,13,26,.38);transition:opacity .3s;
+}
+.scr-hint.hidden{opacity:0;pointer-events:none;}
+
+.scr-progress{height:3px;background:rgba(192,100,122,.12);border-radius:4px;margin-top:10px;overflow:hidden;}
+.scr-progress-fill{
+  height:100%;border-radius:4px;
+  background:linear-gradient(90deg,#e8a0b0,#c0647a);
+  width:0%;transition:width .15s;
+}
+
+.scr-reveal-msg{display:none;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:20px 0 4px;}
+.scr-reveal-msg.show{display:flex;}
+.scr-congrats{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:#3b0d1a;}
+.scr-valid{font-size:.68rem;letter-spacing:1px;text-transform:uppercase;color:rgba(59,13,26,.4);}
+
+.scr-actions{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.scr-btn-primary{
+  background:linear-gradient(135deg,#c0647a 0%,#a04060 100%);
+  color:white;border:none;border-radius:14px;padding:14px 24px;
+  font-family:'Jost',sans-serif;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;
+  font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(192,100,122,.35);
+  transition:transform .18s,box-shadow .18s;display:none;
+}
+.scr-btn-primary.show{display:block;}
+.scr-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(192,100,122,.4);}
+.scr-btn-skip{
+  background:none;border:none;font-family:'Jost',sans-serif;
+  font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(59,13,26,.35);cursor:pointer;padding:6px;transition:color .2s;
+}
+.scr-btn-skip:hover{color:rgba(59,13,26,.6);}
+
+/* Confetti */
+.conf-piece{
+  position:fixed;pointer-events:none;z-index:9000;
+  border-radius:2px;
+  animation:confFall linear forwards;
+}
+@keyframes confFall{0%{opacity:1}100%{transform:translateY(700px) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+
+  <!-- Simulated success screen -->
+  <div class="success-banner">
+    <div class="tick-wrap">
+      <div class="tick">✓</div>
+    </div>
+    <div class="success-title">Order <em>Confirmed!</em></div>
+    <div class="success-sub">Your payment is confirmed.<br/>Your hamper is being prepared with love! 🌸</div>
+    <div class="tracking-pill">🔖 AHXK7R2P &nbsp;·&nbsp; Tap to copy</div>
+  </div>
+
+  <div class="co-section">
+    <div class="section-lbl"><span>🛍️</span> Order Summary</div>
+    <div class="order-item">
+      <div class="order-img">🎁</div>
+      <div>
+        <div class="order-name">Blush Hamper Delight</div>
+        <div class="order-sub">Qty: 1 · Standard Delivery</div>
+      </div>
+      <div class="order-price">₹1,499</div>
+    </div>
+    <div class="total-row">
+      <span class="total-lbl">Total Paid</span>
+      <span class="total-val" id="displayTotal">₹1,499</span>
+    </div>
+  </div>
+
+  <!-- Reward banner (appears after scratch) -->
+  <div id="confRewardBanner">
+    <span style="font-size:1.6rem">🎁</span>
+    <div style="flex:1">
+      <div style="font-size:.78rem;font-weight:600;color:#3b0d1a" id="rewardLabel">Reward saved!</div>
+      <div style="font-size:.67rem;color:rgba(59,13,26,.45);margin-top:2px">
+        Will apply at your next checkout ·
+        <span id="rewardExpiry"></span>
+      </div>
+    </div>
+    <button id="viewRewardBtn" style="background:none;border:1.5px solid rgba(192,100,122,.25);border-radius:8px;padding:5px 11px;font-family:'Jost',sans-serif;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:#c0647a;cursor:pointer;">View</button>
+  </div>
+
+  <div class="co-section" style="margin-top:8px">
+    <div class="section-lbl"><span>📦</span> What's Next?</div>
+    <div style="font-size:.78rem;line-height:1.8;opacity:.6">
+      📧 Order confirmation sent to your email<br/>
+      🚚 Estimated delivery: 2–5 business days<br/>
+      📱 You'll receive a WhatsApp update when dispatched
+    </div>
+  </div>
+
+  <!-- Demo trigger button -->
+  <div style="margin:16px 0 0;">
+    <button class="demo-trigger" onclick="launchScratchCard()">
+      🎁 Scratch Your Reward Card
+    </button>
+  </div>
+
+  <div class="conf-actions">
+    <a class="btn-wa" href="#">💬 Message on WhatsApp</a>
+    <button class="btn-track">📦 Track My Order</button>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SCRATCH CARD OVERLAY
+═══════════════════════════════════════════ -->
+<div id="ah-scratch-overlay">
+  <div id="ah-scratch-box">
+    <div class="scr-header">
+      <span class="scr-gift">🎁</span>
+      <h2>You've <em>Won</em> a Reward!</h2>
+      <p>Scratch to reveal your surprise gift</p>
+    </div>
+    <div class="scr-body">
+      <div class="scr-canvas-wrap" id="scrCanvasWrap">
+        <!-- Prize layer (hidden under canvas) -->
+        <div class="scr-prize-layer" id="scrPrizeLayer">
+          <span class="scr-prize-icon" id="prizeIcon">🎁</span>
+          <div class="scr-prize-label" id="prizeLabel">₹100 Off</div>
+          <div class="scr-prize-desc" id="prizeDesc">Cash Discount</div>
+          <div class="scr-prize-min" id="prizeMin">On orders above ₹600</div>
+        </div>
+        <canvas id="ah-scratch-canvas"></canvas>
+      </div>
+      <div class="scr-hint" id="scrHint">✦ Scratch anywhere to reveal ✦</div>
+      <div class="scr-progress"><div class="scr-progress-fill" id="scrProgFill"></div></div>
+      <div class="scr-reveal-msg" id="scrRevealMsg">
+        <div class="scr-congrats">🌸 Congratulations!</div>
+        <div class="scr-valid" id="scrValidText">Valid for 30 days · Applied at checkout</div>
+      </div>
+      <div class="scr-actions">
+        <button class="scr-btn-primary" id="scrUseBtn" onclick="useCoupon()">🛍️ Save to My Account</button>
+        <button class="scr-btn-skip" onclick="dismissCard()">Maybe later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  Reward pool (matches Firestore structure)
+// ─────────────────────────────────────────────────────────
+const REWARD_POOL = [
+  { id:'r1', label:'₹50 Off',       type:'fixed',    value:50,  prob:30, minOrder:300,  icon:'🎀' },
+  { id:'r2', label:'₹100 Off',      type:'fixed',    value:100, prob:15, minOrder:600,  icon:'💝' },
+  { id:'r3', label:'₹200 Off',      type:'fixed',    value:200, prob:5,  minOrder:1000, icon:'🌟' },
+  { id:'r4', label:'10% Off',        type:'percent',  value:10,  prob:25, minOrder:400,  icon:'🎊' },
+  { id:'r5', label:'15% Off',        type:'percent',  value:15,  prob:10, minOrder:700,  icon:'✨' },
+  { id:'r6', label:'Free Delivery',  type:'delivery', value:0,   prob:10, minOrder:0,    icon:'🚀' },
+  { id:'r7', label:'₹25 Off',       type:'fixed',    value:25,  prob:5,  minOrder:200,  icon:'🎁' },
+];
+
+function pickReward() {
+  const total = REWARD_POOL.reduce((s,r) => s+r.prob, 0);
+  let rand = Math.random() * total;
+  for (const r of REWARD_POOL) {
+    rand -= r.prob;
+    if (rand <= 0) return r;
+  }
+  return REWARD_POOL[0];
+}
+
+let currentReward = null;
+let isRevealed = false;
+
+// ─────────────────────────────────────────────────────────
+//  Canvas scratch engine
+// ─────────────────────────────────────────────────────────
+const W = 312, H = 180;
+let ctx, isDrawing = false;
+
+function initCanvas(reward) {
+  const canvas = document.getElementById('ah-scratch-canvas');
+  const wrap   = document.getElementById('scrCanvasWrap');
+  canvas.width  = W;
+  canvas.height = H;
+
+  // Match canvas to container width
+  const scale = wrap.offsetWidth / W || 1;
+  canvas.style.width  = '100%';
+  canvas.style.height = (H * scale) + 'px';
+  wrap.style.height   = (H * scale) + 'px';
+
+  ctx = canvas.getContext('2d');
+
+  // Draw scratch surface gradient
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, '#c0647a');
+  grad.addColorStop(0.5, '#943050');
+  grad.addColorStop(1, '#6a1530');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative pattern
+  ctx.globalAlpha = 0.12;
+  for (let x = 0; x < W; x += 22) {
+    for (let y = 0; y < H; y += 22) {
+      ctx.fillStyle = '#fff';
+      ctx.font = '13px serif';
+      ctx.fillText('✦', x, y + 13);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Main text
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.font = 'bold 14px Jost, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('✦   SCRATCH HERE   ✦', W / 2, H / 2 - 10);
+  ctx.font = '500 11px Jost, sans-serif';
+  ctx.globalAlpha = 0.55;
+  ctx.fillText('Your reward is hiding underneath', W / 2, H / 2 + 12);
+  ctx.globalAlpha = 1;
+
+  // Divider lines
+  ctx.strokeStyle = 'rgba(255,255,255,.18)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(40, H/2 - 28); ctx.lineTo(W-40, H/2 - 28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40, H/2 + 28); ctx.lineTo(W-40, H/2 + 28); ctx.stroke();
+
+  // Set erase mode
+  ctx.globalCompositeOperation = 'destination-out';
+
+  isRevealed = false;
+
+  // Events
+  canvas.addEventListener('mousedown', e => { isDrawing = true; scratch(getPos(e, canvas)); });
+  canvas.addEventListener('mousemove', e => { if (isDrawing) scratch(getPos(e, canvas)); });
+  canvas.addEventListener('mouseup',   () => isDrawing = false);
+  canvas.addEventListener('mouseleave',() => isDrawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); isDrawing = true; scratch(getPos(e, canvas)); }, {passive:false});
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if (isDrawing) scratch(getPos(e, canvas)); }, {passive:false});
+  canvas.addEventListener('touchend',   () => isDrawing = false);
+}
+
+function getPos(e, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const sx = W / rect.width, sy = H / rect.height;
+  const src = e.touches ? e.touches[0] : e;
+  return { x: (src.clientX - rect.left) * sx, y: (src.clientY - rect.top) * sy };
+}
+
+function scratch(pos) {
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, 30, 0, Math.PI * 2);
+  ctx.fill();
+  checkReveal();
+}
+
+function checkReveal() {
+  if (isRevealed) return;
+  const data = ctx.getImageData(0, 0, W, H).data;
+  let cleared = 0;
+  for (let i = 3; i < data.length; i += 4) if (data[i] === 0) cleared++;
+  const pct = cleared / (W * H) * 100;
+  document.getElementById('scrProgFill').style.width = Math.min(pct, 100) + '%';
+  if (pct > 52) onRevealed();
+}
+
+function onRevealed() {
+  isRevealed = true;
+  const canvas = document.getElementById('ah-scratch-canvas');
+  canvas.style.transition = 'opacity .7s';
+  canvas.style.opacity = '0';
+  setTimeout(() => canvas.style.display = 'none', 700);
+
+  document.getElementById('scrHint').classList.add('hidden');
+
+  setTimeout(() => {
+    document.getElementById('scrRevealMsg').classList.add('show');
+    document.getElementById('scrUseBtn').classList.add('show');
+  }, 500);
+
+  confettiBurst();
+
+  // Update expiry text
+  const exp = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  document.getElementById('scrValidText').textContent =
+    'Valid until ' + exp.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) +
+    ' · Applied at checkout';
+}
+
+// ─────────────────────────────────────────────────────────
+//  Confetti burst
+// ─────────────────────────────────────────────────────────
+function confettiBurst() {
+  const colors = ['#c0647a','#e8a0b0','#c9a96e','#f9e4e9','#3b0d1a','#fff','#a04060'];
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight * 0.45;
+
+  for (let i = 0; i < 70; i++) {
+    const p = document.createElement('div');
+    p.className = 'conf-piece';
+    const w = 5 + Math.random() * 8;
+    const h = 5 + Math.random() * 8;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const tx = (Math.random() - 0.5) * 500;
+    const rot = Math.random() * 720;
+    const dur = 0.9 + Math.random() * 1.3;
+    const delay = Math.random() * 0.4;
+
+    p.style.cssText = `
+      left:${cx + (Math.random()-0.5)*80}px;
+      top:${cy}px;
+      width:${w}px;height:${h}px;
+      background:${color};
+      transform:translateX(${tx}px) rotate(${rot}deg);
+      animation-duration:${dur}s;
+      animation-delay:${delay}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), (dur + delay) * 1000 + 100);
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+//  Show card
+// ─────────────────────────────────────────────────────────
+function launchScratchCard() {
+  currentReward = pickReward();
+
+  // Update prize layer
+  const icons = { fixed:'🎁', percent:'💝', delivery:'🚚' };
+  const descs = { fixed:'Cash Discount', percent:'Percent Off', delivery:'Free Delivery' };
+
+  document.getElementById('prizeIcon').textContent  = currentReward.icon || icons[currentReward.type];
+  document.getElementById('prizeLabel').textContent = currentReward.label;
+  document.getElementById('prizeDesc').textContent  = descs[currentReward.type];
+  document.getElementById('prizeMin').textContent   = currentReward.minOrder > 0
+    ? `On orders above ₹${currentReward.minOrder.toLocaleString('en-IN')}`
+    : 'No minimum order required';
+
+  // Reset UI
+  document.getElementById('scrRevealMsg').classList.remove('show');
+  document.getElementById('scrUseBtn').classList.remove('show');
+  document.getElementById('scrHint').classList.remove('hidden');
+  document.getElementById('scrProgFill').style.width = '0';
+  const canvas = document.getElementById('ah-scratch-canvas');
+  canvas.style.opacity = '1';
+  canvas.style.display = 'block';
+
+  // Show overlay
+  const overlay = document.getElementById('ah-scratch-overlay');
+  overlay.classList.add('show');
+
+  // Init canvas after overlay is visible
+  requestAnimationFrame(() => setTimeout(() => initCanvas(currentReward), 50));
+}
+
+function dismissCard() {
+  document.getElementById('ah-scratch-overlay').classList.remove('show');
+  // Show reward banner on success screen
+  showRewardBanner(currentReward);
+  // Hide trigger button (optional)
+  document.querySelector('.demo-trigger').textContent = '🎁 View Saved Reward';
+  document.querySelector('.demo-trigger').onclick = () => launchScratchCard();
+}
+
+function useCoupon() {
+  document.getElementById('ah-scratch-overlay').classList.remove('show');
+  showRewardBanner(currentReward);
+  document.querySelector('.demo-trigger').textContent = '🎁 Reward Saved ✓';
+  document.querySelector('.demo-trigger').style.background = 'linear-gradient(135deg,#2d7a4f,#1a5a35)';
+  document.querySelector('.demo-trigger').disabled = true;
+  document.querySelector('.demo-trigger').style.animation = 'none';
+}
+
+function showRewardBanner(reward) {
+  const banner = document.getElementById('confRewardBanner');
+  banner.classList.add('show');
+  document.getElementById('rewardLabel').textContent = `🎉 You won: ${reward.label}!`;
+  const exp = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  document.getElementById('rewardExpiry').textContent =
+    'Valid till ' + exp.toLocaleDateString('en-IN', {day:'numeric',month:'short'});
+  document.getElementById('viewRewardBtn').onclick = () => launchScratchCard();
+
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Auto-launch after 2s for demo
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(launchScratchCard, 1600);
+});
+</script>
+</body>
+</html>

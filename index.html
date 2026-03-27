@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -1660,10 +1660,10 @@ function addrSave(a) {
   catch(e) { console.error('Address save failed:', e); return false; }
 }
 
-// Buy Now — skip address popup, go directly to checkout.html
-// checkout.html auto-fills saved address and shows Change/Add Address buttons
+// Buy Now — store item and redirect to cart.html?buynow=1
+// cart.html detects buynow=1 and opens the Buy Now overlay which uses the
+// same Razorpay checkout flow as the normal "Add to Cart → Checkout" path.
 window.buyNow = function(id, name, price, image) {
-  const disc = 0; // home page cards pass effective price directly
   const item = {
     id: id,
     name: name,
@@ -1673,7 +1673,7 @@ window.buyNow = function(id, name, price, image) {
     isBuyNow: true
   };
   localStorage.setItem('ah_buynow', JSON.stringify(item));
-  location.href = 'checkout.html';
+  location.href = 'cart.html?buynow=1';
 };
 
 
