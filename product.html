@@ -902,9 +902,10 @@ function _addToCart(){
 function _buyNow(){
   if(!_prod)return;
   const item={id:_prod.id,name:_prod.name,price:_effPrice(),image:_imgs[0]||'',qty:_qty,isBuyNow:true};
-  // Save as buy-now item — cart.html will detect this and go straight to order summary
+  // Save as buy-now item — cart.html?buynow=1 will detect this and open the Buy Now overlay
+  // which uses the same Razorpay checkout flow as the normal cart checkout
   localStorage.setItem('ah_buynow',JSON.stringify(item));
-  location.href='checkout.html';
+  location.href='cart.html?buynow=1';
 }
 ['addCartBtn','addCartBtn2'].forEach(id=>{ const el=$(id); if(el)el.onclick=_addToCart; });
 ['buyNowBtn','buyNowBtn2'].forEach(id=>{ const el=$(id); if(el)el.onclick=_buyNow; });

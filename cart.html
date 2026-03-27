@@ -478,6 +478,48 @@ body.buynow-mode footer{display:none!important;}
   .cursor,.cursor-ring{display:none!important;}
   button,a,input,select{cursor:pointer!important;}
 }
+
+/* ══ SCRATCH CARD REWARD SYSTEM ══ */
+@keyframes scIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes scBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes scConfetti{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(80px) rotate(720deg);opacity:0}}
+@keyframes scReveal{from{opacity:0;transform:scale(0.5) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes scGlow{0%,100%{box-shadow:0 0 20px rgba(201,169,110,.4)}50%{box-shadow:0 0 40px rgba(201,169,110,.8),0 0 60px rgba(201,169,110,.3)}}
+#scratchCardOverlay{position:fixed;inset:0;background:rgba(10,0,5,.78);backdrop-filter:blur(14px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+#scratchCardOverlay.open{display:flex;}
+.sc-container{background:linear-gradient(145deg,#1a0810 0%,#3b0d1a 60%,#240c14 100%);border-radius:28px;padding:32px 24px 24px;width:100%;max-width:380px;position:relative;overflow:hidden;animation:scIn .5s cubic-bezier(.34,1.56,.64,1) both;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(201,169,110,.15);}
+.sc-container::before{content:'';position:absolute;inset:-1px;border-radius:29px;background:linear-gradient(135deg,rgba(201,169,110,.35),transparent 40%,rgba(192,100,122,.15) 80%,transparent);z-index:-1;pointer-events:none;}
+.sc-confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.sc-confetti-dot{position:absolute;width:8px;height:8px;border-radius:50%;animation:scConfetti 2s ease-out both;}
+.sc-header{text-align:center;margin-bottom:20px;}
+.sc-firework{font-size:2.2rem;margin-bottom:8px;animation:scBounce 1.5s ease-in-out infinite;display:block;}
+.sc-title{font-family:'Cormorant Garamond',serif;font-size:1.85rem;color:white;font-weight:600;margin-bottom:4px;letter-spacing:.5px;}
+.sc-title em{color:#e8c882;font-style:italic;}
+.sc-subtitle{font-size:.74rem;color:rgba(255,255,255,.5);line-height:1.6;}
+.sc-card-wrap{position:relative;border-radius:18px;overflow:hidden;margin-bottom:16px;cursor:crosshair;min-height:160px;animation:scGlow 2.5s ease-in-out infinite;}
+.sc-reveal-layer{background:linear-gradient(135deg,#fdf6f0,#fff);border-radius:18px;padding:24px 20px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.sc-reward-icon{font-size:2.8rem;margin-bottom:2px;animation:scReveal .5s cubic-bezier(.34,1.56,.64,1) both;}
+.sc-reward-label{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--deep-rose);font-weight:700;}
+.sc-reward-value{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--burgundy);line-height:1;}
+.sc-reward-desc{font-size:.74rem;color:rgba(59,13,26,.55);margin-top:2px;}
+.sc-code-wrap{background:var(--blush);border:1.5px dashed rgba(192,100,122,.35);border-radius:11px;padding:9px 14px;margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;}
+.sc-code-text{font-size:.85rem;font-weight:700;letter-spacing:2.5px;color:var(--burgundy);font-family:monospace;}
+.sc-copy-btn{padding:5px 12px;background:var(--burgundy);color:white;border:none;border-radius:20px;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'Jost',sans-serif;white-space:nowrap;flex-shrink:0;}
+.sc-copy-btn:hover{background:var(--deep-rose);}
+#scratchCanvas{position:absolute;inset:0;border-radius:18px;touch-action:none;}
+.sc-scratch-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;pointer-events:none;text-align:center;line-height:1.8;text-shadow:0 2px 8px rgba(0,0,0,.5);transition:opacity .4s;}
+.sc-scratch-hint span{display:block;font-size:1.6rem;margin-bottom:4px;}
+.sc-progress-wrap{margin-bottom:14px;}
+.sc-progress-track{height:5px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;margin-bottom:5px;}
+.sc-progress-fill{height:100%;background:linear-gradient(90deg,#c9a96e,#e8c882);border-radius:6px;width:0%;transition:width .15s;}
+.sc-progress-label{font-size:.6rem;color:rgba(255,255,255,.38);text-align:right;letter-spacing:1px;text-transform:uppercase;}
+.sc-actions{display:flex;gap:9px;margin-top:4px;}
+.sc-btn-main{flex:1;padding:13px;background:linear-gradient(135deg,var(--deep-rose),#e84393);color:white;border:none;border-radius:13px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all .25s;display:none;}
+.sc-btn-main.visible{display:block;}
+.sc-btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,67,147,.4);}
+.sc-btn-skip{padding:13px 16px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.1);border-radius:13px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.sc-btn-skip:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);}
+.sc-validity{font-size:.64rem;color:rgba(255,255,255,.28);text-align:center;margin-top:10px;letter-spacing:.5px;}
 </style>
 </head>
 <body>
@@ -1004,6 +1046,55 @@ body.buynow-mode footer{display:none!important;}
 </div>
 
 <a href="#" id="floatWA">&#128172; WhatsApp</a>
+
+<!-- ══ SCRATCH CARD REWARD OVERLAY ══ -->
+<div id="scratchCardOverlay">
+  <div class="sc-container">
+    <!-- Confetti dots injected by JS -->
+    <div class="sc-confetti-wrap" id="scConfettiWrap"></div>
+
+    <!-- Header -->
+    <div class="sc-header">
+      <span class="sc-firework">🎉</span>
+      <div class="sc-title">Your <em>Reward!</em></div>
+      <div class="sc-subtitle">Order placed! Scratch to reveal your exclusive discount 🎁</div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="sc-progress-wrap">
+      <div class="sc-progress-track"><div class="sc-progress-fill" id="scProgressFill"></div></div>
+      <div class="sc-progress-label" id="scProgressLabel">Scratch to reveal…</div>
+    </div>
+
+    <!-- Scratch card canvas area -->
+    <div class="sc-card-wrap" id="scCardWrap">
+      <!-- Hidden reward behind the scratch coating -->
+      <div class="sc-reveal-layer" id="scRevealLayer">
+        <div class="sc-reward-icon" id="scRewardIcon">🎁</div>
+        <div class="sc-reward-label" id="scRewardLabel">YOUR REWARD</div>
+        <div class="sc-reward-value" id="scRewardValue">—</div>
+        <div class="sc-reward-desc" id="scRewardDesc">Loading your reward…</div>
+        <div class="sc-code-wrap" id="scCodeWrap" style="display:none">
+          <span class="sc-code-text" id="scCodeText">—</span>
+          <button class="sc-copy-btn" onclick="copyScCode()">Copy</button>
+        </div>
+      </div>
+      <!-- Canvas overlay — this is what user scratches -->
+      <canvas id="scratchCanvas"></canvas>
+      <!-- Scratch hint -->
+      <div class="sc-scratch-hint" id="scHint">
+        <span>👆</span>Scratch here!
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="sc-actions">
+      <button class="sc-btn-skip" onclick="dismissScratchCard()">Maybe Later</button>
+      <button class="sc-btn-main" id="scMainBtn" onclick="dismissScratchCard()">🎉 Awesome! Use Code</button>
+    </div>
+    <div class="sc-validity" id="scValidity"></div>
+  </div>
+</div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="module">
@@ -2839,7 +2930,16 @@ window.bnProceedToPay = function() {
   setEl('paytmLink',   'href', 'paytmmp://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + finalTotal + '&cu=INR&tn=' + encodeURIComponent(note));
   setEl('bhimLink',    'href', 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + finalTotal + '&cu=INR&tn=' + encodeURIComponent(note));
 
-  // ── Open Razorpay via shared helper ──
+  // ── CLOSE Buy Now overlay BEFORE opening Razorpay ──
+  // The overlay has position:fixed + z-index:3000 + body overflow:hidden which
+  // blocks the native Razorpay SDK from rendering. Dismissing it first makes
+  // Buy Now open Razorpay exactly like the Cart checkout (Screenshot 1).
+  var bnOvEl = document.getElementById('buyNowOverlay');
+  if (bnOvEl) bnOvEl.classList.remove('open');
+  document.body.classList.remove('buynow-mode');
+  document.body.style.overflow = '';
+
+  // ── Open native Razorpay — identical to Cart checkout flow ──
   var name  = addr.name;
   var phone = addr.phone || '';
   var email = currentUser ? currentUser.email : (name.toLowerCase().replace(/[^a-z0-9]/g,'') + '@customer.com');
@@ -2897,6 +2997,425 @@ renderCart();
 updateSummary();
 
 </script>
+
+<!-- ══ SCRATCH CARD SYSTEM (non-module, runs after Firebase module) ══ -->
+<script>
+// ================================================================
+// SCRATCH CARD REWARD SYSTEM
+// Firestore collections:
+//   scratchRewards  — reward configs (admin-managed)
+//   userRewards     — earned rewards per user per order
+// ================================================================
+(function() {
+  'use strict';
+
+  var _scReward     = null;  // selected reward object
+  var _scRevealed   = false; // has reward been revealed
+  var _scCanvas     = null;
+  var _scCtx        = null;
+  var _scPainting   = false;
+  var _scOrderId    = '';
+  var _scCode       = '';
+
+  // Default reward pool (used if Firestore has no rewards configured)
+  var DEFAULT_REWARDS = [
+    { id:'d1', type:'percent', value:10, label:'10% OFF',    icon:'🎊', desc:'10% off your next order!',      probability:40, active:true },
+    { id:'d2', type:'fixed',   value:50, label:'₹50 OFF',    icon:'💸', desc:'₹50 off on your next purchase!',probability:30, active:true },
+    { id:'d3', type:'percent', value:15, label:'15% OFF',    icon:'🎁', desc:'15% off — treat yourself!',     probability:20, active:true },
+    { id:'d4', type:'fixed',   value:100,label:'₹100 OFF',   icon:'🤩', desc:'₹100 cashback on next order!', probability:8,  active:true },
+    { id:'d5', type:'percent', value:20, label:'20% OFF',    icon:'🔥', desc:'Massive 20% off — you\'re lucky!',probability:2, active:true }
+  ];
+
+  // ── Weighted random selection ──
+  function _pickReward(rewards) {
+    var active = rewards.filter(function(r){ return r.active !== false; });
+    if (!active.length) return null;
+    var total = active.reduce(function(s, r){ return s + (Number(r.probability) || 10); }, 0);
+    var rand  = Math.random() * total;
+    var cum   = 0;
+    for (var i = 0; i < active.length; i++) {
+      cum += Number(active[i].probability) || 10;
+      if (rand < cum) return active[i];
+    }
+    return active[active.length - 1];
+  }
+
+  // ── Generate unique promo code ──
+  function _genCode(prefix) {
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var code  = (prefix || 'SCR') + '-';
+    for (var i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  // ── Confetti burst ──
+  function _spawnConfetti() {
+    var wrap   = document.getElementById('scConfettiWrap');
+    if (!wrap) return;
+    var colors = ['#c9a96e','#e8a0b0','#c0647a','#f9e4e9','#e8c882','#fff','#3b0d1a'];
+    var html   = '';
+    for (var i = 0; i < 20; i++) {
+      var x = Math.random() * 100;
+      var delay = Math.random() * 0.8;
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      var dur   = 1.4 + Math.random() * 0.8;
+      html += '<div class="sc-confetti-dot" style="left:'+x+'%;background:'+color+';animation-delay:'+delay+'s;animation-duration:'+dur+'s;top:-10px;"></div>';
+    }
+    wrap.innerHTML = html;
+  }
+
+  // ── Set up canvas scratch coating ──
+  function _initCanvas() {
+    var wrap   = document.getElementById('scCardWrap');
+    var canvas = document.getElementById('scratchCanvas');
+    if (!wrap || !canvas) return;
+
+    var W = wrap.offsetWidth  || 300;
+    var H = wrap.offsetHeight || 160;
+    canvas.width  = W;
+    canvas.height = H;
+
+    _scCanvas = canvas;
+    _scCtx    = canvas.getContext('2d');
+
+    // Draw gradient scratch coating
+    var grad = _scCtx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0,   '#3b0d1a');
+    grad.addColorStop(0.4, '#c0647a');
+    grad.addColorStop(0.7, '#3b0d1a');
+    grad.addColorStop(1,   '#5a1528');
+    _scCtx.fillStyle = grad;
+    _scCtx.fillRect(0, 0, W, H);
+
+    // Decorative pattern
+    _scCtx.fillStyle = 'rgba(255,255,255,.06)';
+    for (var y = 0; y < H; y += 14) {
+      for (var x = 0; x < W; x += 14) {
+        _scCtx.beginPath();
+        _scCtx.arc(x, y, 3, 0, Math.PI * 2);
+        _scCtx.fill();
+      }
+    }
+
+    // Set erase composite operation
+    _scCtx.globalCompositeOperation = 'destination-out';
+    _scCtx.lineWidth   = 44;
+    _scCtx.lineCap     = 'round';
+    _scCtx.lineJoin    = 'round';
+    _scCtx.strokeStyle = 'rgba(0,0,0,1)';
+
+    // Mouse events
+    canvas.addEventListener('mousedown',  _scStart);
+    canvas.addEventListener('mousemove',  _scDraw);
+    canvas.addEventListener('mouseup',    _scStop);
+    canvas.addEventListener('mouseleave', _scStop);
+
+    // Touch events
+    canvas.addEventListener('touchstart', _scTouchStart, { passive: false });
+    canvas.addEventListener('touchmove',  _scTouchMove,  { passive: false });
+    canvas.addEventListener('touchend',   _scStop);
+  }
+
+  function _scPos(e) {
+    var rect = _scCanvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  function _scStart(e) { _scPainting = true; var p = _scPos(e); _scCtx.beginPath(); _scCtx.moveTo(p.x, p.y); }
+  function _scDraw(e)  {
+    if (!_scPainting) return;
+    var p = _scPos(e);
+    _scCtx.lineTo(p.x, p.y);
+    _scCtx.stroke();
+    _checkProgress();
+  }
+  function _scStop()   { _scPainting = false; }
+
+  function _scTouchStart(e) {
+    e.preventDefault();
+    var t = e.touches[0];
+    _scPainting = true;
+    var p = _scPos(t);
+    _scCtx.beginPath(); _scCtx.moveTo(p.x, p.y);
+  }
+  function _scTouchMove(e) {
+    e.preventDefault();
+    if (!_scPainting) return;
+    var t = e.touches[0];
+    var p = _scPos(t);
+    _scCtx.lineTo(p.x, p.y);
+    _scCtx.stroke();
+    _checkProgress();
+  }
+
+  // ── Calculate scratch percentage ──
+  function _getScratchPct() {
+    if (!_scCtx || !_scCanvas) return 0;
+    var data   = _scCtx.getImageData(0, 0, _scCanvas.width, _scCanvas.height);
+    var pixels = data.data;
+    var total  = pixels.length / 4;
+    var clear  = 0;
+    for (var i = 3; i < pixels.length; i += 4) {
+      if (pixels[i] < 128) clear++;
+    }
+    return (clear / total) * 100;
+  }
+
+  function _checkProgress() {
+    if (_scRevealed) return;
+    var pct = _getScratchPct();
+    var fill  = document.getElementById('scProgressFill');
+    var label = document.getElementById('scProgressLabel');
+    var hint  = document.getElementById('scHint');
+
+    if (fill)  fill.style.width = Math.min(pct, 100) + '%';
+    if (pct > 10 && hint) hint.style.opacity = '0';
+
+    if (pct >= 60 && !_scRevealed) {
+      _revealReward();
+    } else if (pct < 60) {
+      var left = Math.ceil((60 - pct) * 0.5);
+      if (label) label.textContent = left + '% more to reveal…';
+    }
+  }
+
+  // ── Reveal reward ──
+  function _revealReward() {
+    _scRevealed = true;
+
+    // Fade out canvas
+    if (_scCanvas) {
+      _scCanvas.style.transition = 'opacity .6s';
+      _scCanvas.style.opacity    = '0';
+      setTimeout(function(){ if(_scCanvas) _scCanvas.style.pointerEvents='none'; }, 600);
+    }
+
+    var fill  = document.getElementById('scProgressFill');
+    var label = document.getElementById('scProgressLabel');
+    var hint  = document.getElementById('scHint');
+    var btn   = document.getElementById('scMainBtn');
+
+    if (fill)  fill.style.width = '100%';
+    if (label) label.textContent = '✅ Reward Revealed!';
+    if (hint)  hint.style.opacity = '0';
+    if (btn)   btn.classList.add('visible');
+
+    // Confetti!
+    _spawnConfetti();
+
+    // Update Firestore — mark as scratched
+    _markScratched();
+  }
+
+  // ── Save reward to Firestore ──
+  async function _saveRewardToFirestore(orderId, reward, code) {
+    try {
+      var db   = window._ahDb;
+      var user = window._ahUser;
+      if (!db) return;
+
+      // Import addDoc etc. from already-initialized firebase
+      var expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30); // valid 30 days
+
+      var rewardData = {
+        orderId:      orderId,
+        userId:       user ? user.uid    : 'guest',
+        userEmail:    user ? user.email  : '',
+        rewardType:   reward.type,
+        rewardValue:  reward.value,
+        rewardLabel:  reward.label,
+        rewardIcon:   reward.icon  || '🎁',
+        promoCode:    code,
+        isScratched:  false,
+        isRedeemed:   false,
+        createdAt:    new Date(),
+        expiresAt:    expiresAt
+      };
+
+      // Use the Firestore addDoc exposed on window by the module script
+      if (typeof window._ahAddReward === 'function') {
+        var ref = await window._ahAddReward(rewardData);
+        return ref ? ref.id : null;
+      }
+    } catch(e) { console.warn('Scratch card save:', e); }
+    return null;
+  }
+
+  async function _markScratched() {
+    try {
+      if (typeof window._ahMarkRewardScratched === 'function' && _scOrderId) {
+        await window._ahMarkRewardScratched(_scOrderId);
+      }
+    } catch(e) {}
+  }
+
+  // ── Also save promo code to promoCodes collection for redemption ──
+  async function _savePromoCode(code, reward) {
+    try {
+      if (typeof window._ahSavePromo === 'function') {
+        var expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 30);
+        await window._ahSavePromo(code, {
+          type:      reward.type,
+          value:     reward.value,
+          active:    true,
+          minOrder:  0,
+          maxUses:   1,
+          used:      0,
+          isReward:  true,
+          expiresAt: expiresAt,
+          label:     reward.label
+        });
+      }
+    } catch(e) { console.warn('Promo save:', e); }
+  }
+
+  // ── Main entry: show scratch card after order confirmed ──
+  window.showScratchCard = async function(orderId) {
+    if (!orderId) return;
+    _scOrderId   = orderId;
+    _scRevealed  = false;
+    _scPainting  = false;
+    _scCode      = '';
+    _scReward    = null;
+
+    // Reset progress UI
+    var fill  = document.getElementById('scProgressFill');
+    var label = document.getElementById('scProgressLabel');
+    var hint  = document.getElementById('scHint');
+    var btn   = document.getElementById('scMainBtn');
+    var conf  = document.getElementById('scConfettiWrap');
+
+    if (fill)  fill.style.width = '0%';
+    if (label) label.textContent = 'Scratch to reveal…';
+    if (hint)  { hint.style.opacity = '1'; }
+    if (btn)   btn.classList.remove('visible');
+    if (conf)  conf.innerHTML = '';
+
+    // Reset canvas opacity
+    var cv = document.getElementById('scratchCanvas');
+    if (cv) { cv.style.opacity = '1'; cv.style.pointerEvents = ''; }
+
+    // Reset code display
+    var codeWrap = document.getElementById('scCodeWrap');
+    if (codeWrap) codeWrap.style.display = 'none';
+
+    // Show overlay
+    document.getElementById('scratchCardOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Fetch rewards from Firestore
+    var rewards = DEFAULT_REWARDS;
+    try {
+      if (typeof window._ahGetRewards === 'function') {
+        var fetched = await window._ahGetRewards();
+        if (fetched && fetched.length > 0) rewards = fetched;
+      }
+    } catch(e) {}
+
+    // Pick a reward
+    _scReward = _pickReward(rewards);
+    if (!_scReward) {
+      document.getElementById('scratchCardOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      return;
+    }
+
+    // Generate promo code
+    _scCode = _genCode('SCR');
+
+    // Fill reward display (hidden under canvas until scratched)
+    var icon  = document.getElementById('scRewardIcon');
+    var lbl   = document.getElementById('scRewardLabel');
+    var val   = document.getElementById('scRewardValue');
+    var desc  = document.getElementById('scRewardDesc');
+    var ctext = document.getElementById('scCodeText');
+    var valid = document.getElementById('scValidity');
+
+    if (icon)  icon.textContent  = _scReward.icon  || '🎁';
+    if (lbl)   lbl.textContent   = _scReward.label || 'YOUR REWARD';
+    if (val)   val.textContent   = _scReward.type === 'fixed'
+                                     ? '₹' + _scReward.value + ' OFF'
+                                     : _scReward.value + '% OFF';
+    if (desc)  desc.textContent  = _scReward.desc  || 'Use code at checkout!';
+    if (ctext) ctext.textContent = _scCode;
+    if (valid) valid.textContent = 'Valid for 30 days · Min order ₹0 · One-time use';
+
+    // Show code wrap (will become visible when reveal happens)
+    // Save to Firestore in background
+    _saveRewardToFirestore(orderId, _scReward, _scCode);
+    _savePromoCode(_scCode, _scReward);
+
+    // Hook reveal to also show code
+    var origReveal = _revealReward;
+    // Override to show code after reveal
+    setTimeout(function() {
+      var codeWrapEl = document.getElementById('scCodeWrap');
+      if (codeWrapEl && _scRevealed) codeWrapEl.style.display = 'flex';
+    }, 800);
+
+    // Init canvas after overlay is visible (needs layout)
+    setTimeout(_initCanvas, 80);
+  };
+
+  // After reveal, ensure code shows
+  var _origReveal = _revealReward;
+  function _autoShowCode() {
+    setTimeout(function(){
+      var cw = document.getElementById('scCodeWrap');
+      if (cw) cw.style.display = 'flex';
+    }, 700);
+  }
+  // Patch reveal to show code
+  var _patchedReveal = false;
+  Object.defineProperty(window, '_scRevealPatch', {
+    set: function(v) {
+      if (!_patchedReveal && v) {
+        _patchedReveal = true;
+        _autoShowCode();
+      }
+    }
+  });
+
+  // ── Copy promo code ──
+  window.copyScCode = function() {
+    if (!_scCode) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(_scCode).then(function(){
+        toast('✅ Code copied: ' + _scCode + ' — use at checkout!');
+      }).catch(function(){ _legacyCopyStr(_scCode); });
+    } else { _legacyCopyStr(_scCode); }
+  };
+  function _legacyCopyStr(txt) {
+    var ta = document.createElement('textarea'); ta.value = txt;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ Code copied: ' + txt);
+  }
+
+  // ── Dismiss scratch card ──
+  window.dismissScratchCard = function() {
+    // If not revealed yet, auto-reveal before closing
+    if (!_scRevealed) {
+      _revealReward();
+      var cw = document.getElementById('scCodeWrap');
+      if (cw) cw.style.display = 'flex';
+    }
+    document.getElementById('scratchCardOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  // ── Patch _revealReward to also show code automatically ──
+  var _origRevealFn = _revealReward;
+  _revealReward = function() {
+    _origRevealFn();
+    _autoShowCode();
+  };
+
+})();
+</script>
+
 <script src="lang-currency.js"></script>
 <script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
