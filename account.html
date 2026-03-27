@@ -473,12 +473,20 @@ async function initAccount(user) {
   startOrderListener(user.uid);
 }
 
-function initAccountFromSession(s) {
+async function initAccountFromSession(s) {
   const ini = (s.name||'A').charAt(0).toUpperCase();
   document.getElementById('avCircle').textContent = ini;
   document.getElementById('avName').textContent   = s.name;
   document.getElementById('avEmail').textContent  = s.email;
   document.getElementById('profEmail').value      = s.email;
+  // ✅ Load saved profile fields from Firestore even for session-based login
+  try {
+    const prof = await getDoc(doc(db, 'users', s.uid));
+    if (prof.exists()) populateProfile(prof.data());
+    else document.getElementById('profName').value = s.name || '';
+  } catch(e) {
+    document.getElementById('profName').value = s.name || '';
+  }
   startOrderListener(s.uid);
 }
 
@@ -626,6 +634,7 @@ window.wishAddToCart = function(pid, name, price, image) {
     if (existing) { existing.qty = (existing.qty || 1) + 1; }
     else { cart.push({ id:pid, name:name, price:Number(price), image:image||'', qty:1 }); }
     localStorage.setItem(key, JSON.stringify(cart));
+    updateCartBadge(); // ✅ refresh cart count badge
     toast('🛍️ Added to cart!');
   } catch(e) { toast('Error adding to cart'); }
 };
@@ -768,6 +777,11 @@ function startOrderListener(uid) {
   _unsubOrders = onSnapshot(q, snap => {
     const orders = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderOrders(orders);
+  }, err => {
+    // ✅ Handle missing Firestore index or permission errors gracefully
+    console.error('Order listener error:', err);
+    const cont = document.getElementById('ordersContainer');
+    if (cont) cont.innerHTML = `<div class="empty-box"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load orders</div><div class="empty-sub">There was an error fetching your orders. Please try again later.<br><small style="opacity:.5">${err.message}</small></div></div>`;
   });
 }
 function fmtDate(ts){if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
@@ -825,5 +839,7 @@ window.doLogout = async function() {
 };
 </script>
 <script src="lang-currency.js"></script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
 </body>
 </html>

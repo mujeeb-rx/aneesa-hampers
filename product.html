@@ -904,13 +904,13 @@ function _buyNow(){
   const item={id:_prod.id,name:_prod.name,price:_effPrice(),image:_imgs[0]||'',qty:_qty,isBuyNow:true};
   // Save as buy-now item — cart.html will detect this and go straight to order summary
   localStorage.setItem('ah_buynow',JSON.stringify(item));
-  location.href='cart.html?buynow=1';
+  location.href='checkout.html';
 }
 ['addCartBtn','addCartBtn2'].forEach(id=>{ const el=$(id); if(el)el.onclick=_addToCart; });
 ['buyNowBtn','buyNowBtn2'].forEach(id=>{ const el=$(id); if(el)el.onclick=_buyNow; });
 
 const fwa=$('floatWA');
-if(fwa)fwa.onclick=e=>{ e.preventDefault(); if(_prod)window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hi! I want to order *${_prod.name}* (₹${_effPrice()*_qty}) from Aneesa Hampers 🎁`)},'_blank`); };
+if(fwa)fwa.onclick=e=>{ e.preventDefault(); if(_prod)window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent('Hi! I want to order *'+_prod.name+'* (₹'+(_effPrice()*_qty)+') from Aneesa Hampers 🎁')}`,'_blank'); };
 
 // ── Stars ──
 function _starsHtml(r,size='1rem'){ let h=''; for(let i=1;i<=5;i++)h+=`<span style="font-size:${size};opacity:${i<=Math.round(r)?1:.2}">⭐</span>`; return h; }

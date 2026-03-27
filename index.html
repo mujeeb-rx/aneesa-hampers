@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -253,6 +253,35 @@ a{text-decoration:none;}
 .price-was{font-size:.72rem;text-decoration:line-through;opacity:.38;margin-top:2px;}
 .add-btn{width:35px;height:35px;border-radius:50%;background:var(--burgundy);color:white;border:none;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s;flex-shrink:0;line-height:1;}
 .add-btn:hover{background:var(--deep-rose);transform:scale(1.12);}
+
+/* ── BUY NOW BUTTON ── */
+.prod-buy-btn{width:100%;margin-top:9px;padding:9px 0;background:var(--deep-rose);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.8px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s,transform .15s;display:block;}
+.prod-buy-btn:hover{background:var(--burgundy);transform:translateY(-1px);}
+
+/* ── ADDRESS MODAL ── */
+#addr-overlay{display:none;position:fixed;inset:0;z-index:99990;background:rgba(30,6,16,.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;}
+#addr-overlay.show{display:flex;}
+#addr-box{background:white;border-radius:24px;width:100%;max-width:420px;padding:32px 28px 28px;position:relative;transform:scale(.9) translateY(24px);opacity:0;transition:transform .4s cubic-bezier(.34,1.4,.64,1),opacity .35s ease;}
+#addr-overlay.show #addr-box{transform:scale(1) translateY(0);opacity:1;}
+#addr-box h3{font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--burgundy);margin-bottom:4px;}
+#addr-box .addr-sub{font-size:.76rem;color:rgba(59,13,26,.45);margin-bottom:18px;line-height:1.6;}
+.addr-field{margin-bottom:12px;}
+.addr-field label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.45);margin-bottom:5px;font-weight:600;}
+.addr-field input,.addr-field textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.22);border-radius:11px;font-family:'Jost',sans-serif;font-size:.88rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;}
+.addr-field input:focus,.addr-field textarea:focus{border-color:var(--deep-rose);box-shadow:0 0 0 3px rgba(192,100,122,.1);}
+.addr-field textarea{resize:none;height:66px;}
+.addr-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#addr-saved-badge{display:none;align-items:center;gap:7px;background:#edfaf2;border:1px solid #6fcf97;color:#1a7a40;padding:8px 13px;border-radius:10px;font-size:.72rem;margin-bottom:13px;border-radius:10px;}
+#addr-saved-badge.show{display:flex;}
+.addr-btn-row{display:flex;gap:9px;margin-top:16px;}
+#addr-confirm-btn{flex:1;padding:13px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s;}
+#addr-confirm-btn:hover{background:var(--deep-rose);}
+#addr-skip-btn{padding:13px 17px;background:var(--blush);color:var(--burgundy);border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;white-space:nowrap;}
+#addr-skip-btn:hover{background:#f0cdd5;}
+.addr-close-btn{position:absolute;top:14px;right:14px;width:30px;height:30px;background:rgba(59,13,26,.07);border:none;border-radius:50%;font-size:.95rem;cursor:pointer;color:rgba(59,13,26,.4);display:flex;align-items:center;justify-content:center;line-height:1;}
+.addr-close-btn:hover{background:rgba(59,13,26,.13);}
+.addr-err{font-size:.69rem;color:#e05050;margin-top:3px;display:none;}
+.addr-err.show{display:block;}
 
 /* PROMO STRIP */
 .promo-strip{background:var(--burgundy);padding:48px 52px;display:grid;grid-template-columns:repeat(3,1fr);}
@@ -1074,84 +1103,48 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 </div>
 
 
-<!-- ═══════ PROMO POPUP ═══════ -->
+<!-- ======= PROMO POPUP ======= -->
 <div id="ah-popup-overlay">
   <div id="ah-popup" role="dialog" aria-modal="true">
     <div class="popup-top-ribbon">
       <button class="popup-close" id="ah-popup-close" aria-label="Close">&#x2715;</button>
-      <span class="popup-gift-icon">&#127873;</span>
-      <div class="popup-badge">&#10022; Exclusive Welcome Reward &#10022;</div>
+      <span class="popup-gift-icon">🎁</span>
+      <div class="popup-badge">✦ Exclusive Welcome Reward ✦</div>
       <div class="popup-headline"><span>15% OFF</span> Awaits</div>
       <p class="popup-subtext">You just found a hidden reward. Enter your details below to unlock your personal discount code instantly.</p>
     </div>
     <div class="popup-body">
       <div id="ah-popup-form-wrap">
-        <form class="popup-form" id="ah-popup-form">
-          <div class="popup-field">
-            <label>Your Name</label>
-            <input type="text" id="pp-name" placeholder="e.g. Priya Sharma" autocomplete="name"/>
-          </div>
-          <div class="popup-field">
-            <label>Email Address</label>
-            <input type="email" id="pp-email" placeholder="yourname@email.com" autocomplete="email"/>
-          </div>
-          <div class="popup-field">
-            <label>Phone Number</label>
-            <div class="popup-phone-wrap">
-              <select class="popup-flag-sel" id="pp-country">
-                <option value="+91">&#127470;&#127475; +91</option>
-                <option value="+1">&#127482;&#127480; +1</option>
-                <option value="+44">&#127468;&#127463; +44</option>
-                <option value="+971">&#127462;&#127466; +971</option>
-                <option value="+61">&#127462;&#127482; +61</option>
-                <option value="+65">&#127480;&#127468; +65</option>
-              </select>
-              <input type="tel" id="pp-phone" class="popup-phone-input" placeholder="98765 43210"/>
-            </div>
-          </div>
-          <div class="popup-field">
-            <label>Date of Birth</label>
-            <div class="popup-dob-row">
-              <input type="text" id="pp-dob-d" placeholder="DD" maxlength="2" inputmode="numeric"/>
-              <input type="text" id="pp-dob-m" placeholder="MM" maxlength="2" inputmode="numeric"/>
-              <input type="text" id="pp-dob-y" placeholder="YYYY" maxlength="4" inputmode="numeric"/>
-            </div>
-          </div>
-          <div class="popup-field">
-            <label>Gender</label>
-            <select id="pp-gender">
-              <option value="" disabled selected>Select your gender</option>
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="other">Other / Prefer not to say</option>
-            </select>
-          </div>
-          <button class="popup-submit-btn" id="pp-submit-btn" type="button" onclick="ahPopupSubmit()">&#127881; Unlock My Reward</button>
-          <p class="popup-privacy">&#128274; We respect your privacy. No spam, ever.</p>
+        <form class="popup-form" id="ah-popup-form" onsubmit="return false;">
+          <div class="popup-field"><label>Your Name</label><input type="text" id="pp-name" placeholder="e.g. Priya Sharma" autocomplete="name" required/></div>
+          <div class="popup-field"><label>Email Address</label><input type="email" id="pp-email" placeholder="yourname@email.com" autocomplete="email" required/></div>
+          <div class="popup-field"><label>Phone Number</label><div class="popup-phone-wrap"><select class="popup-flag-sel" id="pp-country"><option value="+91">🇮🇳 +91</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+971">🇦🇪 +971</option><option value="+61">🇦🇺 +61</option><option value="+65">🇸🇬 +65</option></select><input type="tel" id="pp-phone" class="popup-phone-input" placeholder="98765 43210" autocomplete="tel" required/></div></div>
+          <div class="popup-field"><label>Date of Birth</label><div class="popup-dob-row"><input type="text" id="pp-dob-d" placeholder="DD" maxlength="2" inputmode="numeric" required/><input type="text" id="pp-dob-m" placeholder="MM" maxlength="2" inputmode="numeric" required/><input type="text" id="pp-dob-y" placeholder="YYYY" maxlength="4" inputmode="numeric" required/></div></div>
+          <div class="popup-field"><label>Gender</label><select id="pp-gender" required><option value="" disabled selected>Select your gender</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other / Prefer not to say</option></select></div>
+          <button class="popup-submit-btn" id="pp-submit-btn" type="button" onclick="ahPopupSubmit()">🎉 Unlock My Reward</button>
+          <p class="popup-privacy">🔒 We respect your privacy. No spam, ever.</p>
         </form>
       </div>
       <div class="popup-success" id="ah-popup-success">
-        <span class="popup-success-icon">&#127882;</span>
+        <span class="popup-success-icon">🎊</span>
         <div class="popup-success-title">Your Reward is Ready!</div>
         <p style="font-size:.82rem;color:rgba(59,13,26,.55);margin-bottom:8px;">Copy your exclusive discount code:</p>
         <div class="popup-success-code" id="pp-discount-code" onclick="ahCopyCode(this)" title="Click to copy">WELCOME15</div>
-        <p class="popup-success-sub">Use this code at checkout to get <strong>15% OFF</strong> your first order.<br/>Valid for 30 days. Made with love &#127800;</p>
-        <button onclick="ahPopupClose()" style="margin-top:18px;padding:12px 32px;background:#3b0d1a;color:white;border:none;border-radius:50px;font-family:Jost,sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#c0647a'" onmouseout="this.style.background='#3b0d1a'">Start Shopping &#8594;</button>
+        <p class="popup-success-sub">Use this code at checkout to get <strong>15% OFF</strong> your first order.<br/>Valid for 30 days. Share the love! 🌸</p>
+        <button onclick="ahPopupClose()" style="margin-top:18px;padding:12px 32px;background:#3b0d1a;color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">Start Shopping →</button>
       </div>
     </div>
   </div>
 </div>
-<div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">&#127873;</div>
+<div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">🎁</div>
 
-<!-- ═══════ DELIVERY BAR ═══════ -->
+<!-- ======= DELIVERY BAR ======= -->
 <div id="ah-delivery-bar">
-  <div class="dlv-text">&#128666; <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to <strong id="dlv-pin-display">516001</strong></span></div>
-  <div style="position:relative;">
-    <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">&#128205; Change Pincode &#9660;</div>
-    <!-- Pin popup modal -->
-  </div>
-  <div class="dlv-offers">&#10024; Free delivery above &#8377;999</div>
+  <div class="dlv-text">🚚 <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to pincode <strong id="dlv-pin-display">516001</strong></span></div>
+  <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">📍 Change Pincode ▾</div>
+  <div class="dlv-offers">✨ Free delivery above ₹999</div>
 </div>
+
 
 <!-- PIN POPUP MODAL — centred, always visible -->
 <div class="pin-popup-backdrop" id="pin-backdrop" onclick="closePinPopup()"></div>
@@ -1677,6 +1670,115 @@ window.addToCart=function(id,name,price,image){
 };
 cartBadge();
 
+// ══════════════════════════════════════════
+// SAVED ADDRESS SYSTEM
+// ══════════════════════════════════════════
+const AH_ADDR_KEY = 'ah_saved_address';
+
+function addrLoad() {
+  try { return JSON.parse(localStorage.getItem(AH_ADDR_KEY) || 'null'); }
+  catch(e) { return null; }
+}
+function addrSave(a) {
+  try { localStorage.setItem(AH_ADDR_KEY, JSON.stringify(a)); return true; }
+  catch(e) { console.error('Address save failed:', e); return false; }
+}
+
+var _addrPending = null;  // stores {id,name,price,image} while modal is open
+
+// Opens address modal, pre-filling saved data
+window.buyNow = function(id, name, price, image) {
+  _addrPending = { id, name, price, image };
+  const saved = addrLoad();
+
+  const set = (elId, val) => { const el=document.getElementById(elId); if(el) el.value = val||''; };
+  set('addr-name',   saved ? saved.name   : '');
+  set('addr-phone',  saved ? saved.phone  : '');
+  set('addr-street', saved ? saved.street : '');
+  set('addr-city',   saved ? saved.city   : '');
+  set('addr-pin',    saved ? saved.pin    : (localStorage.getItem('ah_pincode')||''));
+  set('addr-state',  saved ? saved.state  : '');
+
+  const badge = document.getElementById('addr-saved-badge');
+  if (badge) badge.classList.toggle('show', !!saved);
+
+  // Clear previous errors
+  document.querySelectorAll('.addr-err').forEach(el => el.classList.remove('show'));
+
+  const ov = document.getElementById('addr-overlay');
+  if (!ov) return;
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('show')));
+  if (!saved) setTimeout(() => { const n=document.getElementById('addr-name'); if(n) n.focus(); }, 300);
+};
+
+window.addrClose = function() {
+  const ov = document.getElementById('addr-overlay');
+  if (!ov) return;
+  ov.classList.remove('show');
+  setTimeout(() => { ov.style.display = 'none'; }, 380);
+  _addrPending = null;
+};
+
+window.addrConfirm = function() {
+  const g = id => (document.getElementById(id)||{}).value||'';
+  const name   = g('addr-name').trim();
+  const phone  = g('addr-phone').trim();
+  const street = g('addr-street').trim();
+  const city   = g('addr-city').trim();
+  const pin    = g('addr-pin').trim();
+  const state  = g('addr-state').trim();
+
+  const showErr = (id, show) => { const el=document.getElementById(id); if(el) el.classList.toggle('show', show); };
+  let valid = true;
+  if (!name)                                        { showErr('addr-name-err', true);   valid=false; } else showErr('addr-name-err', false);
+  if (!phone || phone.replace(/\D/g,'').length<7)  { showErr('addr-phone-err', true);  valid=false; } else showErr('addr-phone-err', false);
+  if (!street)                                      { showErr('addr-street-err', true); valid=false; } else showErr('addr-street-err', false);
+  if (!city)                                        { showErr('addr-city-err', true);   valid=false; } else showErr('addr-city-err', false);
+  if (!pin || pin.replace(/\D/g,'').length<5)      { showErr('addr-pin-err', true);    valid=false; } else showErr('addr-pin-err', false);
+  if (!valid) return;
+
+  const addr = { name, phone, street, city, pin, state, savedAt: Date.now() };
+  const ok = addrSave(addr);
+  if (ok) toast('📍 Address saved!');
+  if (pin) localStorage.setItem('ah_pincode', pin);
+
+  const pending = _addrPending;
+  addrClose();
+  setTimeout(() => _addrFireOrder(addr, pending), 420);
+};
+
+window.addrSkip = function() {
+  const pending = _addrPending;
+  addrClose();
+  setTimeout(() => _addrFireOrder(null, pending), 420);
+};
+
+function _addrFireOrder(addr, p) {
+  p = p || {};
+  let user = null;
+  try { user = JSON.parse(localStorage.getItem('ah_user')||'null'); } catch(e) {}
+  const priceFmt = p.price ? Number(p.price).toLocaleString('en-IN') : '';
+  let msg = 'Hi Aneesa Hampers! 🛍️\n\nI want to order:\n• ' + (p.name||'Product') + (priceFmt ? '\n  Price: ₹'+priceFmt : '');
+  if (addr && addr.street) {
+    msg += '\n\nDeliver to:\n' + addr.name + '\n' + addr.phone + '\n' + addr.street + '\n' + addr.city + (addr.state?', '+addr.state:'') + (addr.pin?' - '+addr.pin:'');
+  }
+  msg += '\n\nPlease confirm my order. 🌸';
+  const waUrl = 'https://wa.me/918639066613?text=' + encodeURIComponent(msg);
+  if (typeof showOrderConfirm === 'function') {
+    showOrderConfirm({ name: addr ? addr.name : (user ? user.name : null) });
+  }
+  setTimeout(() => window.open(waUrl, '_blank'), 900);
+}
+
+// Enter key submits address form
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const ov = document.getElementById('addr-overlay');
+    if (ov && ov.classList.contains('show')) { e.preventDefault(); addrConfirm(); }
+  }
+});
+
 // AUTH STATE
 onAuthStateChanged(auth, user => {
   if(user){
@@ -1984,8 +2086,9 @@ onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')), snap =>
             <div class="price-now" data-inr="${price}">₹${price.toLocaleString('en-IN')}</div>
             ${disc>0?`<div class="price-was" data-inr="${Number(p.price)}">₹${Number(p.price).toLocaleString('en-IN')}</div>`:''}
           </div>
-          <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.id}','${sname}',${price},'${simg}')" aria-label="Add to cart">+</button>
+          <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.id}','${sname}',${price},'${simg}')" aria-label="Add to cart" title="Add to cart">+</button>
         </div>
+        <button class="prod-buy-btn" onclick="event.stopPropagation();buyNow('${p.id}','${sname}',${price},'${simg}')">⚡ Buy Now</button>
       </div>
     </div>`;
   }).join('');
@@ -2751,5 +2854,241 @@ window.addEventListener('scroll',()=>{
   </div>
 </nav>
 
+
+<!-- ═══════ DELIVERY ADDRESS MODAL ═══════ -->
+<div id="addr-overlay" onclick="if(event.target===this)addrClose()">
+  <div id="addr-box">
+    <button class="addr-close-btn" onclick="addrClose()">✕</button>
+    <h3>📍 Delivery Address</h3>
+    <p class="addr-sub">Your address is saved locally for faster checkout.</p>
+    <div id="addr-saved-badge">✅ Using your saved address — edit if needed</div>
+    <div class="addr-field">
+      <label>Full Name *</label>
+      <input id="addr-name" type="text" placeholder="e.g. Priya Sharma" autocomplete="name"/>
+      <div class="addr-err" id="addr-name-err">Please enter your name</div>
+    </div>
+    <div class="addr-field">
+      <label>Phone Number *</label>
+      <input id="addr-phone" type="tel" placeholder="e.g. 9876543210" autocomplete="tel" maxlength="15"/>
+      <div class="addr-err" id="addr-phone-err">Please enter a valid phone number</div>
+    </div>
+    <div class="addr-field">
+      <label>Street / Flat / Area *</label>
+      <textarea id="addr-street" placeholder="e.g. 12-3, Rose Nagar, MG Road"></textarea>
+      <div class="addr-err" id="addr-street-err">Please enter your address</div>
+    </div>
+    <div class="addr-row2">
+      <div class="addr-field">
+        <label>City *</label>
+        <input id="addr-city" type="text" placeholder="e.g. Kadapa" autocomplete="address-level2"/>
+        <div class="addr-err" id="addr-city-err">Required</div>
+      </div>
+      <div class="addr-field">
+        <label>Pincode *</label>
+        <input id="addr-pin" type="text" placeholder="516001" maxlength="6" autocomplete="postal-code"/>
+        <div class="addr-err" id="addr-pin-err">Required</div>
+      </div>
+    </div>
+    <div class="addr-field">
+      <label>State</label>
+      <input id="addr-state" type="text" placeholder="e.g. Andhra Pradesh" autocomplete="address-level1"/>
+    </div>
+    <div class="addr-btn-row">
+      <button id="addr-confirm-btn" onclick="addrConfirm()">Confirm &amp; Order ⚡</button>
+      <button id="addr-skip-btn" onclick="addrSkip()">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ORDER CONFIRMATION ANIMATION ═══════ -->
+<div id="order-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(30,6,16,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+  <div id="order-confirm-box" style="background:white;border-radius:28px;width:100%;max-width:400px;text-align:center;padding:40px 32px 36px;position:relative;transform:scale(.85) translateY(30px);opacity:0;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s ease;overflow:hidden;">
+
+    <!-- confetti canvas -->
+    <canvas id="oc-confetti" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:28px;"></canvas>
+
+    <!-- top ribbon -->
+    <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#3b0d1a,#c0647a,#e8a0b0,#c0647a,#3b0d1a);background-size:200%;animation:ocShimmer 2.5s linear infinite;"></div>
+
+    <!-- checkmark circle -->
+    <div id="oc-check-wrap" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#3b0d1a,#c0647a);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;transform:scale(0);transition:transform .6s .2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 40px rgba(192,100,122,.4);">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path id="oc-tick" d="M10 22 L19 31 L34 14" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" style="transition:stroke-dashoffset .6s .7s ease;"/>
+      </svg>
+    </div>
+
+    <!-- text -->
+    <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#3b0d1a;margin-bottom:6px;opacity:0;transform:translateY(12px);transition:all .5s .5s ease;" id="oc-title">Order Placed! 🎉</div>
+    <div style="font-size:.85rem;color:rgba(59,13,26,.55);line-height:1.75;margin-bottom:24px;opacity:0;transform:translateY(12px);transition:all .5s .65s ease;" id="oc-sub">Thank you! We've received your order.<br/>You'll get a WhatsApp confirmation shortly.</div>
+
+    <!-- order id pill -->
+    <div id="oc-id" style="display:inline-block;background:#fde8ed;border:1.5px dashed #c0647a;color:#3b0d1a;font-size:.85rem;font-weight:700;letter-spacing:3px;padding:10px 24px;border-radius:12px;margin-bottom:24px;opacity:0;transition:opacity .5s .8s ease;"></div>
+
+    <!-- buttons -->
+    <div style="display:flex;gap:10px;justify-content:center;opacity:0;transition:opacity .5s .95s ease;" id="oc-btns">
+      <a href="orders.html" style="flex:1;padding:12px;background:#3b0d1a;color:white;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">📦 Track Order</a>
+      <button onclick="closeOrderConfirm()" style="flex:1;padding:12px;background:var(--blush,#f9e4e9);color:#3b0d1a;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;">Continue Shopping</button>
+    </div>
+
+    <!-- close -->
+    <button onclick="closeOrderConfirm()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(59,13,26,.07);border:none;border-radius:50%;font-size:1rem;cursor:pointer;color:rgba(59,13,26,.4);display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+</div>
+
+<style>
+@keyframes ocShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes ocFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#order-confirm-overlay.show{display:flex!important;}
+#order-confirm-overlay.show #order-confirm-box{transform:scale(1) translateY(0);opacity:1;}
+#order-confirm-overlay.show #oc-check-wrap{transform:scale(1);}
+#order-confirm-overlay.show #oc-tick{stroke-dashoffset:0;}
+#order-confirm-overlay.show #oc-title,
+#order-confirm-overlay.show #oc-sub{opacity:1;transform:translateY(0);}
+#order-confirm-overlay.show #oc-id,
+#order-confirm-overlay.show #oc-btns{opacity:1;}
+</style>
+
+<script>
+function showOrderConfirm(orderData){
+  const overlay=document.getElementById('order-confirm-overlay');
+  // Set order ID
+  const oid=orderData&&orderData.orderId ? orderData.orderId : 'AH-'+Date.now().toString().slice(-6);
+  document.getElementById('oc-id').textContent='Order #'+oid;
+  // Custom message if provided
+  if(orderData&&orderData.name){
+    document.getElementById('oc-sub').innerHTML='Thank you, <strong>'+orderData.name+'</strong>! Your order is confirmed.<br/>WhatsApp confirmation coming shortly. 🌸';
+  }
+  overlay.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    overlay.classList.add('show');
+    setTimeout(()=>launchConfetti(),400);
+  }));
+  // Auto close after 8s
+  window._ocAutoClose=setTimeout(closeOrderConfirm,8000);
+}
+
+function closeOrderConfirm(){
+  clearTimeout(window._ocAutoClose);
+  const overlay=document.getElementById('order-confirm-overlay');
+  overlay.classList.remove('show');
+  setTimeout(()=>{ overlay.style.display='none'; },500);
+}
+
+// Close on backdrop click
+document.getElementById('order-confirm-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeOrderConfirm();
+});
+
+// ── Confetti ──
+function launchConfetti(){
+  const canvas=document.getElementById('oc-confetti');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth*2;
+  canvas.height=canvas.offsetHeight*2;
+  ctx.scale(2,2);
+  const W=canvas.offsetWidth, H=canvas.offsetHeight;
+  const colors=['#c0647a','#e8a0b0','#f9e4e9','#c9a96e','#3b0d1a','#fdf6f0','#e8d5a3'];
+  const pieces=Array.from({length:80},()=>({
+    x:Math.random()*W, y:-10-Math.random()*40,
+    w:6+Math.random()*8, h:4+Math.random()*5,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    rot:Math.random()*360, rotV:(Math.random()-0.5)*8,
+    vx:(Math.random()-0.5)*3, vy:2+Math.random()*3,
+    alpha:1
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    let alive=false;
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotV;
+      if(p.y>H+20){ p.alpha=0; return; }
+      if(p.y>H*0.7) p.alpha=Math.max(0,p.alpha-0.025);
+      alive=true;
+      ctx.save();
+      ctx.globalAlpha=p.alpha;
+      ctx.translate(p.x+p.w/2, p.y+p.h/2);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    frame++;
+    if(alive&&frame<200) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,W,H);
+  }
+  draw();
+}
+
+// Order flow hook — uses same cartKey logic as the rest of the site
+(function(){
+  function getCartKey(){
+    try{
+      var u=JSON.parse(localStorage.getItem('ah_user')||'null');
+      return (u&&u.uid)?'ah_cart_'+u.uid:'ah_cart_guest';
+    }catch(e){return'ah_cart_guest';}
+  }
+  function getCartItems(){
+    try{return JSON.parse(localStorage.getItem(getCartKey())||'[]');}
+    catch(e){return[];}
+  }
+
+  // Event delegation — catches ALL WA order links, including ones injected later by
+  // bottomnav.js / mobilenav.js.  Also works for direct "Buy Now" when cart is empty.
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a[href*="wa.me"]');
+    if(!link) return;
+    var href=link.getAttribute('href')||'';
+    var isOrder=href.indexOf('order')>-1||href.indexOf('hamper')>-1||href.indexOf('checkout')>-1;
+    if(!isOrder) return;
+
+    e.preventDefault();
+    var waHref=link.href;
+    var items=getCartItems();
+
+    // Reset subtitle to default each time
+    var subEl=document.getElementById('oc-sub');
+    if(subEl) subEl.innerHTML='Thank you! We\'ve received your order.<br/>You\'ll get a WhatsApp confirmation shortly.';
+
+    // Get user name if logged in
+    var user=null;
+    try{user=JSON.parse(localStorage.getItem('ah_user')||'null');}catch(ex){}
+
+    showOrderConfirm({name:user?user.name:null});
+
+    // Clear cart only if it has items
+    if(items.length){
+      localStorage.removeItem(getCartKey());
+      setTimeout(function(){if(typeof cartBadge==='function')cartBadge();},150);
+    }
+
+    // Open WhatsApp after animation begins
+    setTimeout(function(){window.open(waHref,'_blank');},900);
+  });
+
+  // Expose globally for cart.html / checkout pages
+  window.showOrderConfirm=showOrderConfirm;
+  window.closeOrderConfirm=closeOrderConfirm;
+})();
+</script>
+
+
+<!-- LOADER HARD FALLBACK — runs even if Firebase module fails -->
+<script>
+(function(){
+  function killLoader(){
+    var l=document.getElementById('loader');
+    if(l){l.classList.add('done');}
+  }
+  // Dismiss after 2.5s no matter what
+  setTimeout(killLoader, 2500);
+  // Also dismiss immediately once DOM is interactive
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(killLoader,600); });
+  } else {
+    setTimeout(killLoader,600);
+  }
+})();
+</script>
 </body>
 </html>
