@@ -850,8 +850,27 @@ function addrKey() {
   return u?.uid ? `ah_addr_${u.uid}` : "ah_addr_guest";
 }
 function loadSavedAddress() {
-  try { return JSON.parse(localStorage.getItem(addrKey()) || "null"); }
-  catch { return null; }
+  try {
+    // Primary: per-user key used by checkout / cart
+    const primary = JSON.parse(localStorage.getItem(addrKey()) || "null");
+    if (primary && primary.addr && primary.city) return primary;
+
+    // Fallback: key used by index.html home-page popup (ah_saved_address)
+    // Maps .street -> .addr to normalise field names
+    const legacy = JSON.parse(localStorage.getItem("ah_saved_address") || "null");
+    if (legacy && (legacy.addr || legacy.street) && legacy.city) {
+      return {
+        name:    legacy.name    || "",
+        phone:   legacy.phone   || "",
+        addr:    legacy.addr    || legacy.street || "",
+        city:    legacy.city    || "",
+        state:   legacy.state   || "",
+        pin:     legacy.pin     || "",
+        country: legacy.country || "India"
+      };
+    }
+    return null;
+  } catch { return null; }
 }
 function persistAddress(a) {
   localStorage.setItem(addrKey(), JSON.stringify(a));

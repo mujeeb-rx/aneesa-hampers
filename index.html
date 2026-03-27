@@ -258,30 +258,6 @@ a{text-decoration:none;}
 .prod-buy-btn{width:100%;margin-top:9px;padding:9px 0;background:var(--deep-rose);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.8px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s,transform .15s;display:block;}
 .prod-buy-btn:hover{background:var(--burgundy);transform:translateY(-1px);}
 
-/* ── ADDRESS MODAL ── */
-#addr-overlay{display:none;position:fixed;inset:0;z-index:99990;background:rgba(30,6,16,.65);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;}
-#addr-overlay.show{display:flex;}
-#addr-box{background:white;border-radius:24px;width:100%;max-width:420px;padding:32px 28px 28px;position:relative;transform:scale(.9) translateY(24px);opacity:0;transition:transform .4s cubic-bezier(.34,1.4,.64,1),opacity .35s ease;}
-#addr-overlay.show #addr-box{transform:scale(1) translateY(0);opacity:1;}
-#addr-box h3{font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--burgundy);margin-bottom:4px;}
-#addr-box .addr-sub{font-size:.76rem;color:rgba(59,13,26,.45);margin-bottom:18px;line-height:1.6;}
-.addr-field{margin-bottom:12px;}
-.addr-field label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.45);margin-bottom:5px;font-weight:600;}
-.addr-field input,.addr-field textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.22);border-radius:11px;font-family:'Jost',sans-serif;font-size:.88rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;}
-.addr-field input:focus,.addr-field textarea:focus{border-color:var(--deep-rose);box-shadow:0 0 0 3px rgba(192,100,122,.1);}
-.addr-field textarea{resize:none;height:66px;}
-.addr-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-#addr-saved-badge{display:none;align-items:center;gap:7px;background:#edfaf2;border:1px solid #6fcf97;color:#1a7a40;padding:8px 13px;border-radius:10px;font-size:.72rem;margin-bottom:13px;border-radius:10px;}
-#addr-saved-badge.show{display:flex;}
-.addr-btn-row{display:flex;gap:9px;margin-top:16px;}
-#addr-confirm-btn{flex:1;padding:13px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background .2s;}
-#addr-confirm-btn:hover{background:var(--deep-rose);}
-#addr-skip-btn{padding:13px 17px;background:var(--blush);color:var(--burgundy);border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;white-space:nowrap;}
-#addr-skip-btn:hover{background:#f0cdd5;}
-.addr-close-btn{position:absolute;top:14px;right:14px;width:30px;height:30px;background:rgba(59,13,26,.07);border:none;border-radius:50%;font-size:.95rem;cursor:pointer;color:rgba(59,13,26,.4);display:flex;align-items:center;justify-content:center;line-height:1;}
-.addr-close-btn:hover{background:rgba(59,13,26,.13);}
-.addr-err{font-size:.69rem;color:#e05050;margin-top:3px;display:none;}
-.addr-err.show{display:block;}
 
 /* PROMO STRIP */
 .promo-strip{background:var(--burgundy);padding:48px 52px;display:grid;grid-template-columns:repeat(3,1fr);}
@@ -1684,100 +1660,23 @@ function addrSave(a) {
   catch(e) { console.error('Address save failed:', e); return false; }
 }
 
-var _addrPending = null;  // stores {id,name,price,image} while modal is open
-
-// Opens address modal, pre-filling saved data
+// Buy Now — skip address popup, go directly to checkout.html
+// checkout.html auto-fills saved address and shows Change/Add Address buttons
 window.buyNow = function(id, name, price, image) {
-  _addrPending = { id, name, price, image };
-  const saved = addrLoad();
-
-  const set = (elId, val) => { const el=document.getElementById(elId); if(el) el.value = val||''; };
-  set('addr-name',   saved ? saved.name   : '');
-  set('addr-phone',  saved ? saved.phone  : '');
-  set('addr-street', saved ? saved.street : '');
-  set('addr-city',   saved ? saved.city   : '');
-  set('addr-pin',    saved ? saved.pin    : (localStorage.getItem('ah_pincode')||''));
-  set('addr-state',  saved ? saved.state  : '');
-
-  const badge = document.getElementById('addr-saved-badge');
-  if (badge) badge.classList.toggle('show', !!saved);
-
-  // Clear previous errors
-  document.querySelectorAll('.addr-err').forEach(el => el.classList.remove('show'));
-
-  const ov = document.getElementById('addr-overlay');
-  if (!ov) return;
-  ov.style.display = 'flex';
-  requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('show')));
-  if (!saved) setTimeout(() => { const n=document.getElementById('addr-name'); if(n) n.focus(); }, 300);
+  const disc = 0; // home page cards pass effective price directly
+  const item = {
+    id: id,
+    name: name,
+    price: Number(price),
+    image: image || '',
+    qty: 1,
+    isBuyNow: true
+  };
+  localStorage.setItem('ah_buynow', JSON.stringify(item));
+  location.href = 'checkout.html';
 };
 
-window.addrClose = function() {
-  const ov = document.getElementById('addr-overlay');
-  if (!ov) return;
-  ov.classList.remove('show');
-  setTimeout(() => { ov.style.display = 'none'; }, 380);
-  _addrPending = null;
-};
 
-window.addrConfirm = function() {
-  const g = id => (document.getElementById(id)||{}).value||'';
-  const name   = g('addr-name').trim();
-  const phone  = g('addr-phone').trim();
-  const street = g('addr-street').trim();
-  const city   = g('addr-city').trim();
-  const pin    = g('addr-pin').trim();
-  const state  = g('addr-state').trim();
-
-  const showErr = (id, show) => { const el=document.getElementById(id); if(el) el.classList.toggle('show', show); };
-  let valid = true;
-  if (!name)                                        { showErr('addr-name-err', true);   valid=false; } else showErr('addr-name-err', false);
-  if (!phone || phone.replace(/\D/g,'').length<7)  { showErr('addr-phone-err', true);  valid=false; } else showErr('addr-phone-err', false);
-  if (!street)                                      { showErr('addr-street-err', true); valid=false; } else showErr('addr-street-err', false);
-  if (!city)                                        { showErr('addr-city-err', true);   valid=false; } else showErr('addr-city-err', false);
-  if (!pin || pin.replace(/\D/g,'').length<5)      { showErr('addr-pin-err', true);    valid=false; } else showErr('addr-pin-err', false);
-  if (!valid) return;
-
-  const addr = { name, phone, street, city, pin, state, savedAt: Date.now() };
-  const ok = addrSave(addr);
-  if (ok) toast('📍 Address saved!');
-  if (pin) localStorage.setItem('ah_pincode', pin);
-
-  const pending = _addrPending;
-  addrClose();
-  setTimeout(() => _addrFireOrder(addr, pending), 420);
-};
-
-window.addrSkip = function() {
-  const pending = _addrPending;
-  addrClose();
-  setTimeout(() => _addrFireOrder(null, pending), 420);
-};
-
-function _addrFireOrder(addr, p) {
-  p = p || {};
-  let user = null;
-  try { user = JSON.parse(localStorage.getItem('ah_user')||'null'); } catch(e) {}
-  const priceFmt = p.price ? Number(p.price).toLocaleString('en-IN') : '';
-  let msg = 'Hi Aneesa Hampers! 🛍️\n\nI want to order:\n• ' + (p.name||'Product') + (priceFmt ? '\n  Price: ₹'+priceFmt : '');
-  if (addr && addr.street) {
-    msg += '\n\nDeliver to:\n' + addr.name + '\n' + addr.phone + '\n' + addr.street + '\n' + addr.city + (addr.state?', '+addr.state:'') + (addr.pin?' - '+addr.pin:'');
-  }
-  msg += '\n\nPlease confirm my order. 🌸';
-  const waUrl = 'https://wa.me/918639066613?text=' + encodeURIComponent(msg);
-  if (typeof showOrderConfirm === 'function') {
-    showOrderConfirm({ name: addr ? addr.name : (user ? user.name : null) });
-  }
-  setTimeout(() => window.open(waUrl, '_blank'), 900);
-}
-
-// Enter key submits address form
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    const ov = document.getElementById('addr-overlay');
-    if (ov && ov.classList.contains('show')) { e.preventDefault(); addrConfirm(); }
-  }
-});
 
 // AUTH STATE
 onAuthStateChanged(auth, user => {
@@ -2855,50 +2754,6 @@ window.addEventListener('scroll',()=>{
 </nav>
 
 
-<!-- ═══════ DELIVERY ADDRESS MODAL ═══════ -->
-<div id="addr-overlay" onclick="if(event.target===this)addrClose()">
-  <div id="addr-box">
-    <button class="addr-close-btn" onclick="addrClose()">✕</button>
-    <h3>📍 Delivery Address</h3>
-    <p class="addr-sub">Your address is saved locally for faster checkout.</p>
-    <div id="addr-saved-badge">✅ Using your saved address — edit if needed</div>
-    <div class="addr-field">
-      <label>Full Name *</label>
-      <input id="addr-name" type="text" placeholder="e.g. Priya Sharma" autocomplete="name"/>
-      <div class="addr-err" id="addr-name-err">Please enter your name</div>
-    </div>
-    <div class="addr-field">
-      <label>Phone Number *</label>
-      <input id="addr-phone" type="tel" placeholder="e.g. 9876543210" autocomplete="tel" maxlength="15"/>
-      <div class="addr-err" id="addr-phone-err">Please enter a valid phone number</div>
-    </div>
-    <div class="addr-field">
-      <label>Street / Flat / Area *</label>
-      <textarea id="addr-street" placeholder="e.g. 12-3, Rose Nagar, MG Road"></textarea>
-      <div class="addr-err" id="addr-street-err">Please enter your address</div>
-    </div>
-    <div class="addr-row2">
-      <div class="addr-field">
-        <label>City *</label>
-        <input id="addr-city" type="text" placeholder="e.g. Kadapa" autocomplete="address-level2"/>
-        <div class="addr-err" id="addr-city-err">Required</div>
-      </div>
-      <div class="addr-field">
-        <label>Pincode *</label>
-        <input id="addr-pin" type="text" placeholder="516001" maxlength="6" autocomplete="postal-code"/>
-        <div class="addr-err" id="addr-pin-err">Required</div>
-      </div>
-    </div>
-    <div class="addr-field">
-      <label>State</label>
-      <input id="addr-state" type="text" placeholder="e.g. Andhra Pradesh" autocomplete="address-level1"/>
-    </div>
-    <div class="addr-btn-row">
-      <button id="addr-confirm-btn" onclick="addrConfirm()">Confirm &amp; Order ⚡</button>
-      <button id="addr-skip-btn" onclick="addrSkip()">Skip</button>
-    </div>
-  </div>
-</div>
 
 <!-- ═══════ ORDER CONFIRMATION ANIMATION ═══════ -->
 <div id="order-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(30,6,16,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
