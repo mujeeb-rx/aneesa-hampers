@@ -44,23 +44,29 @@
     #mn-ham.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     #mn-overlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(20,4,10,.55); backdrop-filter:blur(4px);
-      z-index:7999; opacity:0; transition:opacity .3s;
+      display:none; position:fixed; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(20,4,10,.6);
+      z-index:7999; opacity:0; transition:opacity .3s ease;
+      -webkit-tap-highlight-color:transparent;
     }
-    #mn-overlay.show { opacity:1; }
 
     #mn-sidebar {
-      position:fixed; top:0; left:0; width:290px; height:100%;
+      position:fixed; top:0; left:0; width:min(300px, 88vw); height:100%;
+      height:100dvh;
       background:white;
       z-index:8000;
       display:flex; flex-direction:column;
       transform:translateX(-100%);
-      transition:transform .35s cubic-bezier(.4,0,.2,1);
-      overflow-y:auto; -webkit-overflow-scrolling:touch;
-      box-shadow: 4px 0 24px rgba(59,13,26,.18);
+      transition:transform .32s cubic-bezier(.4,0,.2,1);
+      overflow-y:auto; overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+      box-shadow: none;
+      will-change: transform;
     }
-    #mn-sidebar.open { transform:translateX(0); }
+    #mn-sidebar.open {
+      transform:translateX(0);
+      box-shadow: 6px 0 32px rgba(59,13,26,.22);
+    }
 
     /* Header — dark burgundy */
     .mn-header {
@@ -309,8 +315,14 @@
     document.getElementById("mn-sidebar").classList.add("open");
     var ov = document.getElementById("mn-overlay");
     ov.style.display = "block";
-    setTimeout(function () { ov.classList.add("show"); }, 10);
+    ov.style.opacity = "0";
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        ov.style.opacity = "1";
+      });
+    });
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     // Load dynamic data when sidebar opens
     _loadDynamicData();
   };
@@ -319,9 +331,13 @@
     document.getElementById("mn-ham").classList.remove("open");
     document.getElementById("mn-sidebar").classList.remove("open");
     var ov = document.getElementById("mn-overlay");
-    ov.classList.remove("show");
-    setTimeout(function () { ov.style.display = "none"; }, 300);
+    ov.style.opacity = "0";
+    setTimeout(function () {
+      ov.style.display = "none";
+      ov.style.opacity = "";
+    }, 300);
     document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
   };
 
   /* ── CATEGORIES TOGGLE ──────────────────────────────── */
@@ -495,5 +511,15 @@
 
   /* ── ESC key ────────────────────────────────────────── */
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && _open) mnClose(); });
+
+  /* ── Close on any sidebar nav link click ────────────── */
+  document.addEventListener("click", function (e) {
+    if (!_open) return;
+    var link = e.target.closest(".mn-link, .mn-cat-item");
+    if (link) mnClose();
+  });
+
+  /* ── Close on browser back navigation ───────────────── */
+  window.addEventListener("popstate", function () { if (_open) mnClose(); });
 
 })();
