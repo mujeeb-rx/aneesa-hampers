@@ -130,7 +130,7 @@
     }
 
     /* NAV */
-    nav {
+    nav.topnav {
       position: fixed;
       top: 0;
       width: 100%;
@@ -1711,7 +1711,7 @@
 
     /* ── Tablet portrait 600–899px ── */
     @media(max-width:900px) {
-      nav {
+      nav.topnav {
         padding: 0 16px 0 68px;
         height: 60px;
       }
@@ -1913,6 +1913,9 @@
       }
     }
 
+    /* suppress any mobilenav.js elements */
+    #mn-sidebar,#mn-overlay,#mn-ham{display:none!important;}
+
     /* ══════════════════════════════════════════
        HAMBURGER BUTTON
     ══════════════════════════════════════════ */
@@ -1950,7 +1953,7 @@
         transform: translateY(-50%);
       }
 
-      nav {
+      nav.topnav {
         padding: 0 16px !important;
       }
 
@@ -2010,6 +2013,23 @@
     #enh-overlay.show {
       opacity: 1;
       pointer-events: all;
+    }
+
+    /* ── SIDEBAR ISOLATION — prevents generic "nav" rules from bleeding in ── */
+    #enh-sidebar,
+    #enh-sidebar.open {
+      width: 300px !important;
+      max-width: 85vw !important;
+      height: 100% !important;
+      height: 100dvh !important;
+      min-height: 0 !important;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
+      padding: 0 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-bottom: none !important;
+      background: white !important;
     }
 
     .esb-user-area {
@@ -2334,7 +2354,7 @@
     <button class="lightbox-next" onclick="lightboxNav(1)">›</button>
   </div>
 
-  <nav>
+  <nav class="topnav">
     <button class="ham-btn" onclick="enhSbOpen()"
       aria-label="Open menu"><span></span><span></span><span></span></button>
     <a href="index.html" class="nav-logo">
@@ -2407,7 +2427,7 @@
       <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper"
         target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
       <div class="esb-settings-row">
-        <button class="esb-settings-btn" onclick="document.getElementById('enh-sidebar').scrollTop=0">&#8593;
+        <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
           Top</button>
       </div>
       <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
@@ -3083,7 +3103,7 @@
         localStorage.removeItem('ah_user');
         window.location.href = 'login.html';
       };
-      var _tx = null;
+      window.mnToggle = function () { enhSbOpen(); };
       document.addEventListener('touchstart', function (e) { _tx = e.touches[0].clientX; }, { passive: true });
       document.addEventListener('touchend', function (e) {
         if (_tx === null) return;

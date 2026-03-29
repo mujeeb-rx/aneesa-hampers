@@ -1037,6 +1037,9 @@
     /* ══════════════════════════════════════════
        HAMBURGER BUTTON
     ══════════════════════════════════════════ */
+    /* suppress any mobilenav.js elements */
+    #mn-sidebar,#mn-overlay,#mn-ham{display:none!important;}
+
     .ham-btn {
       display: none;
       flex-direction: column;
@@ -1095,6 +1098,10 @@
       height: 100dvh;
       background: white;
       z-index: 8100;
+      /* Override any bleeding styles from the general nav {} rule */
+      padding: 0 !important;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
       -webkit-transform: translateX(-100%);
       transform: translateX(-100%);
       -webkit-transition: transform .38s cubic-bezier(.4, 0, .2, 1);
@@ -1186,21 +1193,25 @@
     }
 
     .esb-signin-btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       margin-top: 10px;
+      width: 100%;
       background: rgba(255, 255, 255, .15);
       border: 1px solid rgba(255, 255, 255, .2);
       color: white;
-      padding: 7px 16px;
+      padding: 9px 16px;
       border-radius: 30px;
       font-family: 'Jost', sans-serif;
       font-size: .68rem;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       text-decoration: none;
       transition: background .2s;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
     .esb-signin-btn:hover {
@@ -1435,6 +1446,51 @@
     .esb-logout-btn:hover {
       background: rgba(200, 60, 60, .07);
     }
+    /* ── Floating 15% OFF promo bubble ── */
+    #ah-popup-float {
+      position: fixed;
+      bottom: 84px;
+      right: 78px;
+      z-index: 49000;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b0d1a, #c0647a);
+      color: white;
+      font-size: 1.3rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(59, 13, 26, .35);
+      animation: floatBubble 2.5s ease-in-out infinite;
+      border: 3px solid white;
+    }
+
+    #ah-popup-float.show {
+      display: flex;
+    }
+
+    @keyframes floatBubble {
+      0%, 100% { transform: translateY(0) }
+      50% { transform: translateY(-8px) }
+    }
+
+    #ah-popup-float::after {
+      content: '15%';
+      position: absolute;
+      top: -8px;
+      right: -6px;
+      background: #c0647a;
+      color: white;
+      font-size: .48rem;
+      letter-spacing: .5px;
+      padding: 3px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+      border: 2px solid white;
+      white-space: nowrap;
+    }
   </style>
 </head>
 
@@ -1500,6 +1556,7 @@
       <div class="esb-divider"></div>
       <div class="esb-section-lbl">My Account</div>
       <a href="orders.html" class="esb-link"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+      <a href="wishlist.html" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
       <a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
       <a href="cart.html" class="esb-link"><span class="esb-link-icon">&#128722;</span>My Cart</a>
       <div class="esb-divider"></div>
@@ -1514,8 +1571,9 @@
       <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper"
         target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
       <div class="esb-settings-row">
-        <button class="esb-settings-btn" onclick="document.getElementById('enh-sidebar').scrollTop=0">&#8593;
+        <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
           Top</button>
+        <button class="esb-settings-btn" onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
       </div>
       <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
     </div>
@@ -1549,6 +1607,9 @@
   </section>
 
   <a href="#" id="floatWA">💬 Order via WhatsApp</a>
+
+  <!-- 15% OFF floating promo bubble -->
+  <div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">🎁</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1622,6 +1683,13 @@
     badge();
     document.getElementById('navWA').onclick = e => { e.preventDefault(); waOpen('Hi! I want to order a hamper 🎁'); };
     document.getElementById('floatWA').onclick = e => { e.preventDefault(); waOpen('Hi! I want to order 🎁'); };
+
+    // 15% OFF promo bubble — show after 4s, clicking goes to home page popup
+    window.ahPopupOpen = function () { window.location.href = 'index.html?promo=1'; };
+    setTimeout(function () {
+      var bubble = document.getElementById('ah-popup-float');
+      if (bubble) bubble.classList.add('show');
+    }, 4000);
 
     // Cursor (desktop only)
     const cur = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
@@ -1898,6 +1966,7 @@
         localStorage.removeItem('ah_user');
         window.location.href = 'login.html';
       };
+      window.mnToggle = function () { enhSbOpen(); };
       var _tx = null;
       document.addEventListener('touchstart', function (e) { _tx = e.touches[0].clientX; }, { passive: true });
       document.addEventListener('touchend', function (e) {

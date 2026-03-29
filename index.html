@@ -75,9 +75,11 @@ a{text-decoration:none;}
 .btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
 
 /* Slide — 350px desktop, responsive on mobile */
+/* ── BANNER SLIDE ── */
 .bslide{
   min-width:100%;
-  height:350px;
+  height:auto;
+  aspect-ratio:16/5;
   position:relative;
   overflow:hidden;
   display:flex;
@@ -86,25 +88,41 @@ a{text-decoration:none;}
   background:linear-gradient(135deg,var(--burgundy),#5a1528);
 }
 
-/* Image — contain keeps full image visible without cropping */
+/* Photo fills perfectly — no gaps, no distortion */
 .bslide-bg{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:contain;        /* full image visible — no crop */
+  object-fit:cover;
   object-position:center center;
-  background:inherit;        /* fallback colour behind transparent areas */
 }
 
-/* Image-only banner — no text overlay — centre image perfectly */
-.bslide.image-only .bslide-bg{
-  object-fit:contain;
-  width:100%;
-  height:100%;
+/* Beautiful dark gradient over photo — makes text readable + looks polished */
+.bslide::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to right,
+    rgba(30,6,14,.62) 0%,
+    rgba(30,6,14,.38) 45%,
+    rgba(30,6,14,.08) 100%
+  );
+  z-index:1;
+  pointer-events:none;
 }
 
-/* Text overlay — centred safe zone, never clips content */
+/* Image-only slide — lighter overlay, full photo focus */
+.bslide.image-only::after{
+  background:linear-gradient(
+    to top,
+    rgba(30,6,14,.35) 0%,
+    rgba(30,6,14,.0) 60%
+  );
+}
+
+/* Text overlay */
 .bslide-overlay{
   position:relative;
   z-index:2;
@@ -113,24 +131,78 @@ a{text-decoration:none;}
   padding:0 52px;
   text-align:left;
 }
-.bslide-tag{display:inline-block;background:rgba(255,255,255,.15);color:white;font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:13px;}
-.bslide-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.8rem);color:white;font-weight:300;line-height:1.2;margin-bottom:10px;}
-.bslide-sub{font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:20px;line-height:1.7;}
-.bslide-cta{display:inline-block;background:white;color:var(--burgundy);padding:10px 26px;border-radius:30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
-.bslide-cta:hover{opacity:.88;}
+.bslide-tag{
+  display:inline-block;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(6px);
+  color:white;
+  font-size:.62rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  padding:5px 14px;
+  border-radius:20px;
+  margin-bottom:13px;
+  border:1px solid rgba(255,255,255,.2);
+}
+.bslide-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.6rem,3vw,2.8rem);
+  color:white;
+  font-weight:300;
+  line-height:1.2;
+  margin-bottom:10px;
+  text-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+.bslide-sub{font-size:.85rem;color:rgba(255,255,255,.8);margin-bottom:20px;line-height:1.7;text-shadow:0 1px 6px rgba(0,0,0,.2);}
+.bslide-cta{
+  display:inline-block;
+  background:white;
+  color:var(--burgundy);
+  padding:10px 26px;
+  border-radius:30px;
+  font-size:.72rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:600;
+  transition:all .25s;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+.bslide-cta:hover{background:var(--blush);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.22);}
 
-/* Arrows */
-.barrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:40px;height:40px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);color:white;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s;}
-.barrow:hover{background:rgba(255,255,255,.32);}
-.barrow.prev{left:18px;}
-.barrow.next{right:18px;}
+/* Arrows — desktop */
+.barrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
+  width:44px;height:44px;
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:white;
+  border:1.5px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all .25s;
+  font-size:1rem;
+}
+.barrow:hover{background:rgba(255,255,255,.38);transform:translateY(-50%) scale(1.08);}
+.barrow.prev{left:20px;}
+.barrow.next{right:20px;}
 
-/* Dots & progress */
-.bdots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;}
-.bdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none;padding:0;}
-.bdot.active{background:white;transform:scale(1.3);}
-.bprog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.18);width:100%;z-index:10;}
-.bprog-bar{height:100%;background:white;width:0;transition:width linear;}
+/* Dots */
+.bdots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;}
+.bdot{
+  width:24px;height:4px;
+  border-radius:4px;
+  background:rgba(255,255,255,.35);
+  cursor:pointer;
+  transition:all .3s;
+  border:none;padding:0;
+}
+.bdot.active{background:white;width:36px;}
+
+/* Progress bar */
+.bprog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.12);width:100%;z-index:10;}
+.bprog-bar{height:100%;background:rgba(255,255,255,.6);width:0;transition:width linear;}
 
 /* HERO */
 .hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:64px 52px;background:linear-gradient(135deg,var(--cream) 50%,#fbeaf0);min-height:calc(100vh - 108px);position:relative;overflow:hidden;}
@@ -515,6 +587,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   position:fixed;inset:0;background:rgba(20,4,10,.5);
   backdrop-filter:blur(4px);z-index:8050;
   opacity:0;pointer-events:none;transition:opacity .3s;
+  display:none;
 }
 #enh-overlay.show{opacity:1;pointer-events:all;}
 /* Sidebar top user area */
@@ -686,6 +759,9 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;}
 .reveal.visible{opacity:1;transform:none;}
 
+/* FIX: hide hamburger on desktop */
+@media(min-width:901px){.ham-btn{display:none!important;}}
+
 /* MARQUEE STRIP */
 .marquee-strip{background:var(--deep-rose);overflow:hidden;white-space:nowrap;padding:11px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);}
 .marquee-inner{display:inline-block;animation:marquee 28s linear infinite;}
@@ -838,8 +914,8 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-grid{grid-template-columns:repeat(2,1fr);gap:16px;}
   .prod-thumb{height:180px;}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
-  .bslide{height:260px;}
   .bslide-overlay{padding:0 20px;}
+  .bslide{aspect-ratio:16/6;}
   footer{padding:46px 28px 26px;}
   .foot-grid{grid-template-columns:1fr 1fr;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
@@ -866,8 +942,8 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .foot-grid{grid-template-columns:1fr;gap:22px;}
   .foot-bottom{flex-direction:column;gap:4px;text-align:center;}
   footer{padding:36px 16px 70px;}
-  .bslide{height:210px;}
   .bslide-overlay{padding:0 16px;}
+  .bslide{aspect-ratio:4/3;}
   .bslide-title{font-size:1.6rem;}
   .barrow{display:none;}
   #bannerCarousel{margin-top:0;}
@@ -880,7 +956,6 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-thumb{height:155px;}
   .prod-name{font-size:.85rem;}
   .price-now{font-size:.88rem;}
-  .bslide{height:195px;}
   .sec-wrap{padding:36px 12px;}
 }
 
@@ -891,7 +966,6 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-name{font-size:.82rem;}
   .price-now{font-size:.85rem;}
   .add-btn{width:30px;height:30px;font-size:1.1rem;}
-  .bslide{height:185px;}
   .sec-wrap{padding:32px 10px;}
 }
 
@@ -902,7 +976,6 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-name{font-size:.78rem;}
   .price-now{font-size:.82rem;}
   .add-btn{width:28px;height:28px;font-size:1rem;}
-  .bslide{height:175px;}
   .bslide-title{font-size:1.3rem;}
   .sec-wrap{padding:28px 8px;}
   .cat-circles-wrap{padding:18px 10px 14px;}
@@ -1078,48 +1151,6 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   <div class="dlv-offers">✨ Free delivery above ₹999</div>
 </div>
 
-
-<!-- ======= PROMO POPUP ======= -->
-<div id="ah-popup-overlay">
-  <div id="ah-popup" role="dialog" aria-modal="true">
-    <div class="popup-top-ribbon">
-      <button class="popup-close" id="ah-popup-close" aria-label="Close">&#x2715;</button>
-      <span class="popup-gift-icon">🎁</span>
-      <div class="popup-badge">✦ Exclusive Welcome Reward ✦</div>
-      <div class="popup-headline"><span>15% OFF</span> Awaits</div>
-      <p class="popup-subtext">You just found a hidden reward. Enter your details below to unlock your personal discount code instantly.</p>
-    </div>
-    <div class="popup-body">
-      <div id="ah-popup-form-wrap">
-        <form class="popup-form" id="ah-popup-form" onsubmit="return false;">
-          <div class="popup-field"><label>Your Name</label><input type="text" id="pp-name" placeholder="e.g. Priya Sharma" autocomplete="name" required/></div>
-          <div class="popup-field"><label>Email Address</label><input type="email" id="pp-email" placeholder="yourname@email.com" autocomplete="email" required/></div>
-          <div class="popup-field"><label>Phone Number</label><div class="popup-phone-wrap"><select class="popup-flag-sel" id="pp-country"><option value="+91">🇮🇳 +91</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+971">🇦🇪 +971</option><option value="+61">🇦🇺 +61</option><option value="+65">🇸🇬 +65</option></select><input type="tel" id="pp-phone" class="popup-phone-input" placeholder="98765 43210" autocomplete="tel" required/></div></div>
-          <div class="popup-field"><label>Date of Birth</label><div class="popup-dob-row"><input type="text" id="pp-dob-d" placeholder="DD" maxlength="2" inputmode="numeric" required/><input type="text" id="pp-dob-m" placeholder="MM" maxlength="2" inputmode="numeric" required/><input type="text" id="pp-dob-y" placeholder="YYYY" maxlength="4" inputmode="numeric" required/></div></div>
-          <div class="popup-field"><label>Gender</label><select id="pp-gender" required><option value="" disabled selected>Select your gender</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other / Prefer not to say</option></select></div>
-          <button class="popup-submit-btn" id="pp-submit-btn" type="button" onclick="ahPopupSubmit()">🎉 Unlock My Reward</button>
-          <p class="popup-privacy">🔒 We respect your privacy. No spam, ever.</p>
-        </form>
-      </div>
-      <div class="popup-success" id="ah-popup-success">
-        <span class="popup-success-icon">🎊</span>
-        <div class="popup-success-title">Your Reward is Ready!</div>
-        <p style="font-size:.82rem;color:rgba(59,13,26,.55);margin-bottom:8px;">Copy your exclusive discount code:</p>
-        <div class="popup-success-code" id="pp-discount-code" onclick="ahCopyCode(this)" title="Click to copy">WELCOME15</div>
-        <p class="popup-success-sub">Use this code at checkout to get <strong>15% OFF</strong> your first order.<br/>Valid for 30 days. Share the love! 🌸</p>
-        <button onclick="ahPopupClose()" style="margin-top:18px;padding:12px 32px;background:#3b0d1a;color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">Start Shopping →</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">🎁</div>
-
-<!-- ======= DELIVERY BAR ======= -->
-<div id="ah-delivery-bar">
-  <div class="dlv-text">🚚 <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to pincode <strong id="dlv-pin-display">516001</strong></span></div>
-  <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">📍 Change Pincode ▾</div>
-  <div class="dlv-offers">✨ Free delivery above ₹999</div>
-</div>
 
 
 <!-- PIN POPUP MODAL — centred, always visible -->
@@ -2746,7 +2777,7 @@ window.addEventListener('scroll',()=>{
   <div class="esb-footer">
     <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
     <div class="esb-settings-row">
-      <button class="esb-settings-btn" onclick="document.getElementById('enh-sidebar').scrollTop=0">&#8593; Top</button>
+      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593; Top</button>
       <button class="esb-settings-btn" onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
     </div>
     <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
