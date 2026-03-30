@@ -400,6 +400,9 @@
       transition: transform var(--transition), box-shadow var(--transition);
       position: relative;
       box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .prod-card:hover {
@@ -598,6 +601,9 @@
     /* CARD BODY */
     .prod-body {
       padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .prod-cat-lbl {
@@ -656,6 +662,8 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 10px;
     }
 
     .prod-price-current {
