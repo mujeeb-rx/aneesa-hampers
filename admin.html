@@ -376,11 +376,50 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <!-- ══ CATEGORIES ══ -->
     <div class="page" id="pg-categories">
+      <!-- ── CATEGORIES HEADER ── -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div><div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem">Manage <em style="color:var(--deep-rose)">Categories</em></div><div style="font-size:.7rem;opacity:.4;margin-top:2px">With emoji support — live everywhere instantly</div></div>
         <button class="btn btn-primary" onclick="openAddCat()">+ New Category</button>
       </div>
       <div class="cat-grid" id="catGrid"><div style="opacity:.4;padding:40px;text-align:center;grid-column:1/-1">Loading…</div></div>
+
+      <!-- ── SUBCATEGORIES SECTION ── -->
+      <div style="margin-top:36px;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-hd">
+            <div>
+              <div class="card-title">🗂️ Subcategories</div>
+              <div class="card-sub">Link subcategories to parent categories — frontend navigates category → subcategory → products</div>
+            </div>
+            <button class="btn btn-primary" onclick="openAddSubCat()">+ New Subcategory</button>
+          </div>
+
+          <!-- Subcategory filter by parent -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;" id="subcatFilterRow">
+            <button class="btn btn-sm" style="background:var(--burgundy);color:white;" data-parent="all" onclick="filterSubcatView('all',this)">All</button>
+          </div>
+
+          <!-- Subcategory table -->
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Emoji</th>
+                  <th>Name</th>
+                  <th>Slug</th>
+                  <th>Parent Category</th>
+                  <th>Order</th>
+                  <th>Visible</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="subcatTableBody">
+                <tr><td colspan="7" style="text-align:center;opacity:.4;padding:28px">No subcategories yet — add one above!</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ BANNERS ══ -->
@@ -613,7 +652,8 @@ textarea.fi{resize:vertical;min-height:80px;}
     <div class="modal-title">Add <em>Product</em></div>
     <div class="form-grid">
       <div class="fg"><label class="fl">Name *</label><input class="fi" id="pName" placeholder="Royal Wedding Hamper"/></div>
-      <div class="fg"><label class="fl">Category</label><select class="fi" id="pCat"><option value="">Loading…</option></select></div>
+      <div class="fg"><label class="fl">Category</label><select class="fi" id="pCat" onchange="refreshSubcatSelects('pSubCat','pCat')"><option value="">Loading…</option></select></div>
+      <div class="fg"><label class="fl">Subcategory</label><select class="fi" id="pSubCat"><option value="">None / All</option></select></div>
       <div class="fg"><label class="fl">Price (₹) *</label><input class="fi" id="pPrice" type="number" placeholder="1499"/></div>
       <div class="fg"><label class="fl">Discount %</label><input class="fi" id="pDisc" type="number" placeholder="0" min="0" max="90"/></div>
       <div class="fg"><label class="fl">Badge</label><select class="fi" id="pBadge"><option value="">None</option><option value="new">🆕 New</option><option value="bestseller">⭐ Bestseller</option><option value="trending">🔥 Trending</option></select></div>
@@ -640,7 +680,8 @@ textarea.fi{resize:vertical;min-height:80px;}
     <input type="hidden" id="eProdId"/>
     <div class="form-grid">
       <div class="fg"><label class="fl">Name</label><input class="fi" id="eName"/></div>
-      <div class="fg"><label class="fl">Category</label><select class="fi" id="eCat"><option value="">Loading…</option></select></div>
+      <div class="fg"><label class="fl">Category</label><select class="fi" id="eCat" onchange="refreshSubcatSelects('eSubCat','eCat')"><option value="">Loading…</option></select></div>
+      <div class="fg"><label class="fl">Subcategory</label><select class="fi" id="eSubCat"><option value="">None / All</option></select></div>
       <div class="fg"><label class="fl">Price (₹)</label><input class="fi" id="ePrice" type="number"/></div>
       <div class="fg"><label class="fl">Discount %</label><input class="fi" id="eDisc" type="number" min="0" max="90"/></div>
       <div class="fg"><label class="fl">Badge</label><select class="fi" id="eBadge"><option value="">None</option><option value="new">🆕 New</option><option value="bestseller">⭐ Bestseller</option><option value="trending">🔥 Trending</option></select></div>
@@ -858,6 +899,58 @@ textarea.fi{resize:vertical;min-height:80px;}
 .status-sel-btn[data-s="shipped"].selected{background:#7030c0;border-color:#7030c0;}
 </style>
 
+<!-- SUBCATEGORY MODAL -->
+<div class="modal-ov" id="subcatModal">
+  <div class="modal-box" style="max-width:460px">
+    <button class="modal-close" onclick="closeModal('subcatModal')">✕</button>
+    <div class="modal-title" id="subcatModalTitle">New <em>Subcategory</em></div>
+    <input type="hidden" id="subcatEditId"/>
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:12px;margin-bottom:12px">
+      <div class="fg">
+        <label class="fl">Emoji</label>
+        <input class="fi" id="subcatEmoji" placeholder="🎁" maxlength="4" style="font-size:1.5rem;text-align:center"/>
+      </div>
+      <div class="fg">
+        <label class="fl">Subcategory Name *</label>
+        <input class="fi" id="subcatName" placeholder="e.g. Birthday Hampers"/>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Slug / Key *</label>
+      <input class="fi" id="subcatSlug" placeholder="birthday-hampers" style="font-family:monospace"/>
+    </div>
+    <div class="fg">
+      <label class="fl">Parent Category *</label>
+      <select class="fi" id="subcatParent">
+        <option value="">Select parent category…</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">Description</label>
+      <input class="fi" id="subcatDesc" placeholder="Brief description (optional)"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg">
+        <label class="fl">Display Order</label>
+        <input class="fi" id="subcatOrder" type="number" placeholder="0" min="0"/>
+      </div>
+      <div class="fg">
+        <label class="fl">Visibility</label>
+        <select class="fi" id="subcatVisible">
+          <option value="true">✅ Visible</option>
+          <option value="false">🚫 Hidden</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Quick Pick Emoji</label>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;" id="subcatEmojiPicker">
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:12px;margin-top:4px" onclick="saveSubCat()" id="subcatSaveBtn">Save Subcategory ✓</button>
+  </div>
+</div>
+
 <div class="adm-toast" id="admToast"></div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
@@ -1033,6 +1126,7 @@ function init() {
 
 // ── LISTENERS ──
 function startListeners() {
+  startSubcatListener();
   // ORDERS — real-time
   onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap => {
     _orders = snap.docs.map(d => ({id:d.id,...d.data()}));
@@ -1052,6 +1146,8 @@ function startListeners() {
     _cats = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderCats();
     refreshCatDropdowns();
+    refreshSubcatParentDropdown();
+    refreshSubcatFilterRow();
   });
 }
 
@@ -1285,6 +1381,7 @@ window.saveNewProduct = async function() {
   try {
     await addDoc(collection(db,'products'), {
       name, category:document.getElementById('pCat').value,
+      subcategory:document.getElementById('pSubCat').value||'',
       price, discount:parseInt(document.getElementById('pDisc').value)||0,
       badge:document.getElementById('pBadge').value,
       description:document.getElementById('pDesc').value.trim(),
@@ -1308,6 +1405,11 @@ window.openEditProd = function(id) {
   document.getElementById('eStock').value    = p.inStock!==false?'true':'false';
   document.getElementById('eDesc').value     = p.description||'';
   document.getElementById('eItems').value    = (p.items||[]).join(', ');
+  // Load subcategory — refresh dropdown first then set value
+  setTimeout(() => {
+    refreshSubcatSelects('eSubCat','eCat');
+    document.getElementById('eSubCat').value = p.subcategory || '';
+  }, 50);
   document.getElementById('eImgStatus').textContent='';
   document.getElementById('eImgRow').innerHTML = _editImgs.map(u=>`<img src="${u}" style="width:60px;height:48px;object-fit:cover;border-radius:7px;border:1.5px solid rgba(192,100,122,.2)"/>`).join('');
   document.getElementById('editProdModal').classList.add('open');
@@ -1319,6 +1421,7 @@ window.saveEditProduct = async function() {
   try {
     await updateDoc(doc(db,'products',id), {
       name, category:document.getElementById('eCat').value,
+      subcategory:document.getElementById('eSubCat').value||'',
       price:parseInt(document.getElementById('ePrice').value)||0,
       discount:parseInt(document.getElementById('eDisc').value)||0,
       badge:document.getElementById('eBadge').value,
@@ -1345,9 +1448,22 @@ function refreshCatDropdowns() {
     const sel = document.getElementById(sid); if(!sel) return;
     const cur = sel.value;
     sel.innerHTML = _cats.filter(c=>c.visible!==false).map(c => `<option value="${c.slug||c.id}">${c.emoji||''} ${c.name}</option>`).join('') || '<option value="">No categories</option>';
-    if (cur) sel.value = cur;
+    if (cur) { sel.value = cur; refreshSubcatSelects(sid==='pCat'?'pSubCat':'eSubCat', sid); }
   });
 }
+
+// Refresh subcategory dropdown based on selected parent cat
+window.refreshSubcatSelects = function(subSelId, catSelId) {
+  const catSel = document.getElementById(catSelId);
+  const subSel = document.getElementById(subSelId);
+  if (!catSel || !subSel) return;
+  const parentSlug = catSel.value;
+  const cur = subSel.value;
+  const subs = _subcats.filter(s => s.parentCat === parentSlug && s.visible !== false);
+  subSel.innerHTML = '<option value="">None / All</option>' +
+    subs.map(s => `<option value="${s.slug||s.id}">${s.emoji||''} ${s.name}</option>`).join('');
+  if (cur) subSel.value = cur;
+};
 
 // ── CATEGORIES ──
 function renderCats() {
@@ -1369,6 +1485,7 @@ function renderCats() {
     <div class="cat-body">
       <div class="cat-name">${c.name}</div>
       <div class="cat-slug">${c.slug||c.id}</div>
+      <div class="cat-slug" style="margin-bottom:6px;">${(()=>{const subCount=_subcats.filter(s=>s.parentCat===(c.slug||c.id)).length;return subCount>0?`<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(192,100,122,.1);color:var(--deep-rose);font-size:.6rem;letter-spacing:1px;padding:2px 8px;border-radius:10px;font-weight:600;">${subCount} subcategory${subCount>1?'ies':'y'}</span>`:'<span style="font-size:.6rem;opacity:.38;letter-spacing:.5px;">No subcategories</span>';})()} &nbsp;<button class="btn btn-green btn-sm" style="padding:2px 8px;font-size:.58rem;" onclick="openAddSubCatFor('${c.slug||c.id}')">+ Sub</button></div>
       <div class="cat-acts">
         <button class="btn btn-edit btn-sm" onclick="openEditCat('${c.id}')">✏️ Edit</button>
         <button class="btn btn-del btn-sm" onclick="delCat('${c.id}','${c.name}')">🗑️</button>
@@ -2143,7 +2260,7 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     const g = cfg.gallery;
     if(g.eyebrow) document.getElementById('galEyebrow').value = g.eyebrow;
     if(g.title)   document.getElementById('galTitle').value = g.title;
-    if(g.subtitle)ById('galSub').value = g.subtitle;
+    if(g.subtitle) document.getElementById('galSub').value = g.subtitle;
     if(g.handle)   document.getElementById('galHandle').value = g.handle;
     if(g.items)    { _adminGallery = g.items.map(i=>({...i})); renderGalleryEditor(); }
   }
@@ -2161,6 +2278,172 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     updatePopupPreview();
   }
 });
+
+// ═══════════════════════════════════════════════
+// SUBCATEGORY CRUD
+// ═══════════════════════════════════════════════
+let _subcats = [];
+let _subcatEditMode = false;
+let _subcatFilterParent = 'all';
+
+// Real-time listener for subcategories
+function startSubcatListener() {
+  onSnapshot(query(collection(db,'subcategories'), orderBy('order','asc')), snap => {
+    _subcats = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderSubcatTable();
+    refreshSubcatFilterRow();
+  });
+}
+
+function refreshSubcatFilterRow() {
+  const row = document.getElementById('subcatFilterRow');
+  if (!row) return;
+  const allBtn = `<button class="btn btn-sm" style="${_subcatFilterParent==='all'?'background:var(--burgundy);color:white;':'background:var(--cream);border:1px solid rgba(192,100,122,.2);'}" data-parent="all" onclick="filterSubcatView('all',this)">All (${_subcats.length})</button>`;
+  const catBtns = _cats.map(c => {
+    const count = _subcats.filter(s => s.parentCat === (c.slug||c.id)).length;
+    const isActive = _subcatFilterParent === (c.slug||c.id);
+    return `<button class="btn btn-sm" style="${isActive?'background:var(--burgundy);color:white;':'background:var(--cream);border:1px solid rgba(192,100,122,.2);'}" data-parent="${c.slug||c.id}" onclick="filterSubcatView('${c.slug||c.id}',this)">${c.emoji||''} ${c.name} (${count})</button>`;
+  });
+  row.innerHTML = allBtn + catBtns.join('');
+}
+
+window.filterSubcatView = function(parentSlug, btn) {
+  _subcatFilterParent = parentSlug;
+  refreshSubcatFilterRow();
+  renderSubcatTable();
+};
+
+function renderSubcatTable() {
+  const tbody = document.getElementById('subcatTableBody');
+  if (!tbody) return;
+  const list = _subcatFilterParent === 'all' ? _subcats : _subcats.filter(s => s.parentCat === _subcatFilterParent);
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;opacity:.4;padding:28px">${_subcatFilterParent === 'all' ? 'No subcategories yet — add one above!' : 'No subcategories for this category yet.'}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map((s, i) => {
+    const parentCat = _cats.find(c => (c.slug||c.id) === s.parentCat);
+    return `<tr>
+      <td style="font-size:1.4rem">${s.emoji||'🏷️'}</td>
+      <td><strong>${s.name}</strong>${s.desc ? `<br><span style="font-size:.72rem;opacity:.45">${s.desc}</span>` : ''}</td>
+      <td style="font-family:monospace;font-size:.78rem;opacity:.6">${s.slug||s.id}</td>
+      <td>${parentCat ? `<span style="display:inline-flex;align-items:center;gap:5px;background:var(--blush);padding:3px 10px;border-radius:20px;font-size:.72rem;color:var(--deep-rose);">${parentCat.emoji||''} ${parentCat.name}</span>` : `<span style="opacity:.38;font-size:.75rem">${s.parentCat||'—'}</span>`}</td>
+      <td>${s.order??i}</td>
+      <td><span class="pill ${s.visible!==false?'delivered':'cancelled'}">${s.visible!==false?'Visible':'Hidden'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-edit btn-sm" onclick="openEditSubCat('${s.id}')">✏️ Edit</button>
+        <button class="btn btn-del btn-sm" onclick="delSubCat('${s.id}','${s.name}')">🗑️</button>
+        <button class="btn ${s.visible!==false?'btn-del':'btn-green'} btn-sm" onclick="toggleSubCatVis('${s.id}',${s.visible!==false})">${s.visible!==false?'🚫 Hide':'✅ Show'}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function refreshSubcatParentDropdown() {
+  const sel = document.getElementById('subcatParent');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select parent category…</option>' +
+    _cats.filter(c => c.visible !== false).map(c => `<option value="${c.slug||c.id}">${c.emoji||''} ${c.name}</option>`).join('');
+  if (cur) sel.value = cur;
+}
+
+function setupSubcatEmojiPicker() {
+  const picker = document.getElementById('subcatEmojiPicker');
+  if (!picker) return;
+  const emojis = '🎁 🎀 💍 🎂 🎉 🎊 🌹 🕯️ ☕ 🍫 🍬 🌸 💝 💐 🎈 🧸 🛍️ 💎 🪷 🎠 🏮 🧧 🌺 🎗️'.split(' ');
+  picker.innerHTML = emojis.map(e => `<span style="font-size:1.4rem;cursor:pointer;padding:4px 6px;border-radius:7px;transition:background .15s;" onclick="document.getElementById('subcatEmoji').value='${e}'" onmouseover="this.style.background='#f9e4e9'" onmouseout="this.style.background=''">${e}</span>`).join('');
+}
+
+window.openAddSubCatFor = function(parentSlug) {
+  openAddSubCat();
+  setTimeout(() => {
+    refreshSubcatParentDropdown();
+    const sel = document.getElementById('subcatParent');
+    if (sel) sel.value = parentSlug;
+    // Scroll admin to categories page bottom
+    switchPage('categories');
+  }, 100);
+  document.getElementById('subcatModal').classList.add('open');
+};
+
+window.openAddSubCat = function() {
+  _subcatEditMode = false;
+  document.getElementById('subcatEditId').value = '';
+  document.getElementById('subcatModalTitle').innerHTML = 'New <em>Subcategory</em>';
+  document.getElementById('subcatSaveBtn').textContent = 'Save Subcategory ✓';
+  ['subcatName','subcatSlug','subcatDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('subcatEmoji').value = '';
+  document.getElementById('subcatOrder').value = _subcats.length;
+  document.getElementById('subcatVisible').value = 'true';
+  refreshSubcatParentDropdown();
+  setupSubcatEmojiPicker();
+  // Auto-generate slug from name
+  document.getElementById('subcatName').oninput = function() {
+    if (!_subcatEditMode) {
+      document.getElementById('subcatSlug').value = this.value.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
+    }
+  };
+  document.getElementById('subcatModal').classList.add('open');
+};
+
+window.openEditSubCat = function(id) {
+  const s = _subcats.find(x => x.id === id); if (!s) return;
+  _subcatEditMode = true;
+  document.getElementById('subcatEditId').value = id;
+  document.getElementById('subcatModalTitle').innerHTML = 'Edit <em>Subcategory</em>';
+  document.getElementById('subcatSaveBtn').textContent = 'Update Subcategory ✓';
+  document.getElementById('subcatName').value = s.name || '';
+  document.getElementById('subcatSlug').value = s.slug || s.id || '';
+  document.getElementById('subcatEmoji').value = s.emoji || '';
+  document.getElementById('subcatDesc').value = s.desc || '';
+  document.getElementById('subcatOrder').value = s.order ?? 0;
+  document.getElementById('subcatVisible').value = (s.visible !== false) ? 'true' : 'false';
+  refreshSubcatParentDropdown();
+  document.getElementById('subcatParent').value = s.parentCat || '';
+  setupSubcatEmojiPicker();
+  document.getElementById('subcatModal').classList.add('open');
+};
+
+window.saveSubCat = async function() {
+  const name = document.getElementById('subcatName').value.trim();
+  const slug = document.getElementById('subcatSlug').value.trim().toLowerCase().replace(/\s+/g, '-');
+  const parentCat = document.getElementById('subcatParent').value;
+  if (!name) { toast('⚠️ Subcategory name required', 'err'); return; }
+  if (!slug) { toast('⚠️ Slug required', 'err'); return; }
+  if (!parentCat) { toast('⚠️ Please select a parent category', 'err'); return; }
+  const data = {
+    name, slug, parentCat,
+    emoji: document.getElementById('subcatEmoji').value.trim() || '🏷️',
+    desc: document.getElementById('subcatDesc').value.trim(),
+    order: parseInt(document.getElementById('subcatOrder').value) || 0,
+    visible: document.getElementById('subcatVisible').value === 'true',
+  };
+  try {
+    if (_subcatEditMode) {
+      const editId = document.getElementById('subcatEditId').value;
+      await updateDoc(doc(db, 'subcategories', editId), {...data, updatedAt: serverTimestamp()});
+      toast('✅ Subcategory updated!');
+    } else {
+      if (_subcats.find(s => (s.slug||s.id) === slug)) { toast('⚠️ Slug already exists', 'err'); return; }
+      await setDoc(doc(db, 'subcategories', slug), {...data, createdAt: serverTimestamp()});
+      toast(`✅ Subcategory "${name}" created!`);
+    }
+    closeModal('subcatModal');
+  } catch(e) { toast('❌ ' + e.message, 'err'); }
+};
+
+window.delSubCat = async function(id, name) {
+  if (!confirm(`Delete subcategory "${name}"?`)) return;
+  await deleteDoc(doc(db, 'subcategories', id));
+  toast('🗑️ Subcategory deleted.');
+};
+
+window.toggleSubCatVis = async function(id, cur) {
+  await updateDoc(doc(db, 'subcategories', id), {visible: !cur});
+  toast('✅ Visibility updated!');
+};
+
 
 </script>
 </body>

@@ -323,6 +323,36 @@
       gap: 10px;
     }
 
+    /* ── SUBCAT PILLS ── */
+    .subcat-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 1.5px solid rgba(192,100,122,.25);
+      background: white;
+      font-family: 'Jost', sans-serif;
+      font-size: .7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--burgundy);
+      transition: all .2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .subcat-pill:hover {
+      border-color: var(--deep-rose);
+      background: var(--blush);
+      color: var(--deep-rose);
+    }
+    .subcat-pill.active {
+      background: var(--deep-rose);
+      border-color: var(--deep-rose);
+      color: white;
+    }
+
     .sort-select {
       padding: 9px 16px;
       border: 1.5px solid rgba(192, 100, 122, .2);
@@ -1540,12 +1570,7 @@
         <span class="esb-link-icon">&#128195;</span>Categories<span class="esb-link-arrow">&#9654;</span>
       </button>
       <div class="esb-sub" id="esb-cat-sub">
-        <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
-        <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
-        <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
-        <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
-        <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
-        <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+        <div style="opacity:.4;font-size:.75rem;padding:8px 14px;">Loading categories…</div>
       </div>
       <a href="products.html?filter=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span
           class="esb-link-badge">New</span></a>
@@ -1593,6 +1618,13 @@
         <option value="low">Price: Low → High</option>
         <option value="high">Price: High → Low</option>
       </select>
+    </div>
+  </div>
+  <!-- SUBCATEGORY PILLS — appears when a category with subcategories is selected -->
+  <div id="subcatBar" style="display:none;padding:10px 24px;background:rgba(249,228,233,.45);border-bottom:1px solid rgba(192,100,122,.1);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;">
+    <div style="display:inline-flex;gap:8px;align-items:center;">
+      <span style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;flex-shrink:0;">Subcategory:</span>
+      <span id="subcatPillsWrap" style="display:inline-flex;gap:8px;"></span>
     </div>
   </div>
 
@@ -1699,12 +1731,17 @@
 
     // Filter state
     let allProducts = [];
+    let allCategories = [];
+    let allSubcategories = [];
     let currentCat = 'all';
+    let currentSubcat = 'all';
     let currentSearch = '';
     const urlCat = new URLSearchParams(location.search).get('cat');
+    const urlSub = new URLSearchParams(location.search).get('sub');
     const urlSearch = new URLSearchParams(location.search).get('search');
     const urlFilter = new URLSearchParams(location.search).get('filter'); // new | bestseller | offers
-    if (urlCat) { currentCat = urlCat; } // pills updated after dynamic load
+    if (urlCat) { currentCat = urlCat; }
+    if (urlSub) { currentSubcat = urlSub; }
     if (urlSearch) {
       currentSearch = urlSearch.trim().toLowerCase();
       // Fill any search inputs on page
@@ -1720,6 +1757,10 @@
     function renderProducts() {
       const sort = document.getElementById('sortSelect').value;
       let list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === currentCat);
+      // Subcategory filter
+      if (currentSubcat !== 'all') {
+        list = list.filter(p => p.subcategory === currentSubcat || p.subcat === currentSubcat);
+      }
 
       // ── URL filter: new | bestseller | offers ──
       if (urlFilter === 'new') {
@@ -1770,6 +1811,7 @@
         } else if (currentSearch && !list.length) {
           countEl.innerHTML = `No results for "<strong>${currentSearch}</strong>" — showing all products`;
           list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === currentCat);
+          if (currentSubcat !== 'all') { list = list.filter(p => p.subcategory === currentSubcat || p.subcat === currentSubcat); }
         } else {
           countEl.textContent = list.length ? `${list.length} item${list.length !== 1 ? 's' : ''} found` : '';
         }
@@ -1853,13 +1895,42 @@
     }
 
     // FILTERS
-    // setCat — used by both static "All" pill and dynamic pills
     window.setCat = function (cat, btn) {
       document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentCat = cat;
+      currentSubcat = 'all';
+      updateSubcatBar(cat);
       renderProducts();
+      // Update URL without reload
+      const url = new URL(window.location.href);
+      if (cat === 'all') { url.searchParams.delete('cat'); } else { url.searchParams.set('cat', cat); }
+      url.searchParams.delete('sub');
+      window.history.replaceState({}, '', url);
     };
+
+    window.setSubCat = function(subSlug, btn) {
+      document.querySelectorAll('.subcat-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSubcat = subSlug;
+      renderProducts();
+      // Update URL
+      const url = new URL(window.location.href);
+      if (subSlug === 'all') { url.searchParams.delete('sub'); } else { url.searchParams.set('sub', subSlug); }
+      window.history.replaceState({}, '', url);
+    };
+
+    function updateSubcatBar(cat) {
+      const bar = document.getElementById('subcatBar');
+      const wrap = document.getElementById('subcatPillsWrap');
+      if (!bar || !wrap) return;
+      if (cat === 'all') { bar.style.display = 'none'; return; }
+      const subs = allSubcategories.filter(s => s.parentCat === cat && s.visible !== false);
+      if (!subs.length) { bar.style.display = 'none'; return; }
+      bar.style.display = 'block';
+      wrap.innerHTML = `<button class="subcat-pill active" onclick="setSubCat('all',this)">All ${allCategories.find(c=>(c.slug||c.id)===cat)?.name||''}</button>` +
+        subs.map(s => `<button class="subcat-pill${currentSubcat===s.slug||currentSubcat===s.id?' active':''}" data-sub="${s.slug||s.id}" onclick="setSubCat('${s.slug||s.id}',this)">${s.emoji||''} ${s.name}</button>`).join('');
+    }
     document.getElementById('sortSelect').addEventListener('change', renderProducts);
 
     // FLASH SALE
@@ -1895,34 +1966,53 @@
       setTimeout(() => startAutoSlide(allProducts), 600);
     });
 
-    // ── Dynamic category pills from Firestore ──
-    import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    getDocs(query(collection(db, 'categories'), orderBy('order', 'asc'))).then(snap => {
+    // ── Dynamic categories + subcategories from Firestore (real-time) ──
+    onSnapshot(query(collection(db, 'categories'), orderBy('order', 'asc')), catSnap => {
+      allCategories = catSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(c => c.visible !== false);
       const bar = document.getElementById('filtersBar');
-      if (!bar) return;
-      const cats = snap.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(c => c.visible !== false);
 
-      // Build pill for each real category
-      cats.forEach(cat => {
+      // Rebuild category pills (remove old dynamic ones first)
+      bar.querySelectorAll('.filter-pill[data-cat]:not([data-cat="all"])').forEach(b => b.remove());
+      const rightDiv = bar.querySelector('.filter-right');
+      allCategories.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = 'filter-pill';
         btn.dataset.cat = cat.slug || cat.id;
         btn.textContent = (cat.emoji || '') + ' ' + cat.name;
         btn.onclick = function () { setCat(cat.slug || cat.id, btn); };
-        // Insert before the .filter-right div
-        const rightDiv = bar.querySelector('.filter-right');
         bar.insertBefore(btn, rightDiv);
       });
 
-      // Now activate correct pill based on URL
+      // Activate pill from URL
       if (urlCat) {
-        document.querySelectorAll('.filter-pill').forEach(p => {
-          p.classList.toggle('active', p.dataset.cat === urlCat);
-        });
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.cat === urlCat));
       }
-    }).catch(() => { });
+
+      // Populate sidebar with dynamic categories
+      const sidebarCatSub = document.getElementById('esb-cat-sub');
+      if (sidebarCatSub) {
+        sidebarCatSub.innerHTML = allCategories.map(c =>
+          `<a href="products.html?cat=${c.slug||c.id}" class="esb-sub-link">${c.emoji||''} ${c.name}</a>`
+        ).join('') || '<div style="opacity:.4;font-size:.75rem;padding:8px 14px;">No categories yet</div>';
+      }
+
+      // Show subcat bar if URL has cat
+      if (urlCat && urlCat !== 'all') updateSubcatBar(urlCat);
+    });
+
+    // ── Subcategories real-time ──
+    onSnapshot(query(collection(db, 'subcategories'), orderBy('order', 'asc')), subSnap => {
+      allSubcategories = subSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.visible !== false);
+      // Refresh subcat bar if a category is active
+      if (currentCat !== 'all') updateSubcatBar(currentCat);
+      // If URL has sub param, activate it
+      if (urlSub && currentCat !== 'all') {
+        setTimeout(() => {
+          const btn = document.querySelector(`.subcat-pill[data-sub="${urlSub}"]`);
+          if (btn) { setSubCat(urlSub, btn); }
+        }, 100);
+      }
+    });
   </script>
   <script src="lang-currency.js"></script>
   <script src="mobilenav.js"></script>
