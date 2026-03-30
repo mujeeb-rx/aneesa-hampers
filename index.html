@@ -75,6 +75,7 @@ a{text-decoration:none;}
 .btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
 
 /* Slide — 350px desktop, responsive on mobile */
+/* ── BANNER SLIDE ── */
 .bslide{
   min-width:100%;
   height:auto;
@@ -87,25 +88,41 @@ a{text-decoration:none;}
   background:linear-gradient(135deg,var(--burgundy),#5a1528);
 }
 
-/* Image — contain keeps full image visible without cropping */
+/* Photo fills perfectly — no gaps, no distortion */
 .bslide-bg{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:cover;          /* fills banner fully — no gaps */
-  object-position:center center;
-  background:inherit;        /* fallback colour behind transparent areas */
-}
-
-/* Image-only banner — no text overlay — centre image perfectly */
-.bslide.image-only .bslide-bg{
   object-fit:cover;
-  width:100%;
-  height:100%;
+  object-position:center center;
 }
 
-/* Text overlay — centred safe zone, never clips content */
+/* Beautiful dark gradient over photo — makes text readable + looks polished */
+.bslide::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to right,
+    rgba(30,6,14,.62) 0%,
+    rgba(30,6,14,.38) 45%,
+    rgba(30,6,14,.08) 100%
+  );
+  z-index:1;
+  pointer-events:none;
+}
+
+/* Image-only slide — lighter overlay, full photo focus */
+.bslide.image-only::after{
+  background:linear-gradient(
+    to top,
+    rgba(30,6,14,.35) 0%,
+    rgba(30,6,14,.0) 60%
+  );
+}
+
+/* Text overlay */
 .bslide-overlay{
   position:relative;
   z-index:2;
@@ -114,24 +131,78 @@ a{text-decoration:none;}
   padding:0 52px;
   text-align:left;
 }
-.bslide-tag{display:inline-block;background:rgba(255,255,255,.15);color:white;font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:13px;}
-.bslide-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.8rem);color:white;font-weight:300;line-height:1.2;margin-bottom:10px;}
-.bslide-sub{font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:20px;line-height:1.7;}
-.bslide-cta{display:inline-block;background:white;color:var(--burgundy);padding:10px 26px;border-radius:30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
-.bslide-cta:hover{opacity:.88;}
+.bslide-tag{
+  display:inline-block;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(6px);
+  color:white;
+  font-size:.62rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  padding:5px 14px;
+  border-radius:20px;
+  margin-bottom:13px;
+  border:1px solid rgba(255,255,255,.2);
+}
+.bslide-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.6rem,3vw,2.8rem);
+  color:white;
+  font-weight:300;
+  line-height:1.2;
+  margin-bottom:10px;
+  text-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+.bslide-sub{font-size:.85rem;color:rgba(255,255,255,.8);margin-bottom:20px;line-height:1.7;text-shadow:0 1px 6px rgba(0,0,0,.2);}
+.bslide-cta{
+  display:inline-block;
+  background:white;
+  color:var(--burgundy);
+  padding:10px 26px;
+  border-radius:30px;
+  font-size:.72rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:600;
+  transition:all .25s;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+.bslide-cta:hover{background:var(--blush);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.22);}
 
-/* Arrows */
-.barrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:40px;height:40px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);color:white;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s;}
-.barrow:hover{background:rgba(255,255,255,.32);}
-.barrow.prev{left:18px;}
-.barrow.next{right:18px;}
+/* Arrows — desktop */
+.barrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
+  width:44px;height:44px;
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:white;
+  border:1.5px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all .25s;
+  font-size:1rem;
+}
+.barrow:hover{background:rgba(255,255,255,.38);transform:translateY(-50%) scale(1.08);}
+.barrow.prev{left:20px;}
+.barrow.next{right:20px;}
 
-/* Dots & progress */
-.bdots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;}
-.bdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none;padding:0;}
-.bdot.active{background:white;transform:scale(1.3);}
-.bprog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.18);width:100%;z-index:10;}
-.bprog-bar{height:100%;background:white;width:0;transition:width linear;}
+/* Dots */
+.bdots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;}
+.bdot{
+  width:24px;height:4px;
+  border-radius:4px;
+  background:rgba(255,255,255,.35);
+  cursor:pointer;
+  transition:all .3s;
+  border:none;padding:0;
+}
+.bdot.active{background:white;width:36px;}
+
+/* Progress bar */
+.bprog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.12);width:100%;z-index:10;}
+.bprog-bar{height:100%;background:rgba(255,255,255,.6);width:0;transition:width linear;}
 
 /* HERO */
 .hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:64px 52px;background:linear-gradient(135deg,var(--cream) 50%,#fbeaf0);min-height:calc(100vh - 108px);position:relative;overflow:hidden;}
@@ -844,6 +915,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-thumb{height:180px;}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
   .bslide-overlay{padding:0 20px;}
+  .bslide{aspect-ratio:16/6;}
   footer{padding:46px 28px 26px;}
   .foot-grid{grid-template-columns:1fr 1fr;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
@@ -871,6 +943,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .foot-bottom{flex-direction:column;gap:4px;text-align:center;}
   footer{padding:36px 16px 70px;}
   .bslide-overlay{padding:0 16px;}
+  .bslide{aspect-ratio:4/3;}
   .bslide-title{font-size:1.6rem;}
   .barrow{display:none;}
   #bannerCarousel{margin-top:0;}
