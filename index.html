@@ -2509,7 +2509,6 @@ async function loadProducts() {
       query(collection(db,'products'), orderBy('createdAt','desc')), 
       snap => {
         console.log('✅ Products query successful. Document count:', snap.docs.length);
-        const _cl1=document.getElementById('cin-loader');if(_cl1)_cl1.classList.add('cin-done');
         const all=snap.docs.map(d=>({id:d.id,...d.data()}));
         console.log('Products data:', all);
         
@@ -2542,7 +2541,6 @@ function loadProductsWithoutOrder() {
     collection(db,'products'), 
     snap => {
       console.log('✅ Products loaded (no ordering). Count:', snap.docs.length);
-      const _cl2=document.getElementById('cin-loader');if(_cl2)_cl2.classList.add('cin-done');
       const all=snap.docs.map(d=>({id:d.id,...d.data()}));
       
       if(!all.length){
@@ -2626,12 +2624,12 @@ window.addEventListener('load',function(){
   setTimeout(function(){
     var _cl3=document.getElementById('cin-loader');
     if(_cl3 && !_cl3.classList.contains('cin-done')) _cl3.classList.add('cin-done');
-  },800);
+  },9000);
 });
 setTimeout(function(){
   var _cl4=document.getElementById('cin-loader');
   if(_cl4 && !_cl4.classList.contains('cin-done')) _cl4.classList.add('cin-done');
-},4500);
+},9000);
 
 // ═══════════════════════════════════════════════
 // PROMO POPUP — reads discount from Firestore siteSettings/config → welcomePopup
@@ -3857,8 +3855,8 @@ function launchConfetti(){
   }
 
   var isMobile = window.matchMedia('(max-width:600px)').matches;
-  /* Desktop: 3.8s — all text fully visible by ~3s. Mobile: 3.0s. */
-  var dismissDelay = isMobile ? 3000 : 3800;
+  /* Desktop: 8.2s — full animation cycle. Mobile: 5.5s. */
+  var dismissDelay = isMobile ? 5500 : 8200;
 
   /* Hard timeout fallback */
   setTimeout(dismissLoader, dismissDelay);
@@ -3869,7 +3867,7 @@ function launchConfetti(){
       if(document.readyState === 'complete' || document.readyState === 'interactive'){
         dismissLoader();
       }
-    }, isMobile ? 3000 : 3800);
+    }, isMobile ? 5500 : 8200);
   }
 
   if(document.readyState === 'loading'){
