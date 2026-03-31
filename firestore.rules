@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users — readable by owner, writable by auth + functions
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+    }
+
+    // Orders — readable/writable by the order owner
+    match /orders/{orderId} {
+      allow read, write: if request.auth != null &&
+        (resource.data.uid == request.auth.uid ||
+         resource.data.customerUID == request.auth.uid);
+      // Admin (checked by custom claim)
+      allow read, write: if request.auth.token.admin == true;
+    }
+
+    // Offers — public read, admin-only write
+    match /offers/{offerId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Site settings — public read
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Reviews — anyone can read; anyone can create (auto-approved); admin can delete/update
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // siteSettings (used as config doc)
+    match /siteSettings/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+  }
+}

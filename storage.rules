@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Review photos — anyone can upload JPG/PNG up to 5 MB; public read
+    match /review-photos/{fileName} {
+      allow read: if true;
+      allow write: if request.resource.size <= 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/(jpeg|png)');
+    }
+
+    // Everything else — admin only
+    match /{allPaths=**} {
+      allow read:  if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+  }
+}

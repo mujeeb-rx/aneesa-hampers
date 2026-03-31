@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Unsubscribe — Aneesa Hampers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Jost',sans-serif;background:linear-gradient(135deg,#1a0409,#3b0d1a);min-height:100vh;
+    display:flex;align-items:center;justify-content:center;padding:24px;}
+  .card{background:white;border-radius:24px;padding:48px 40px;max-width:440px;width:100%;text-align:center;
+    box-shadow:0 32px 80px rgba(0,0,0,.4);}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-style:italic;color:#3b0d1a;margin-bottom:4px;}
+  .logo span{color:#c0647a;}
+  .icon{font-size:3rem;margin:20px 0 12px;}
+  h1{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;color:#3b0d1a;margin-bottom:8px;}
+  p{font-size:.86rem;color:rgba(59,13,26,.55);line-height:1.75;margin-bottom:20px;}
+  .btn{display:inline-block;padding:13px 32px;border-radius:50px;font-family:'Jost',sans-serif;
+    font-size:.75rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;
+    text-decoration:none;cursor:pointer;border:none;transition:all .2s;}
+  .btn-primary{background:#3b0d1a;color:white;margin-bottom:10px;}
+  .btn-primary:hover{background:#c0647a;}
+  .btn-outline{background:transparent;border:1.5px solid rgba(59,13,26,.2);color:rgba(59,13,26,.6);}
+  .btn-outline:hover{background:#f9e4e9;border-color:#c0647a;color:#3b0d1a;}
+  .state{display:none;}
+  .state.active{display:block;}
+  .success-icon{font-size:2.5rem;color:#2d7a4f;margin-bottom:10px;display:block;}
+  .error-msg{color:#e05050;font-size:.8rem;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><span>Aneesa</span> Hampers</div>
+
+  <!-- LOADING STATE -->
+  <div class="state active" id="stateLoading">
+    <div class="icon">⏳</div>
+    <h1>Unsubscribing…</h1>
+    <p>Please wait while we process your request.</p>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="state" id="stateSuccess">
+    <div class="icon">✅</div>
+    <h1>You're Unsubscribed</h1>
+    <p>You won't receive any more promotional emails from Aneesa Hampers.<br/>
+      You'll still get order confirmations and important account emails.</p>
+    <a href="index.html" class="btn btn-primary">Visit Our Store →</a><br/>
+    <button class="btn btn-outline" id="resubBtn">Re-subscribe</button>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="state" id="stateError">
+    <div class="icon">❌</div>
+    <h1>Something Went Wrong</h1>
+    <p>We couldn't process your unsubscribe request. Please try again or contact us on WhatsApp.</p>
+    <a href="https://wa.me/918639066613" class="btn btn-primary">Contact Support</a>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
+  authDomain:"aneesa-hampers.firebaseapp.com",
+  projectId:"aneesa-hampers",
+  storageBucket:"aneesa-hampers.firebasestorage.app",
+  messagingSenderId:"909653560410",
+  appId:"1:909653560410:web:397db4fec2d9f042609c63"
+});
+
+const functions = getFunctions(app, "asia-south1");
+const unsubscribe = httpsCallable(functions, "unsubscribeUser");
+
+function show(id) {
+  document.querySelectorAll(".state").forEach(el => el.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// Get token from URL
+const params = new URLSearchParams(window.location.search);
+const token  = params.get("t");
+
+if (!token) {
+  show("stateError");
+} else {
+  unsubscribe({ token })
+    .then(result => {
+      if (result.data.success) show("stateSuccess");
+      else show("stateError");
+    })
+    .catch(() => show("stateError"));
+}
+
+// Re-subscribe button
+document.getElementById("resubBtn").addEventListener("click", async () => {
+  try {
+    const email = token ? atob(token) : null;
+    if (!email) return;
+    // Just reload — user can contact support for re-sub
+    alert("Please contact us on WhatsApp to re-subscribe: wa.me/918639066613");
+  } catch(e) {}
+});
+</script>
+</body>
+</html>

@@ -147,6 +147,34 @@
     .float-wa{position:fixed;bottom:24px;right:24px;width:52px;height:52px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);z-index:200;transition:transform .2s;}
     .float-wa:hover{transform:scale(1.1);}
     @media(max-width:768px){.float-wa{display:none;}}
+
+    /* ── REVIEW MODAL ───────────────────────────────── */
+    #ord-rv-modal{display:none;position:fixed;inset:0;background:rgba(30,6,16,.6);backdrop-filter:blur(6px);z-index:60000;align-items:center;justify-content:center;padding:16px;}
+    #ord-rv-modal.open{display:flex;}
+    #ord-rv-inner{background:white;border-radius:22px;width:100%;max-width:480px;padding:32px 28px;position:relative;box-shadow:0 24px 70px rgba(59,13,26,.25);max-height:92vh;overflow-y:auto;}
+    .ord-rv-label{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.42;margin-bottom:6px;}
+    .ord-rv-input{width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .2s;}
+    .ord-rv-input:focus{border-color:#c0647a;}
+
+    /* Upload zone */
+    .ord-upload-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:22px 16px;border:2px dashed rgba(192,100,122,.3);border-radius:14px;background:var(--cream);cursor:pointer;transition:border-color .2s,background .2s;text-align:center;}
+    .ord-upload-zone:hover,.ord-upload-zone.drag-over{border-color:#c0647a;background:rgba(249,228,233,.45);}
+    .ord-upload-icon{font-size:1.8rem;}
+    .ord-upload-text{font-size:.8rem;color:var(--burgundy);font-weight:500;}
+    .ord-upload-note{font-size:.68rem;opacity:.42;}
+    /* Preview */
+    .ord-photo-preview{position:relative;margin-top:10px;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(59,13,26,.12);max-height:200px;display:none;}
+    .ord-photo-preview img{width:100%;max-height:200px;object-fit:cover;display:block;border-radius:12px;}
+    .ord-remove-photo{position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(59,13,26,.72);backdrop-filter:blur(4px);border:none;border-radius:50%;color:white;font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+    .ord-remove-photo:hover{background:rgba(192,100,122,.9);}
+
+    /* Lightbox */
+    #ord-lightbox{display:none;position:fixed;inset:0;z-index:99000;background:rgba(10,3,10,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;}
+    #ord-lightbox.open{display:flex;}
+    #ord-lightbox img{max-width:92vw;max-height:88vh;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5);object-fit:contain;animation:ordLbIn .25s ease;}
+    @keyframes ordLbIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+    #ord-lb-close{position:absolute;top:18px;right:20px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);border:none;color:white;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+    #ord-lb-close:hover{background:rgba(192,100,122,.7);}
   </style>
 </head>
 <body>
@@ -239,6 +267,61 @@
 
 <!-- FLOAT WA -->
 <a href="https://wa.me/918639066613" class="float-wa" target="_blank">💬</a>
+
+<!-- ORDER REVIEW LIGHTBOX -->
+<div id="ord-lightbox" aria-modal="true">
+  <button id="ord-lb-close" onclick="_ordLbClose()">✕</button>
+  <img id="ord-lb-img" src="" alt="Product photo" onclick="event.stopPropagation()"/>
+</div>
+
+<!-- ORDER REVIEW MODAL -->
+<div id="ord-rv-modal" onclick="if(event.target===this)closeOrdReview()">
+  <div id="ord-rv-inner">
+    <button onclick="closeOrdReview()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--burgundy);">✕</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.65rem;margin-bottom:4px;">Share Your <em style="font-style:italic;color:var(--deep-rose)">Experience</em></div>
+    <div style="font-size:.76rem;opacity:.4;margin-bottom:20px;">Your honest review helps others choose better 🌸</div>
+
+    <!-- Star picker -->
+    <div style="margin-bottom:14px;">
+      <div class="ord-rv-label">Your Rating *</div>
+      <div id="ord-star-picker" style="display:flex;gap:8px;font-size:2rem;cursor:pointer;">
+        <span onclick="ordSetStar(1)" title="1 star">☆</span>
+        <span onclick="ordSetStar(2)" title="2 stars">☆</span>
+        <span onclick="ordSetStar(3)" title="3 stars">☆</span>
+        <span onclick="ordSetStar(4)" title="4 stars">☆</span>
+        <span onclick="ordSetStar(5)" title="5 stars">☆</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div class="ord-rv-label">Your Name *</div>
+        <input id="ord-rv-name" type="text" placeholder="e.g. Priya S." class="ord-rv-input"/>
+      </div>
+      <div>
+        <div class="ord-rv-label">Your Review *</div>
+        <textarea id="ord-rv-text" rows="4" placeholder="Tell others what you loved about this order…" class="ord-rv-input" style="resize:vertical;"></textarea>
+      </div>
+
+      <!-- Photo upload -->
+      <div>
+        <div class="ord-rv-label">📷 Product Photo <span style="text-transform:none;letter-spacing:0;font-size:.7rem;opacity:.6;">(optional · JPG / PNG)</span></div>
+        <label id="ord-upload-zone" for="ord-photo-input" class="ord-upload-zone">
+          <div class="ord-upload-icon">📸</div>
+          <div class="ord-upload-text">Click or drag &amp; drop your photo</div>
+          <div class="ord-upload-note">JPG or PNG · max 5 MB</div>
+          <input id="ord-photo-input" type="file" accept="image/jpeg,image/png" style="display:none;"/>
+        </label>
+        <div class="ord-photo-preview" id="ord-photo-preview">
+          <img id="ord-preview-img" src="" alt="Preview"/>
+          <button type="button" class="ord-remove-photo" id="ord-remove-photo" title="Remove">✕</button>
+        </div>
+      </div>
+
+      <button id="ord-rv-submit" onclick="submitOrdReview()" style="padding:14px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#c0647a'" onmouseout="this.style.background='var(--burgundy)'">Submit Review 🌸</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -572,6 +655,7 @@ function buildOrderCard(o) {
         <a href="https://wa.me/${WA}?text=${waMsg}" target="_blank" class="oa-btn oa-wa">💬 WhatsApp Support</a>
         <a href="account.html#orders" class="oa-btn oa-track">📦 My Orders</a>
         <button class="oa-btn oa-reorder" onclick="reorder('${o.id}')">🔁 Reorder</button>
+        ${o.status === 'delivered' ? `<button class="oa-btn" onclick="openOrdReview('${o.id}','${(firstItem.name||'Hamper').replace(/'/g,"'")}')" style="background:var(--blush);color:var(--deep-rose);">★ Write a Review</button>` : ''}
       </div>
     </div>
   </div>`;
@@ -605,6 +689,167 @@ window.reorder = function(orderId) {
   setTimeout(() => window.location.href = "cart.html", 1200);
 };
 
+</script>
+
+<script type="module">
+// ── ORDER PAGE REVIEW WITH PHOTO UPLOAD ─────────────────────────────────
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const _app2 = getApps().length ? getApps()[0]
+  : initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
+const _rvDb  = getFirestore(_app2);
+const _rvStg = getStorage(_app2);
+
+let _ordRvStar = 5;
+let _ordPhotoFile = null;
+let _ordCurrentId = null;
+
+// ── Star picker ──
+window.ordSetStar = function(n){
+  _ordRvStar = n;
+  document.querySelectorAll('#ord-star-picker span').forEach(function(s,i){
+    s.textContent = i < n ? '★' : '☆';
+    s.style.color = i < n ? '#f5a623' : 'rgba(59,13,26,.28)';
+    s.style.transform = i < n ? 'scale(1.12)' : 'scale(1)';
+    s.style.transition = 'transform .15s';
+  });
+};
+
+// ── Open / close modal ──
+window.openOrdReview = function(orderId, productName){
+  _ordCurrentId = orderId;
+  _ordRvStar = 5;
+  window.ordSetStar(5);
+  var modal = document.getElementById('ord-rv-modal');
+  // Pre-fill name from localStorage
+  try{
+    var u = JSON.parse(localStorage.getItem('ah_user')||'null');
+    if(u && u.name){ var n=document.getElementById('ord-rv-name'); if(n) n.value=u.name; }
+  }catch(e){}
+  document.getElementById('ord-rv-text').value = '';
+  _ordClearPhoto();
+  if(modal){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+};
+window.closeOrdReview = function(){
+  var modal = document.getElementById('ord-rv-modal');
+  if(modal){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  _ordClearPhoto();
+};
+
+// ── Photo helpers ──
+function _ordSetFile(file){
+  if(!file) return;
+  if(!['image/jpeg','image/png'].includes(file.type)){
+    _ordToast('⚠️ Only JPG or PNG images allowed.'); return;
+  }
+  if(file.size > 5*1024*1024){
+    _ordToast('⚠️ Image must be under 5 MB.'); return;
+  }
+  _ordPhotoFile = file;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('ord-preview-img').src = e.target.result;
+    document.getElementById('ord-photo-preview').style.display = 'block';
+    document.getElementById('ord-upload-zone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function _ordClearPhoto(){
+  _ordPhotoFile = null;
+  var inp = document.getElementById('ord-photo-input');
+  if(inp) inp.value='';
+  document.getElementById('ord-preview-img').src='';
+  document.getElementById('ord-photo-preview').style.display='none';
+  document.getElementById('ord-upload-zone').style.display='flex';
+}
+
+// ── File input ──
+document.getElementById('ord-photo-input').addEventListener('change', function(){
+  if(this.files && this.files[0]) _ordSetFile(this.files[0]);
+});
+// Drag-drop
+var _oz = document.getElementById('ord-upload-zone');
+_oz.addEventListener('dragover',function(e){ e.preventDefault(); _oz.classList.add('drag-over'); });
+_oz.addEventListener('dragleave',function(){ _oz.classList.remove('drag-over'); });
+_oz.addEventListener('drop',function(e){
+  e.preventDefault(); _oz.classList.remove('drag-over');
+  if(e.dataTransfer && e.dataTransfer.files[0]) _ordSetFile(e.dataTransfer.files[0]);
+});
+// Remove button
+document.getElementById('ord-remove-photo').addEventListener('click',function(e){
+  e.preventDefault(); e.stopPropagation(); _ordClearPhoto();
+});
+
+// ── Lightbox ──
+window._ordLbClose = function(){
+  document.getElementById('ord-lightbox').classList.remove('open');
+  document.body.style.overflow='';
+};
+document.getElementById('ord-lightbox').addEventListener('click',function(e){
+  if(e.target===this) window._ordLbClose();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') window._ordLbClose();
+});
+
+// ── Toast helper ──
+function _ordToast(msg){
+  var t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.style.display='none'; }, 2800);
+}
+
+// ── Submit review ──
+window.submitOrdReview = async function(){
+  var name = (document.getElementById('ord-rv-name').value||'').trim();
+  var text = (document.getElementById('ord-rv-text').value||'').trim();
+  if(!name){ _ordToast('⚠️ Please enter your name'); return; }
+  if(!text || text.length < 10){ _ordToast('⚠️ Please write at least 10 characters'); return; }
+
+  var btn = document.getElementById('ord-rv-submit');
+  btn.disabled=true; btn.textContent='Uploading…';
+
+  try{
+    var imageURL = null;
+    if(_ordPhotoFile){
+      btn.textContent='Uploading photo…';
+      var ext = _ordPhotoFile.name.split('.').pop().toLowerCase();
+      var path = 'review-photos/'+ Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+      var fileRef = sRef(_rvStg, path);
+      await uploadBytes(fileRef, _ordPhotoFile);
+      imageURL = await getDownloadURL(fileRef);
+    }
+    btn.textContent='Saving…';
+    var u = null;
+    try{ u = JSON.parse(localStorage.getItem('ah_user')||'null'); }catch(e){}
+    await addDoc(collection(_rvDb,'reviews'),{
+      name: name,
+      text: text,
+      rating: _ordRvStar,
+      orderId: _ordCurrentId || null,
+      uid: u ? u.uid : null,
+      imageURL: imageURL,
+      source: 'order',
+      createdAt: serverTimestamp(),
+      approved: true
+    });
+    _ordToast('🌸 Review submitted! Thank you.');
+    window.closeOrdReview();
+  }catch(e){
+    _ordToast('❌ '+e.message);
+  }
+  btn.disabled=false; btn.textContent='Submit Review 🌸';
+};
+
+// Init stars
+window.ordSetStar(5);
 </script>
 
 <script src="mobilenav.js"></script>

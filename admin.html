@@ -878,7 +878,10 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <input type="hidden" id="newStatus"/>
     <input type="hidden" id="editOrderId"/>
-    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveOrderStatus()">💾 Save Status Update</button>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-primary" style="flex:1;padding:12px" onclick="saveOrderStatus()">💾 Save Status</button>
+      <button class="btn btn-sm" id="emailCustBtn" style="background:#e8f0fd;color:#1a56e8;border:1.5px solid #c5d8fb;padding:12px 16px;border-radius:9px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;cursor:pointer;white-space:nowrap" onclick="openEmailFromOrder()">📧 Email Customer</button>
+    </div>
   </div>
 </div>
 
@@ -897,6 +900,79 @@ textarea.fi{resize:vertical;min-height:80px;}
 .status-sel-btn[data-s="delivered"].selected{background:#2d7a4f;border-color:#2d7a4f;}
 .status-sel-btn[data-s="cancelled"].selected{background:#e05050;border-color:#e05050;}
 .status-sel-btn[data-s="shipped"].selected{background:#7030c0;border-color:#7030c0;}
+</style>
+
+<!-- ══ EMAIL CUSTOMER MODAL ══ -->
+<div class="modal-ov" id="emailModal">
+  <div class="modal-box" style="max-width:540px">
+    <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
+    <div class="modal-title">📧 Email <em>Customer</em></div>
+
+    <!-- Customer info strip -->
+    <div id="emailCustInfo" style="background:linear-gradient(135deg,var(--burgundy),#5a1528);color:white;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+      <div style="font-size:1.6rem;">👤</div>
+      <div>
+        <div id="emailCustName" style="font-weight:700;font-size:.92rem;"></div>
+        <div id="emailCustAddr" style="font-size:.73rem;opacity:.7;margin-top:2px;"></div>
+      </div>
+    </div>
+
+    <!-- Template selector -->
+    <div class="fg">
+      <label class="fl">Email Template</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px" id="emailTemplateGrid">
+        <button class="email-tpl-btn selected" data-tpl="confirmed" onclick="selectEmailTemplate('confirmed',this)">✅ Order Confirmed</button>
+        <button class="email-tpl-btn" data-tpl="preparing" onclick="selectEmailTemplate('preparing',this)">🎀 Being Prepared</button>
+        <button class="email-tpl-btn" data-tpl="shipped" onclick="selectEmailTemplate('shipped',this)">🚚 Out for Delivery</button>
+        <button class="email-tpl-btn" data-tpl="delivered" onclick="selectEmailTemplate('delivered',this)">🎁 Delivered</button>
+        <button class="email-tpl-btn" data-tpl="custom" onclick="selectEmailTemplate('custom',this)">✏️ Custom Message</button>
+      </div>
+    </div>
+
+    <!-- To email -->
+    <div class="fg" style="margin-top:14px">
+      <label class="fl">To Email</label>
+      <input class="fi" id="emailTo" type="email" placeholder="customer@email.com" readonly style="background:#f8f0f2;"/>
+    </div>
+
+    <!-- Subject -->
+    <div class="fg">
+      <label class="fl">Subject</label>
+      <input class="fi" id="emailSubject" placeholder="Your Aneesa Hampers Order Update"/>
+    </div>
+
+    <!-- Message body -->
+    <div class="fg">
+      <label class="fl">Message</label>
+      <textarea class="fi" id="emailBody" rows="7" placeholder="Type your message here…" style="font-size:.83rem;line-height:1.7;"></textarea>
+    </div>
+
+    <!-- Send button -->
+    <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px" id="emailSendBtn" onclick="sendCustomerEmail()">
+      <span>📧</span> <span id="emailSendTxt">Send Email Now</span>
+    </button>
+    <div id="emailStatus" style="font-size:.74rem;text-align:center;margin-top:8px;min-height:16px;"></div>
+
+    <!-- Note about EmailJS setup -->
+    <div style="background:rgba(192,100,122,.07);border-radius:10px;padding:10px 14px;font-size:.71rem;color:rgba(59,13,26,.55);line-height:1.7;margin-top:12px;">
+      💡 Uses <strong>EmailJS</strong> — free plan sends up to 200 emails/month. Configure your
+      <a href="https://dashboard.emailjs.com" target="_blank" style="color:var(--deep-rose)">EmailJS service &amp; template IDs</a> in the script section.
+    </div>
+  </div>
+</div>
+
+<style>
+.email-tpl-btn{
+  padding:9px 8px;border-radius:10px;
+  border:1.5px solid rgba(192,100,122,.18);
+  background:var(--cream);
+  font-family:'Jost',sans-serif;font-size:.67rem;
+  letter-spacing:.5px;text-transform:uppercase;
+  cursor:pointer;transition:all .2s;color:var(--burgundy);
+  font-weight:500;
+}
+.email-tpl-btn:hover{border-color:var(--deep-rose);background:var(--blush);}
+.email-tpl-btn.selected{background:#1a56e8;color:white;border-color:#1a56e8;}
 </style>
 
 <!-- SUBCATEGORY MODAL -->
@@ -952,6 +1028,10 @@ textarea.fi{resize:vertical;min-height:80px;}
 </div>
 
 <div class="adm-toast" id="admToast"></div>
+
+<!-- EmailJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('YOUR_EMAILJS_PUBLIC_KEY');</script>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1235,6 +1315,7 @@ window.renderOrders = function() {
       <td style="display:flex;gap:5px;flex-wrap:wrap">
         <button class="btn btn-edit btn-sm" onclick="openOrder('${o.id}')">Update</button>
         ${phone!=='—'?`<a class="btn btn-green btn-sm" href="https://wa.me/91${phone.replace(/\D/g,'')}?text=${waMsg}" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center">💬</a>`:''}
+        ${(o.customerEmail||o.uid)?`<button class="btn btn-sm" style="background:#e8f0fd;color:#1a56e8;border:none;flex-shrink:0" title="Email customer" onclick="openEmailModal('${o.id}')">📧</button>`:''}
       </td>
     </tr>`;
   }).join('');
@@ -1319,6 +1400,284 @@ window.saveOrderStatus = async function() {
     }
     closeModal('orderModal');
   } catch(e) { toast('❌ Error: '+e.message, 'err'); }
+};
+
+// ══════════════════════════════════════════
+// EMAIL CUSTOMER SYSTEM
+// ══════════════════════════════════════════
+
+// ── EmailJS config — replace with your real IDs from dashboard.emailjs.com ──
+const EMAILJS_SERVICE_ID  = 'service_aneesa';   // Your EmailJS Service ID
+const EMAILJS_TEMPLATE_ID = 'template_order';   // Your EmailJS Template ID
+// Public key is set above via emailjs.init()
+
+var _emailOrderId = null;
+
+// Open from table row email button
+window.openEmailModal = async function(orderId) {
+  const o = _orders.find(x => x.id === orderId);
+  if (!o) return;
+  _emailOrderId = orderId;
+  // Try to get email from order, else look up from customers collection
+  if (!o.customerEmail && o.uid) {
+    try {
+      const custSnap = await getDoc(doc(db, 'customers', o.uid));
+      if (custSnap.exists() && custSnap.data().email) {
+        o.customerEmail = custSnap.data().email;
+      }
+    } catch(e) { console.warn('Email lookup:', e); }
+  }
+  _populateEmailModal(o, 'confirmed');
+  closeModal('orderModal');
+  document.getElementById('emailModal').classList.add('open');
+};
+
+// Open from inside the Order Details modal
+window.openEmailFromOrder = async function() {
+  const id = document.getElementById('editOrderId').value;
+  const o  = _orders.find(x => x.id === id);
+  if (!o) { toast('⚠️ Order not found', 'err'); return; }
+
+  // Try email from order doc first, else look up from customers collection
+  if (!o.customerEmail && o.uid) {
+    try {
+      const custSnap = await getDoc(doc(db, 'customers', o.uid));
+      if (custSnap.exists() && custSnap.data().email) {
+        o.customerEmail = custSnap.data().email;
+      }
+    } catch(e) { console.warn('Email lookup:', e); }
+  }
+
+  _emailOrderId = id;
+  const curStatus = document.getElementById('newStatus').value || o.status || 'confirmed';
+  _populateEmailModal(o, curStatus);
+  document.getElementById('emailModal').classList.add('open');
+};
+
+function _populateEmailModal(o, tpl) {
+  const name     = o.customerName || o.name || 'Valued Customer';
+  const email    = o.customerEmail || '';
+  const trackId  = o.trackingId || ('#' + o.id.slice(-6).toUpperCase());
+  const orderId  = '#' + o.id.slice(-6).toUpperCase();
+  const total    = '₹' + Number(o.total || 0).toLocaleString('en-IN');
+  const items    = (o.items||[]).map(i => `${i.name} ×${i.qty||1}`).join(', ') || (o.productName || '—');
+  const addr     = [o.address, o.city, o.state].filter(Boolean).join(', ');
+
+  // Fill customer info strip
+  const nEl = document.getElementById('emailCustName');
+  const aEl = document.getElementById('emailCustAddr');
+  if (nEl) nEl.textContent = name + (email ? ' · ' + email : ' · (enter email below)');
+  if (aEl) aEl.textContent = addr || 'Address not provided';
+
+  // Fill email address (editable so admin can type if missing)
+  const toEl = document.getElementById('emailTo');
+  if (toEl) {
+    toEl.value    = email;
+    toEl.readOnly = false; // always allow edit
+    toEl.style.background = email ? '#f8f0f2' : '#fff9e8';
+    toEl.placeholder = email ? email : 'Enter customer email manually';
+  }
+
+  // Reset template buttons
+  document.querySelectorAll('.email-tpl-btn').forEach(b => b.classList.remove('selected'));
+  const activeBtn = document.querySelector(`.email-tpl-btn[data-tpl="${['confirmed','preparing','shipped','delivered'].includes(tpl) ? tpl : 'confirmed'}"]`);
+  if (activeBtn) activeBtn.classList.add('selected');
+
+  // Apply template
+  _applyEmailTemplate(tpl, { name, trackId, orderId, total, items });
+
+  // Reset send button
+  const btn = document.getElementById('emailSendBtn');
+  const txt = document.getElementById('emailSendTxt');
+  if (btn) btn.disabled = false;
+  if (txt) txt.textContent = 'Send Email Now';
+  const st = document.getElementById('emailStatus');
+  if (st) st.textContent = '';
+}
+
+function _applyEmailTemplate(tpl, ctx) {
+  const subEl  = document.getElementById('emailSubject');
+  const bodyEl = document.getElementById('emailBody');
+  const { name, trackId, orderId, total, items } = ctx;
+
+  const templates = {
+    confirmed: {
+      subject: `Order Confirmed - ${orderId} | Aneesa Hampers`,
+      body:
+`Dear ${name},
+
+Thank you for your order! We are happy to confirm that your Aneesa Hampers order has been received and confirmed.
+
+Order Details
+-----------------
+Order ID    : ${orderId}
+Tracking ID : ${trackId}
+Items       : ${items}
+Total Paid  : ${total}
+
+We are now carefully preparing your hamper. You will receive another email once it is dispatched.
+
+If you have any questions, please reply to this email or contact us on WhatsApp at +91 86390 66613.
+
+Thank you for choosing Aneesa Hampers.
+
+Warm regards,
+Aneesa Hampers Team
+aNeesahampers@gmail.com | +91 86390 66613
+Kadapa, Andhra Pradesh, India`
+    },
+    preparing: {
+      subject: `Your Order is Being Prepared - ${orderId} | Aneesa Hampers`,
+      body:
+`Dear ${name},
+
+We are pleased to let you know that your Aneesa Hampers order is now being carefully prepared by our team.
+
+Order Details
+-----------------
+Order ID    : ${orderId}
+Tracking ID : ${trackId}
+Items       : ${items}
+
+Our team is handcrafting your hamper with care. This process usually takes 1 to 2 business days.
+
+We will notify you as soon as your order is dispatched.
+
+For any queries, please reply to this email or reach us on WhatsApp at +91 86390 66613.
+
+Warm regards,
+Aneesa Hampers Team
+aNeesahampers@gmail.com | +91 86390 66613
+Kadapa, Andhra Pradesh, India`
+    },
+    shipped: {
+      subject: `Your Order is Out for Delivery - ${orderId} | Aneesa Hampers`,
+      body:
+`Dear ${name},
+
+Your Aneesa Hampers order is now out for delivery and will reach you shortly.
+
+Order Details
+-----------------
+Order ID    : ${orderId}
+Tracking ID : ${trackId}
+Items       : ${items}
+
+Please ensure someone is available at the delivery address to receive the package.
+
+If you have any questions, please reply to this email or contact us on WhatsApp at +91 86390 66613.
+
+Warm regards,
+Aneesa Hampers Team
+aNeesahampers@gmail.com | +91 86390 66613
+Kadapa, Andhra Pradesh, India`
+    },
+    delivered: {
+      subject: `Order Delivered - ${orderId} | Aneesa Hampers`,
+      body:
+`Dear ${name},
+
+We hope you have received your Aneesa Hampers order. Thank you for shopping with us!
+
+Order Summary
+-----------------
+Order ID : ${orderId}
+Items    : ${items}
+Total    : ${total}
+
+We would love to hear your feedback. If you have a moment, please share your experience or tag us on Instagram @aneesahampers.
+
+We look forward to serving you again.
+
+Warm regards,
+Aneesa Hampers Team
+aNeesahampers@gmail.com | +91 86390 66613
+Kadapa, Andhra Pradesh, India`
+    },
+    custom: {
+      subject: `Message from Aneesa Hampers regarding Order ${orderId}`,
+      body: `Dear ${name},\n\n[Write your message here]\n\nWarm regards,\nAneesa Hampers Team\naNeesahampers@gmail.com | +91 86390 66613`
+    }
+  };
+
+  const t = templates[tpl] || templates.custom;
+  if (subEl)  subEl.value  = t.subject;
+  if (bodyEl) bodyEl.value = t.body;
+}
+
+window.selectEmailTemplate = function(tpl, btn) {
+  document.querySelectorAll('.email-tpl-btn').forEach(b => b.classList.remove('selected'));
+  if (btn) btn.classList.add('selected');
+  const o = _orders.find(x => x.id === _emailOrderId);
+  if (!o) return;
+  const name    = o.customerName || o.name || 'Valued Customer';
+  const trackId = o.trackingId || ('#' + o.id.slice(-6).toUpperCase());
+  const orderId = '#' + o.id.slice(-6).toUpperCase();
+  const total   = '₹' + Number(o.total||0).toLocaleString('en-IN');
+  const items   = (o.items||[]).map(i => `${i.name} ×${i.qty||1}`).join(', ') || (o.productName||'—');
+  _applyEmailTemplate(tpl, { name, trackId, orderId, total, items });
+  if (tpl === 'custom') {
+    const bodyEl = document.getElementById('emailBody');
+    if (bodyEl) { bodyEl.focus(); bodyEl.setSelectionRange(bodyEl.value.indexOf('['), bodyEl.value.indexOf(']')+1); }
+  }
+};
+
+window.sendCustomerEmail = async function() {
+  const to      = (document.getElementById('emailTo').value    || '').trim();
+  const subject = (document.getElementById('emailSubject').value || '').trim();
+  const body    = (document.getElementById('emailBody').value   || '').trim();
+  const stEl    = document.getElementById('emailStatus');
+  const btn     = document.getElementById('emailSendBtn');
+  const txtEl   = document.getElementById('emailSendTxt');
+
+  if (!to || !to.includes('@')) { toast('⚠️ No valid email address found for this customer', 'err'); return; }
+  if (!body) { toast('⚠️ Message body is empty', 'err'); return; }
+
+  btn.disabled = true;
+  if (txtEl) txtEl.textContent = 'Sending…';
+  if (stEl)  { stEl.style.color = 'rgba(59,13,26,.5)'; stEl.textContent = 'Sending email… please wait'; }
+
+  const o = _orders.find(x => x.id === _emailOrderId);
+  const name = o ? (o.customerName||o.name||'Customer') : 'Customer';
+
+  // -- Try EmailJS first --
+  try {
+    const result = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email:    to,
+      to_name:     name,
+      from_name:   'Aneesa Hampers',
+      from_email:  'aNeesahampers@gmail.com',
+      reply_to:    'aNeesahampers@gmail.com',
+      subject:     subject,
+      message:     body,
+      order_id:    o ? ('#' + o.id.slice(-6).toUpperCase()) : '--',
+      tracking_id: o ? (o.trackingId || '') : ''
+    });
+
+    if (result.status === 200) {
+      if (stEl) { stEl.style.color = '#2d7a4f'; stEl.textContent = '✅ Email sent successfully to ' + to; }
+      if (txtEl) txtEl.textContent = '✅ Sent!';
+      toast('✅ Email sent to ' + name + '!');
+      // Log in Firestore for record-keeping
+      if (o) {
+        try {
+          await updateDoc(doc(db,'orders',_emailOrderId), {
+            lastEmailSent: { subject, sentAt: serverTimestamp(), to, template: document.querySelector('.email-tpl-btn.selected')?.dataset?.tpl || 'custom' }
+          });
+        } catch(e2) { /* non-critical */ }
+      }
+    } else {
+      throw new Error('EmailJS returned status ' + result.status);
+    }
+  } catch(ejsErr) {
+    console.warn('EmailJS failed, using mailto fallback:', ejsErr);
+    // ── Fallback: open mailto so admin can send manually ──
+    const mailtoUrl = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoUrl, '_blank');
+    if (stEl) { stEl.style.color = '#c07830'; stEl.textContent = '⚠️ EmailJS not configured — opened your mail app instead. Set up EmailJS for automatic sending.'; }
+    if (txtEl) txtEl.textContent = 'Send Email Now';
+    btn.disabled = false;
+  }
 };
 
 // ── PRODUCTS ──

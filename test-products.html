@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Product Tester - Aneesa Hampers</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f5e8ec 0%, #fdf6f0 100%);
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(59,13,26,0.1);
+  }
+  h1 {
+    font-size: 2rem;
+    color: #3b0d1a;
+    margin-bottom: 10px;
+  }
+  .subtitle {
+    color: #c0647a;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+  }
+  .section {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .section h2 {
+    font-size: 1.2rem;
+    color: #3b0d1a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  button {
+    background: #c0647a;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  button:hover {
+    background: #a0546a;
+    transform: translateY(-1px);
+  }
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  .log {
+    background: #2d2d2d;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 16px;
+  }
+  .log div {
+    margin: 4px 0;
+  }
+  .log .error { color: #ff6b6b; }
+  .log .success { color: #51cf66; }
+  .log .info { color: #74c0fc; }
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .product-card {
+    background: white;
+    border: 2px solid #f0e8ec;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .product-emoji {
+    font-size: 3rem;
+    margin-bottom: 8px;
+  }
+  .product-name {
+    font-weight: 600;
+    color: #3b0d1a;
+    margin-bottom: 4px;
+  }
+  .product-price {
+    color: #c0647a;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  .status.loading { background: #ffd43b; color: #000; }
+  .status.success { background: #51cf66; color: white; }
+  .status.error { background: #ff6b6b; color: white; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🛠️ Aneesa Hampers - Product Tester</h1>
+  <p class="subtitle">Diagnose and fix your featured products issue</p>
+
+  <!-- Status Section -->
+  <div class="section">
+    <h2>
+      📊 Current Status
+      <span class="status loading" id="statusBadge">Checking...</span>
+    </h2>
+    <div id="statusText" style="color: #666; margin-top: 8px;">
+      Connecting to Firestore...
+    </div>
+  </div>
+
+  <!-- Check Products -->
+  <div class="section">
+    <h2>🔍 Step 1: Check Existing Products</h2>
+    <p style="color: #666; margin-bottom: 12px;">See what products are currently in your Firestore database</p>
+    <button onclick="checkProducts()">Check Products</button>
+    <div id="productsList"></div>
+    <div id="checkLog" class="log" style="display: none;"></div>
+  </div>
+
+  <!-- Add Sample Products -->
+  <div class="section">
+    <h2>➕ Step 2: Add Sample Products</h2>
+    <p style="color: #666; margin-bottom: 12px;">Add 4 sample hamper products to test the system</p>
+    <button onclick="addSampleProducts()">Add Sample Products</button>
+    <div id="addLog" class="log" style="display: none;"></div>
+  </div>
+
+  <!-- Test Homepage -->
+  <div class="section">
+    <h2>🏠 Step 3: Test Your Homepage</h2>
+    <p style="color: #666; margin-bottom: 12px;">After adding products, check if they appear on your homepage</p>
+    <a href="index.html" target="_blank">
+      <button>Open Homepage</button>
+    </a>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, addDoc, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// Firebase config
+const app = initializeApp({
+  apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
+  authDomain:"aneesa-hampers.firebaseapp.com",
+  projectId:"aneesa-hampers",
+  storageBucket:"aneesa-hampers.firebasestorage.app",
+  messagingSenderId:"909653560410",
+  appId:"1:909653560410:web:397db4fec2d9f042609c63"
+});
+
+const db = getFirestore(app);
+window.db = db;
+
+// Auto-check on load
+setTimeout(checkProducts, 500);
+
+// Check existing products
+window.checkProducts = async function() {
+  const log = document.getElementById('checkLog');
+  const list = document.getElementById('productsList');
+  const statusBadge = document.getElementById('statusBadge');
+  const statusText = document.getElementById('statusText');
+  
+  log.style.display = 'block';
+  log.innerHTML = '<div class="info">🔍 Querying Firestore products collection...</div>';
+  
+  try {
+    const querySnapshot = await getDocs(collection(db, 'products'));
+    const count = querySnapshot.size;
+    
+    log.innerHTML += `<div class="success">✅ Query successful! Found ${count} product(s)</div>`;
+    
+    if (count === 0) {
+      statusBadge.className = 'status error';
+      statusBadge.textContent = 'Empty';
+      statusText.innerHTML = '❌ <strong>Problem Found:</strong> Your products collection is empty. Click "Add Sample Products" below.';
+      list.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No products found</div>';
+    } else {
+      statusBadge.className = 'status success';
+      statusBadge.textContent = `${count} Products`;
+      statusText.innerHTML = `✅ <strong>Great!</strong> You have ${count} product(s) in your database. They should appear on your homepage.`;
+      
+      // Display products
+      const products = [];
+      querySnapshot.forEach(doc => {
+        products.push({ id: doc.id, ...doc.data() });
+      });
+      
+      list.innerHTML = '<div class="product-list">' + products.map(p => `
+        <div class="product-card">
+          <div class="product-emoji">${p.emoji || '🎁'}</div>
+          <div class="product-name">${p.name || 'Unnamed'}</div>
+          <div class="product-price">₹${(p.price || 0).toLocaleString('en-IN')}</div>
+        </div>
+      `).join('') + '</div>';
+      
+      log.innerHTML += '<div class="success">✅ Products loaded successfully!</div>';
+    }
+    
+  } catch (error) {
+    log.innerHTML += `<div class="error">❌ Error: ${error.message}</div>`;
+    statusBadge.className = 'status error';
+    statusBadge.textContent = 'Error';
+    statusText.innerHTML = `❌ <strong>Error:</strong> ${error.message}`;
+  }
+};
+
+// Add sample products
+window.addSampleProducts = async function() {
+  const log = document.getElementById('addLog');
+  log.style.display = 'block';
+  log.innerHTML = '<div class="info">📝 Preparing sample products...</div>';
+  
+  const sampleProducts = [
+    {
+      name: "Premium Birthday Hamper",
+      price: 1299,
+      category: "Birthday",
+      description: "A delightful hamper perfect for birthday celebrations",
+      images: [],
+      emoji: "🎂",
+      badge: "Popular",
+      discount: 0,
+      createdAt: Timestamp.now()
+    },
+    {
+      name: "Wedding Gift Box",
+      price: 2499,
+      category: "Wedding",
+      description: "Elegant wedding gift hamper with premium items",
+      images: [],
+      emoji: "💒",
+      badge: "Premium",
+      discount: 10,
+      createdAt: Timestamp.now()
+    },
+    {
+      name: "Anniversary Special",
+      price: 1899,
+      category: "Anniversary",
+      description: "Romantic hamper for anniversary celebrations",
+      images: [],
+      emoji: "💕",
+      badge: "Best Seller",
+      discount: 15,
+      createdAt: Timestamp.now()
+    },
+    {
+      name: "Corporate Gift Hamper",
+      price: 999,
+      category: "Corporate",
+      description: "Professional hamper for corporate gifting",
+      images: [],
+      emoji: "💼",
+      badge: "",
+      discount: 0,
+      createdAt: Timestamp.now()
+    }
+  ];
+  
+  try {
+    for (const product of sampleProducts) {
+      const docRef = await addDoc(collection(db, 'products'), product);
+      log.innerHTML += `<div class="success">✅ Added: ${product.name} (ID: ${docRef.id})</div>`;
+    }
+    
+    log.innerHTML += '<div class="success">🎉 All sample products added successfully!</div>';
+    log.innerHTML += '<div class="info">💡 Now refresh your homepage to see the products</div>';
+    
+    // Auto-refresh the check
+    setTimeout(checkProducts, 1000);
+    
+  } catch (error) {
+    log.innerHTML += `<div class="error">❌ Error adding products: ${error.message}</div>`;
+  }
+};
+</script>
+
+</body>
+</html>

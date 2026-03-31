@@ -1190,8 +1190,10 @@ async function _saveOrderRazorpay(paymentId, total, items, name, phone) {
     var gift  = bn ? (bn.giftMessage || '') : (document.getElementById('fGift') ? document.getElementById('fGift').value.trim() : '');
     var uid   = currentUser ? currentUser.uid : null;
 
+    var customerEmail = currentUser ? currentUser.email : (bn && bn.customerEmail ? bn.customerEmail : '');
     var orderData = {
       customerName: name, customerPhone: phone,
+      customerEmail: customerEmail,
       address: addr, city: city, state: state, zipCode: pin, country: country,
       giftMessage: gift,
       items: items.map(function(i){ return {id:i.id,name:i.name,price:i.price,qty:i.qty||1,image:(i.images&&i.images[0])||i.image||''}; }),
@@ -1199,7 +1201,7 @@ async function _saveOrderRazorpay(paymentId, total, items, name, phone) {
       paymentMethod: 'razorpay', razorpayPaymentId: paymentId,
       status: 'confirmed',
       trackingId: trackingId,
-      country: 'India',
+      country: country || 'India',
       uid: uid || null,
       createdAt: serverTimestamp()
     };
@@ -2144,6 +2146,7 @@ async function _saveCartOrderRazorpay(paymentId) {
     var uid = currentUser ? currentUser.uid : null;
     var orderData = {
       customerName: m.name, customerPhone: m.phone,
+      customerEmail: currentUser ? currentUser.email : '',
       address: m.street, city: m.city, state: m.state, country: m.country, zipCode: m.pin,
       giftMessage: m.giftMsg, deliveryType: m.deliveryType,
       items: m.items.map(function(i){ return {id:i.id,name:i.name,price:i.price,qty:i.qty||1,image:i.image||""}; }),
@@ -2396,7 +2399,9 @@ window.confirmPaid = async function() {
       var lines=bnItems.map(function(i){return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+(i.price*(i.qty||1)).toLocaleString('en-IN');}).join('\n');
       var waMsg='🎁 *New Order — Aneesa Hampers*\n━━━━━━━\n👤 '+bnData.customerName+'\n📞 '+bnData.customerPhone+'\n📍 '+bnData.address+', '+bnData.city+(bnData.state?', '+bnData.state:'')+(bnData.zipCode?' - '+bnData.zipCode:'')+'\n🌍 '+bnData.country+'\n'+(bnData.giftMessage?'💌 '+bnData.giftMessage+'\n':'')+'━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+bnTotal.toLocaleString('en-IN')+'*\n🔖 Tracking: '+trackingId+'\n⚠️ Awaiting payment screenshot.';
       var waEl=document.getElementById('confirmWA'); if(waEl) waEl.href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg);
-      toast('🎉 Order placed!');
+      // ── Show animated confirmation immediately ──
+      _showConfirmation();
+      toast('🎉 Order placed! Your hamper is on its way 🌸');
     } catch(e){ toast('❌ Error: '+e.message); console.error(e); }
     return;
   }
@@ -2502,13 +2507,17 @@ window.confirmPaid = async function() {
     }
 
     // Clear this user's cart only, then sign out
-    var userCartKey = cartKey(); // get key before clearing ah_user
+    var userCartKey = cartKey();
     localStorage.removeItem(userCartKey);
     localStorage.removeItem("ah_user");
     try { await auth.signOut(); } catch(se) {}
 
-    // Auto open WhatsApp after 1.2 seconds
-    setTimeout(function(){ window.open("https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg), "_blank"); }, 1200);
+    // ── Show animated order confirmation immediately ──
+    _showConfirmation();
+    toast("🎉 Order placed! Thank you 🌸");
+
+    // Auto open WhatsApp after 1.4 seconds so banner is visible first
+    setTimeout(function(){ window.open("https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg), "_blank"); }, 1400);
 
   } catch(e) {
     toast("\u274c Error saving order: " + e.message);

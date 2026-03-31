@@ -25,246 +25,242 @@ a{text-decoration:none;}
 @media(pointer:coarse){.cursor,.cursor-ring{display:none;}button,a,[onclick]{cursor:pointer;}}
 
 /* ═══════════════════════════════════════════════
-   CINEMATIC LOGO INTRO LOADER
+   CINEMATIC SPLASH SCREEN (centered vertical)
 ═══════════════════════════════════════════════ */
 #cin-loader{
-  position:fixed;inset:0;z-index:99999;
+  --cl-bg1:#140308;--cl-bg2:#3b0d1a;--cl-bg3:#5a1528;--cl-bg4:#1e0610;
+  --cl-rose:rgba(192,100,122,.38);--cl-rose2:rgba(232,160,176,.22);
+  --cl-gold:rgba(201,169,110,.18);--cl-accent:#c0647a;--cl-accent2:#c9a96e;
+  --cl-spark:rgba(201,169,110,.85);
+  --cl-progress-a:rgba(192,100,122,.65);--cl-progress-b:rgba(201,169,110,.85);--cl-progress-c:rgba(232,160,176,.65);
+  position:fixed;inset:0;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  background:linear-gradient(145deg,#1a0409 0%,#3b0d1a 40%,#5a1528 70%,#2a0810 100%);
-  overflow:hidden;
-  transition:opacity .85s cubic-bezier(.4,0,.2,1), visibility .85s;
+  background:linear-gradient(145deg,var(--cl-bg1) 0%,var(--cl-bg2) 40%,var(--cl-bg3) 70%,var(--cl-bg4) 100%);
+  overflow:hidden;z-index:99999;
+  opacity:1;visibility:visible;
+  transition:opacity 1.0s cubic-bezier(.4,0,.2,1),visibility 1.0s;
+  will-change:opacity;
 }
-#cin-loader.cin-done{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-}
+#cin-loader.cin-done{opacity:0;visibility:hidden;pointer-events:none;}
 
-/* Animated radial glow blobs */
-.cin-blob{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(80px);
-  pointer-events:none;
-  will-change:transform;
-}
-.cin-blob-1{
-  width:500px;height:500px;
-  background:radial-gradient(circle,rgba(192,100,122,.35) 0%,transparent 70%);
-  top:-120px;left:-100px;
-  animation:cinBlob1 6s ease-in-out infinite alternate;
-}
-.cin-blob-2{
-  width:400px;height:400px;
-  background:radial-gradient(circle,rgba(232,160,176,.22) 0%,transparent 70%);
-  bottom:-100px;right:-80px;
-  animation:cinBlob2 7s ease-in-out infinite alternate;
-}
-.cin-blob-3{
-  width:300px;height:300px;
-  background:radial-gradient(circle,rgba(201,169,110,.18) 0%,transparent 70%);
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  animation:cinBlob3 5s ease-in-out infinite alternate;
-}
-@keyframes cinBlob1{from{transform:translate(0,0) scale(1);}to{transform:translate(40px,30px) scale(1.15);}}
-@keyframes cinBlob2{from{transform:translate(0,0) scale(1);}to{transform:translate(-30px,20px) scale(1.12);}}
-@keyframes cinBlob3{from{transform:translate(-50%,-50%) scale(1);}to{transform:translate(-50%,-50%) scale(1.2);}}
-
-/* Sparkle particles */
-.cin-particles{
+/* Ambient background glow pool */
+.cin-bg-glow{
   position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 58% 48% at 50% 48%,rgba(201,169,110,.06) 0%,transparent 72%),
+    radial-gradient(ellipse 80% 60% at 50% 52%,rgba(192,100,122,.055) 0%,transparent 80%);
+  animation:cinBgPulse 4.5s ease-in-out infinite alternate;
 }
+@keyframes cinBgPulse{from{opacity:.65;}to{opacity:1;}}
+
+/* Ambient blobs */
+.cin-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;will-change:transform;}
+.cin-blob-1{width:520px;height:520px;background:radial-gradient(circle,var(--cl-rose) 0%,transparent 70%);top:-150px;left:-120px;animation:cinBlob1 7s ease-in-out infinite alternate;}
+.cin-blob-2{width:420px;height:420px;background:radial-gradient(circle,var(--cl-rose2) 0%,transparent 70%);bottom:-120px;right:-90px;animation:cinBlob2 8s ease-in-out infinite alternate;}
+.cin-blob-3{width:320px;height:320px;background:radial-gradient(circle,var(--cl-gold) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:cinBlob3 5.5s ease-in-out infinite alternate;}
+@keyframes cinBlob1{from{transform:translate(0,0) scale(1);}to{transform:translate(45px,35px) scale(1.18);}}
+@keyframes cinBlob2{from{transform:translate(0,0) scale(1);}to{transform:translate(-35px,25px) scale(1.14);}}
+@keyframes cinBlob3{from{transform:translate(-50%,-50%) scale(1);}to{transform:translate(-50%,-50%) scale(1.22);}}
+
+/* Diagonal shimmer sweep */
+.cin-shimmer-line{
+  position:absolute;top:0;left:-120%;
+  width:50%;height:100%;
+  background:linear-gradient(108deg,transparent 35%,rgba(255,255,255,.016) 50%,transparent 65%);
+  animation:cinShimmer 4.2s .4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes cinShimmer{0%{left:-120%;}100%{left:220%;}}
+
+/* Floating gold particles */
+.cin-particles{position:absolute;inset:0;pointer-events:none;}
 .cin-spark{
-  position:absolute;
-  width:3px;height:3px;
-  border-radius:50%;
-  background:rgba(249,228,233,.7);
-  animation:cinSpark var(--dur, 3s) var(--delay, 0s) ease-in-out infinite;
+  position:absolute;border-radius:50%;
+  background:var(--cl-spark);
+  box-shadow:0 0 6px rgba(201,169,110,.9),0 0 14px rgba(249,228,233,.55);
+  animation:cinSpark var(--dur,3s) var(--delay,0s) ease-in-out infinite;
   opacity:0;
 }
 @keyframes cinSpark{
-  0%{opacity:0;transform:translateY(0) scale(0);}
-  20%{opacity:1;transform:translateY(-20px) scale(1);}
-  80%{opacity:.6;transform:translateY(-60px) scale(.8);}
-  100%{opacity:0;transform:translateY(-90px) scale(0);}
+  0%  {opacity:0;transform:translateY(0) scale(0) rotate(0deg);}
+  22% {opacity:1;transform:translateY(-20px) scale(1.3) rotate(90deg);}
+  78% {opacity:.45;transform:translateY(-58px) scale(.85) rotate(200deg);}
+  100%{opacity:0;transform:translateY(-88px) scale(0) rotate(290deg);}
 }
 
-/* Shimmer line */
-.cin-shimmer-line{
-  position:absolute;
-  top:0;left:-100%;
-  width:60%;height:100%;
-  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.03) 50%,transparent 60%);
-  animation:cinShimmer 3.5s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes cinShimmer{
-  0%{left:-100%;}
-  100%{left:200%;}
-}
-
-/* Logo container */
-.cin-logo-wrap{
-  position:relative;
+/* Main stage — centered vertical stack */
+.cin-stage{
   display:flex;flex-direction:column;
-  align-items:center;
-  gap:0;
-  animation:cinLogoReveal 1.2s cubic-bezier(.34,1.1,.64,1) both;
-  will-change:transform,opacity,filter;
-}
-@keyframes cinLogoReveal{
-  0%{
-    opacity:0;
-    transform:scale(1.2) translateY(12px);
-    filter:blur(12px);
-  }
-  60%{
-    opacity:1;
-    filter:blur(1px);
-  }
-  100%{
-    opacity:1;
-    transform:scale(1) translateY(0);
-    filter:blur(0);
-  }
-}
-
-/* Floating luxury motion after reveal */
-.cin-logo-wrap.cin-float{
-  animation:cinLogoReveal 1.2s cubic-bezier(.34,1.1,.64,1) both,
-            cinFloat 3.5s 1.2s ease-in-out infinite;
-}
-@keyframes cinFloat{
-  0%,100%{transform:scale(1) translateY(0);}
-  50%{transform:scale(1) translateY(-10px);}
-}
-
-/* Logo image / SVG circle */
-.cin-logo-circle{
-  width:220px;height:220px;
-  border-radius:50%;
-  background:radial-gradient(ellipse at 38% 32%,rgba(249,228,233,.18) 0%,rgba(192,100,122,.08) 60%,transparent 100%),
-             rgba(255,255,255,.05);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.1),
-    0 0 50px rgba(192,100,122,.4),
-    0 0 100px rgba(192,100,122,.15),
-    0 24px 60px rgba(0,0,0,.6);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-}
-.cin-logo-circle svg{
-  width:160px;height:160px;
-  filter:drop-shadow(0 8px 24px rgba(192,100,122,.4));
-}
-
-/* Logo glow ring */
-.cin-logo-ring{
-  position:absolute;
-  inset:-20px;
-  border-radius:50%;
-  border:1px solid rgba(192,100,122,.25);
-  animation:cinRing 2s 1.2s ease-out both;
-}
-.cin-logo-ring-2{
-  position:absolute;
-  inset:-36px;
-  border-radius:50%;
-  border:1px solid rgba(192,100,122,.12);
-  animation:cinRing 2s 1.5s ease-out both;
-}
-@keyframes cinRing{
-  from{transform:scale(.85);opacity:0;}
-  to{transform:scale(1);opacity:1;}
-}
-
-/* Tagline text */
-.cin-tagline{
-  margin-top:28px;
+  align-items:center;justify-content:center;
+  gap:0;position:relative;z-index:2;
+  padding:0 28px;
+  width:100%;max-width:560px;
   text-align:center;
 }
-.cin-brand-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:2.4rem;
-  font-style:italic;
-  font-weight:400;
-  color:white;
-  letter-spacing:2px;
-  text-shadow:0 4px 24px rgba(0,0,0,.5);
-  opacity:0;
-  animation:cinFadeUp .8s 1.0s cubic-bezier(.4,0,.2,1) forwards;
+
+/* PHASE 1: Gift box circle — blooms from blur */
+.cin-gift-wrap{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:32px;
+  animation:cinGiftBloom .6s cubic-bezier(.22,1,.36,1) both;
+  will-change:transform,opacity,filter;
 }
-.cin-brand-name span{
-  color:var(--rose);
+@keyframes cinGiftBloom{
+  0%  {opacity:0;transform:scale(.72);filter:blur(22px);}
+  55% {opacity:1;filter:blur(3px);transform:scale(1.05);}
+  100%{opacity:1;transform:scale(1);filter:blur(0);}
 }
-.cin-sub-text{
-  display:block;
-  font-family:'Jost',sans-serif;
-  font-size:.62rem;
-  font-weight:400;
-  letter-spacing:5px;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.5);
-  margin-top:6px;
-  opacity:0;
-  animation:cinFadeUp .8s 1.3s cubic-bezier(.4,0,.2,1) forwards;
+
+/* Outer pulsing halo */
+.cin-gift-halo{
+  position:absolute;
+  width:240px;height:240px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,169,110,.2) 0%,rgba(192,100,122,.09) 46%,transparent 70%);
+  filter:blur(28px);
+  animation:cinHaloPulse 3.2s .6s ease-in-out infinite alternate;
+  pointer-events:none;
 }
-.cin-tagline-text{
-  display:block;
-  font-family:'Jost',sans-serif;
-  font-size:.72rem;
-  font-weight:300;
-  letter-spacing:2px;
-  color:rgba(255,255,255,.35);
-  margin-top:4px;
+@keyframes cinHaloPulse{
+  from{transform:scale(1);opacity:.65;}
+  to{transform:scale(1.18);opacity:1;}
+}
+
+/* Rings */
+.cin-ring-1{position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(192,100,122,.22);animation:cinRingIn 1.2s 1.2s cubic-bezier(.22,1,.36,1) both;}
+.cin-ring-2{position:absolute;inset:-40px;border-radius:50%;border:1px solid rgba(201,169,110,.12);animation:cinRingIn 1.2s 1.5s cubic-bezier(.22,1,.36,1) both;}
+.cin-ring-3{position:absolute;inset:-64px;border-radius:50%;border:1px solid rgba(192,100,122,.06);animation:cinRingIn 1.2s 1.8s cubic-bezier(.22,1,.36,1) both;}
+@keyframes cinRingIn{from{transform:scale(.65);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* The circle */
+.cin-gift-circle{
+  width:180px;height:180px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 38% 32%,rgba(249,228,233,.12) 0%,rgba(192,100,122,.06) 65%,transparent 100%),rgba(255,255,255,.04);
+  border:1px solid rgba(201,169,110,.22);
+  box-shadow:
+    0 0 0 20px rgba(201,169,110,.04),
+    0 0 70px rgba(192,100,122,.35),
+    0 0 130px rgba(192,100,122,.16),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  animation:cinCircleGlow 3.4s .6s ease-in-out infinite alternate;
+  overflow:visible;position:relative;
+}
+@keyframes cinCircleGlow{
+  from{box-shadow:0 0 0 20px rgba(201,169,110,.04),0 0 70px rgba(192,100,122,.35),0 0 130px rgba(192,100,122,.16),inset 0 1px 0 rgba(255,255,255,.07);}
+  to{box-shadow:0 0 0 24px rgba(201,169,110,.06),0 0 100px rgba(192,100,122,.55),0 0 180px rgba(192,100,122,.26),0 0 240px rgba(192,100,122,.12),inset 0 1px 0 rgba(255,255,255,.1);}
+}
+
+/* Float loop after bloom */
+.cin-gift-wrap.cin-float{
+  animation:cinGiftBloom .6s cubic-bezier(.22,1,.36,1) both,cinFloat 5.5s .7s ease-in-out infinite;
+}
+@keyframes cinFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+
+/* SVG inside circle */
+.cin-gift-circle svg{
+  width:116px;height:116px;
+  filter:drop-shadow(0 0 20px rgba(201,169,110,.5)) drop-shadow(0 5px 14px rgba(0,0,0,.55));
+  overflow:visible;
+}
+
+/* Per-butterfly float animations */
+.cin-gift-circle svg g:nth-of-type(1){animation:cinBf1 4.1s 1.0s ease-in-out infinite;}
+.cin-gift-circle svg g:nth-of-type(2){animation:cinBf2 4.7s 1.2s ease-in-out infinite;}
+.cin-gift-circle svg g:nth-of-type(3){animation:cinBf3 5.2s 1.1s ease-in-out infinite;}
+.cin-gift-circle svg g:nth-of-type(4){animation:cinBf4 4.4s 1.3s ease-in-out infinite;}
+@keyframes cinBf1{0%,100%{transform:translate(55px,32px) rotate(-20deg) translateY(0);}50%{transform:translate(55px,32px) rotate(-26deg) translateY(-9px);}}
+@keyframes cinBf2{0%,100%{transform:translate(112px,22px) rotate(15deg) translateY(0);}50%{transform:translate(112px,22px) rotate(21deg) translateY(-11px);}}
+@keyframes cinBf3{0%,100%{transform:translate(128px,52px) rotate(25deg) translateY(0);}50%{transform:translate(128px,52px) rotate(31deg) translateY(-7px);}}
+@keyframes cinBf4{0%,100%{transform:translate(138px,35px) rotate(5deg) translateY(0);}50%{transform:translate(138px,35px) rotate(11deg) translateY(-13px);}}
+
+/* PHASE 2: Brand name — staggered reveal */
+.cin-brand-block{display:flex;flex-direction:column;align-items:center;gap:0;}
+
+.cin-eyebrow{
+  font-family:'Jost',sans-serif;font-size:.52rem;letter-spacing:5.5px;
+  text-transform:uppercase;color:var(--cl-accent2);
+  opacity:0;margin-bottom:13px;
+  animation:cinFadeUp .9s 1.1s cubic-bezier(.4,0,.2,1) forwards;
+}
+.cin-word-aneesa{
+  display:block;font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.8rem,6vw,4.2rem);font-style:italic;font-weight:400;
+  color:rgba(255,255,255,.96);letter-spacing:3px;line-height:1;
+  text-shadow:0 4px 36px rgba(0,0,0,.6),0 0 70px rgba(192,100,122,.18);
   opacity:0;
-  animation:cinFadeUp .7s 1.55s cubic-bezier(.4,0,.2,1) forwards;
+  animation:cinWordReveal 1.2s 1.4s cubic-bezier(.22,1,.36,1) forwards;
+}
+.cin-word-hampers{
+  display:block;font-family:'Jost',sans-serif;
+  font-size:clamp(.82rem,1.7vw,1.05rem);font-weight:300;letter-spacing:10px;
+  text-transform:uppercase;color:rgba(255,255,255,.62);margin-top:4px;
+  opacity:0;
+  animation:cinWordReveal 1.0s 1.8s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes cinWordReveal{
+  0%  {opacity:0;transform:translateX(-24px);filter:blur(10px);}
+  38% {opacity:.7;filter:blur(3px);}
+  100%{opacity:1;transform:translateX(0);filter:blur(0);}
+}
+
+/* Horizontal gold ornament */
+.cin-h-divider{
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(201,169,110,.85) 15%,rgba(201,169,110,1) 50%,rgba(192,100,122,.5) 80%,transparent 100%);
+  margin:18px auto 16px;
+  animation:cinHDiv .9s 2.2s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes cinHDiv{to{width:230px;}}
+
+.cin-tagline{
+  display:block;font-family:'Jost',sans-serif;
+  font-size:.7rem;font-weight:300;letter-spacing:1.6px;
+  color:rgba(255,255,255,.44);opacity:0;
+  animation:cinFadeUp 1.0s 2.5s cubic-bezier(.4,0,.2,1) forwards;
+}
+.cin-location{
+  display:block;font-family:'Jost',sans-serif;
+  font-size:.5rem;letter-spacing:3.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.27);margin-top:11px;opacity:0;
+  animation:cinFadeUp .9s 2.8s cubic-bezier(.4,0,.2,1) forwards;
 }
 @keyframes cinFadeUp{
-  from{opacity:0;transform:translateY(14px);}
+  from{opacity:0;transform:translateY(18px);}
+  60%{opacity:.75;}
   to{opacity:1;transform:translateY(0);}
 }
 
-/* Bottom progress bar */
-.cin-progress{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:2px;
-  background:rgba(255,255,255,.06);
-  overflow:hidden;
-}
+/* Progress bar */
+.cin-progress{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,.05);overflow:hidden;}
 .cin-progress-bar{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,rgba(192,100,122,.6),rgba(201,169,110,.8),rgba(232,160,176,.6));
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--cl-progress-a),var(--cl-progress-b),var(--cl-progress-c));
   border-radius:2px;
-  animation:cinProgress 2.8s cubic-bezier(.4,0,.2,1) forwards;
+  animation:cinProgress 3.5s cubic-bezier(.14,0,.38,1) forwards;
 }
 @keyframes cinProgress{
-  0%{width:0;}
-  60%{width:75%;}
+  0%  {width:0;}
+  28% {width:20%;}
+  58% {width:58%;}
+  83% {width:85%;}
   100%{width:100%;}
 }
 
-/* Mobile optimizations */
+/* Mobile */
 @media(max-width:600px){
-  .cin-logo-circle{width:170px;height:170px;}
-  .cin-logo-circle svg{width:120px;height:120px;}
-  .cin-brand-name{font-size:2rem;}
-  .cin-sub-text{font-size:.56rem;letter-spacing:4px;}
-  .cin-tagline-text{font-size:.64rem;}
-  .cin-blob-1{width:280px;height:280px;filter:blur(50px);}
-  .cin-blob-2{width:230px;height:230px;filter:blur(50px);}
-  .cin-blob-3{width:180px;height:180px;}
-  @keyframes cinLogoReveal{
-    0%{opacity:0;transform:scale(1.15) translateY(8px);filter:blur(8px);}
-    60%{opacity:1;filter:blur(0);}
-    100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0);}
-  }
+  .cin-gift-circle{width:150px;height:150px;}
+  .cin-gift-circle svg{width:96px;height:96px;}
+  .cin-gift-halo{width:200px;height:200px;}
+  .cin-word-aneesa{font-size:2.5rem;}
+  .cin-word-hampers{font-size:.8rem;letter-spacing:8px;}
+  .cin-h-divider{margin:14px auto 13px;}
+  @keyframes cinHDiv{to{width:180px;}}
+  .cin-progress-bar{animation-duration:2.8s;}
 }
 
 /* NAV */
@@ -1168,7 +1164,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .prod-thumb{height:165px;}
   .prod-info{padding:10px 10px 12px;}
-  .prod-name{font-size:.88rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .prod-name{font-size:.88rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;}
   .cat-grid{grid-template-columns:1fr 1fr;}
   .cat-card.span2{grid-column:span 2;}
   .promo-strip{grid-template-columns:1fr;padding:24px 16px;}
@@ -1304,14 +1300,134 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   50%{box-shadow:0 0 0 8px rgba(192,100,122,.12)}
 }
 
+/* ═══════════════════════════════════════════════
+   REVIEW PHOTO UPLOAD — upload zone + preview
+═══════════════════════════════════════════════ */
+.rv-upload-zone{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:22px 16px;
+  border:2px dashed rgba(192,100,122,.3);
+  border-radius:14px;background:var(--cream);
+  cursor:pointer;transition:border-color .2s,background .2s;
+  text-align:center;
+}
+.rv-upload-zone:hover,.rv-upload-zone.drag-over{
+  border-color:#c0647a;background:rgba(249,228,233,.45);
+}
+.rv-upload-icon{font-size:1.8rem;line-height:1;}
+.rv-upload-text{font-size:.82rem;color:var(--burgundy);font-weight:500;}
+.rv-upload-note{font-size:.68rem;opacity:.45;color:var(--burgundy);}
+
+/* Preview strip */
+.rv-photo-preview{
+  position:relative;margin-top:10px;border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(59,13,26,.12);
+  max-height:200px;
+}
+.rv-photo-preview img{
+  width:100%;max-height:200px;object-fit:cover;display:block;
+  border-radius:12px;
+}
+.rv-remove-photo{
+  position:absolute;top:8px;right:8px;
+  width:28px;height:28px;
+  background:rgba(59,13,26,.72);backdrop-filter:blur(4px);
+  border:none;border-radius:50%;color:white;
+  font-size:.75rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.rv-remove-photo:hover{background:rgba(192,100,122,.9);}
+
+/* ═══════════════════════════════════════════════
+   REVIEW CARD PHOTOS — photo grid inside each card
+═══════════════════════════════════════════════ */
+.rv-card-photos{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:6px;
+  margin:10px 0 6px;
+}
+.rv-card-photo{
+  width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:9px;cursor:pointer;
+  border:1.5px solid rgba(192,100,122,.15);
+  transition:transform .18s,box-shadow .18s;
+}
+.rv-card-photo:hover{
+  transform:scale(1.04);
+  box-shadow:0 6px 20px rgba(59,13,26,.18);
+}
+
+/* ═══════════════════════════════════════════════
+   REVIEW PHOTO LIGHTBOX
+═══════════════════════════════════════════════ */
+#rv-lightbox{
+  display:none;position:fixed;inset:0;z-index:99000;
+  background:rgba(10,3,10,.88);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+#rv-lightbox.open{display:flex;}
+#rv-lightbox img{
+  max-width:92vw;max-height:88vh;border-radius:16px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  object-fit:contain;animation:rvLbIn .25s ease;
+}
+@keyframes rvLbIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+#rv-lightbox-close{
+  position:absolute;top:18px;right:20px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+  border:none;color:white;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+#rv-lightbox-close:hover{background:rgba(192,100,122,.7);}
+
 </style>
 
-<!-- ── FLICKER-FREE LOADER GATE (runs before first paint) ── -->
+<!-- ══ FLICKER-FREE LOADER GATE — runs synchronously before first paint ══ -->
 <script>
-/* If this session already saw the intro, mark the loader hidden INSTANTLY
-   before any CSS or DOM paint so there is absolutely zero white/dark flash. */
+/**
+ * Decide whether to show the cinematic loader BEFORE anything paints.
+ * Rules:
+ *   reload        → SHOW   (user did F5 / Ctrl+R — treat as fresh entry)
+ *   back_forward  → SKIP   (user pressed browser Back from another page)
+ *   navigate+seen → SKIP   (same-session link navigation, already played)
+ *   navigate+new  → SHOW   (very first visit this session)
+ *
+ * We use the Navigation Timing API to read the navigation type.
+ * The inline <style> written here is the ONLY way to hide before paint with
+ * zero flicker — no setTimeout, no requestAnimationFrame can match it.
+ */
 try{
-  if(sessionStorage.getItem('ah_intro_done')==='1'){
+  var _nt = '';
+  /* Modern API (Chrome 57+, Firefox 58+, Safari 15+) */
+  if(performance && performance.getEntriesByType){
+    var _ne = performance.getEntriesByType('navigation');
+    if(_ne && _ne[0]) _nt = _ne[0].type; /* 'navigate' | 'reload' | 'back_forward' | 'prerender' */
+  }
+  /* Legacy fallback (IE, old Safari) */
+  if(!_nt && performance && performance.navigation){
+    var _lt = performance.navigation.type;
+    _nt = _lt === 1 ? 'reload' : _lt === 2 ? 'back_forward' : 'navigate';
+  }
+
+  var _shouldHide = false;
+  if(_nt === 'back_forward'){
+    /* Always skip on Back/Forward — no animation flash when returning from product pages */
+    _shouldHide = true;
+  } else if(_nt === 'reload'){
+    /* Always show on hard refresh — feels like a fresh start */
+    _shouldHide = false;
+    /* Reset the flag so the controller below also plays the full animation */
+    sessionStorage.removeItem('ah_intro_done');
+  } else {
+    /* Normal navigation or first load — skip if already seen this session */
+    _shouldHide = sessionStorage.getItem('ah_intro_done') === '1';
+  }
+
+  if(_shouldHide){
     document.write('<style>#cin-loader{display:none!important;}</style>');
   }
 }catch(e){}
@@ -1412,88 +1528,124 @@ try{
   <button onclick="updatePin()">✅ Check Delivery</button>
 </div>
 
-<!-- ═══════ CINEMATIC LOGO INTRO LOADER ═══════ -->
+<!-- ═══════ CINEMATIC SPLASH SCREEN ═══════ -->
 <div id="cin-loader" role="status" aria-label="Loading Aneesa Hampers">
 
-  <!-- Ambient glow blobs -->
-  <div class="cin-blob cin-blob-1"></div>
-  <div class="cin-blob cin-blob-2"></div>
-  <div class="cin-blob cin-blob-3"></div>
+  <!-- Ambient background glow -->
+  <div class="cin-bg-glow" aria-hidden="true"></div>
 
-  <!-- Shimmer sweep -->
-  <div class="cin-shimmer-line"></div>
+  <!-- Floating glow blobs -->
+  <div class="cin-blob cin-blob-1" aria-hidden="true"></div>
+  <div class="cin-blob cin-blob-2" aria-hidden="true"></div>
+  <div class="cin-blob cin-blob-3" aria-hidden="true"></div>
 
-  <!-- Floating particles -->
-  <div class="cin-particles" id="cinParticles"></div>
+  <!-- Diagonal shimmer -->
+  <div class="cin-shimmer-line" aria-hidden="true"></div>
 
-  <!-- Logo + rings -->
-  <div class="cin-logo-wrap" id="cinLogoWrap">
-    <div class="cin-logo-ring"></div>
-    <div class="cin-logo-ring-2"></div>
-    <div class="cin-logo-circle">
-      <!-- Aneesa Hampers brand SVG: gift box + butterflies -->
-      <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- Gift box body -->
-        <rect x="42" y="88" width="76" height="52" rx="4" fill="rgba(249,228,233,.15)" stroke="rgba(232,160,176,.7)" stroke-width="2"/>
-        <!-- Box lid -->
-        <rect x="36" y="72" width="88" height="20" rx="4" fill="rgba(249,228,233,.1)" stroke="rgba(232,160,176,.7)" stroke-width="2"/>
-        <!-- Ribbon vertical -->
-        <rect x="76" y="72" width="8" height="68" rx="3" fill="rgba(192,100,122,.6)"/>
-        <!-- Ribbon horizontal -->
-        <rect x="36" y="78" width="88" height="8" rx="3" fill="rgba(192,100,122,.6)"/>
-        <!-- Bow left loop -->
-        <path d="M80 72 C68 55, 50 50, 52 62 C54 72, 70 72, 80 72Z" fill="rgba(192,100,122,.5)" stroke="rgba(232,160,176,.6)" stroke-width="1"/>
-        <!-- Bow right loop -->
-        <path d="M80 72 C92 55, 110 50, 108 62 C106 72, 90 72, 80 72Z" fill="rgba(192,100,122,.5)" stroke="rgba(232,160,176,.6)" stroke-width="1"/>
-        <!-- Bow knot -->
-        <circle cx="80" cy="72" r="5" fill="rgba(201,169,110,.8)"/>
-        <!-- Butterfly 1 (top left) -->
-        <g transform="translate(55,32) rotate(-20)">
-          <path d="M0,0 C-10,-14 -22,-10 -16,0 C-10,8 -4,6 0,0Z" fill="rgba(232,160,176,.75)"/>
-          <path d="M0,0 C10,-14 22,-10 16,0 C10,8 4,6 0,0Z" fill="rgba(232,160,176,.75)"/>
-          <path d="M0,0 C-6,8 -12,14 -8,18 C-4,22 -1,14 0,0Z" fill="rgba(249,200,210,.6)"/>
-          <path d="M0,0 C6,8 12,14 8,18 C4,22 1,14 0,0Z" fill="rgba(249,200,210,.6)"/>
-          <line x1="0" y1="0" x2="0" y2="18" stroke="rgba(59,13,26,.5)" stroke-width="1"/>
-        </g>
-        <!-- Butterfly 2 (top right) -->
-        <g transform="translate(112,22) rotate(15)">
-          <path d="M0,0 C-8,-12 -18,-8 -13,0 C-8,7 -3,5 0,0Z" fill="rgba(249,200,210,.8)"/>
-          <path d="M0,0 C8,-12 18,-8 13,0 C8,7 3,5 0,0Z" fill="rgba(249,200,210,.8)"/>
-          <path d="M0,0 C-5,6 -9,12 -6,15 C-3,18 -1,12 0,0Z" fill="rgba(232,160,176,.55)"/>
-          <path d="M0,0 C5,6 9,12 6,15 C3,18 1,12 0,0Z" fill="rgba(232,160,176,.55)"/>
-          <line x1="0" y1="0" x2="0" y2="14" stroke="rgba(59,13,26,.5)" stroke-width="1"/>
-        </g>
-        <!-- Butterfly 3 (mid right) -->
-        <g transform="translate(128,52) rotate(25)">
-          <path d="M0,0 C-7,-10 -15,-7 -11,0 C-7,6 -2,4 0,0Z" fill="rgba(232,160,176,.65)"/>
-          <path d="M0,0 C7,-10 15,-7 11,0 C7,6 2,4 0,0Z" fill="rgba(232,160,176,.65)"/>
-          <path d="M0,0 C-4,5 -8,10 -5,12 C-2,15 -1,10 0,0Z" fill="rgba(249,228,233,.5)"/>
-          <path d="M0,0 C4,5 8,10 5,12 C2,15 1,10 0,0Z" fill="rgba(249,228,233,.5)"/>
-          <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(59,13,26,.4)" stroke-width="1"/>
-        </g>
-        <!-- Butterfly 4 (small, far right) -->
-        <g transform="translate(138,35) rotate(5)">
-          <path d="M0,0 C-5,-8 -12,-5 -9,0 C-5,5 -2,3 0,0Z" fill="rgba(249,200,210,.7)"/>
-          <path d="M0,0 C5,-8 12,-5 9,0 C5,5 2,3 0,0Z" fill="rgba(249,200,210,.7)"/>
-          <line x1="0" y1="0" x2="0" y2="9" stroke="rgba(59,13,26,.4)" stroke-width="1"/>
-        </g>
-        <!-- Sparkle dots -->
-        <circle cx="95" cy="42" r="2" fill="rgba(201,169,110,.8)"/>
-        <circle cx="72" cy="48" r="1.5" fill="rgba(249,228,233,.9)"/>
-        <circle cx="125" cy="65" r="1.5" fill="rgba(232,160,176,.8)"/>
-      </svg>
+  <!-- Floating gold particles (JS-spawned) -->
+  <div class="cin-particles" id="cinParticles" aria-hidden="true"></div>
+
+  <!-- ═══ MAIN STAGE ═══ -->
+  <div class="cin-stage">
+
+    <!-- Gift box circle -->
+    <div class="cin-gift-wrap cin-float" id="cinGiftWrap">
+      <div class="cin-gift-halo" aria-hidden="true"></div>
+      <div class="cin-ring-1" aria-hidden="true"></div>
+      <div class="cin-ring-2" aria-hidden="true"></div>
+      <div class="cin-ring-3" aria-hidden="true"></div>
+
+      <div class="cin-gift-circle">
+        <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Gift box body -->
+          <rect x="42" y="88" width="76" height="52" rx="4" fill="rgba(249,228,233,.14)" stroke="rgba(232,160,176,.72)" stroke-width="1.8"/>
+          <!-- Box lid -->
+          <rect x="36" y="72" width="88" height="20" rx="4" fill="rgba(249,228,233,.09)" stroke="rgba(232,160,176,.72)" stroke-width="1.8"/>
+          <!-- Ribbon vertical -->
+          <rect x="76" y="72" width="8" height="68" rx="3" fill="rgba(192,100,122,.62)"/>
+          <!-- Ribbon horizontal -->
+          <rect x="36" y="78" width="88" height="8" rx="3" fill="rgba(192,100,122,.62)"/>
+          <!-- Bow left loop -->
+          <path d="M80 72 C68 55, 50 50, 52 62 C54 72, 70 72, 80 72Z" fill="rgba(192,100,122,.52)" stroke="rgba(232,160,176,.58)" stroke-width="1"/>
+          <!-- Bow right loop -->
+          <path d="M80 72 C92 55, 110 50, 108 62 C106 72, 90 72, 80 72Z" fill="rgba(192,100,122,.52)" stroke="rgba(232,160,176,.58)" stroke-width="1"/>
+          <!-- Bow centre knot -->
+          <circle cx="80" cy="72" r="5.5" fill="rgba(201,169,110,.9)"/>
+          <!-- Butterfly 1 (top-left) -->
+          <g transform="translate(55,32) rotate(-20)">
+            <path d="M0,0 C-10,-14 -22,-10 -16,0 C-10,8 -4,6 0,0Z" fill="rgba(232,160,176,.78)"/>
+            <path d="M0,0 C10,-14 22,-10 16,0 C10,8 4,6 0,0Z"  fill="rgba(232,160,176,.78)"/>
+            <path d="M0,0 C-6,8 -12,14 -8,18 C-4,22 -1,14 0,0Z"  fill="rgba(249,200,210,.62)"/>
+            <path d="M0,0 C6,8 12,14 8,18 C4,22 1,14 0,0Z"   fill="rgba(249,200,210,.62)"/>
+            <line x1="0" y1="0" x2="0" y2="18" stroke="rgba(59,13,26,.45)" stroke-width="1"/>
+          </g>
+          <!-- Butterfly 2 (top-right) -->
+          <g transform="translate(112,22) rotate(15)">
+            <path d="M0,0 C-8,-12 -18,-8 -13,0 C-8,7 -3,5 0,0Z" fill="rgba(249,200,210,.82)"/>
+            <path d="M0,0 C8,-12 18,-8 13,0 C8,7 3,5 0,0Z"   fill="rgba(249,200,210,.82)"/>
+            <path d="M0,0 C-5,6 -9,12 -6,15 C-3,18 -1,12 0,0Z"  fill="rgba(232,160,176,.58)"/>
+            <path d="M0,0 C5,6 9,12 6,15 C3,18 1,12 0,0Z"   fill="rgba(232,160,176,.58)"/>
+            <line x1="0" y1="0" x2="0" y2="14" stroke="rgba(59,13,26,.45)" stroke-width="1"/>
+          </g>
+          <!-- Butterfly 3 (mid-right) -->
+          <g transform="translate(128,52) rotate(25)">
+            <path d="M0,0 C-7,-10 -15,-7 -11,0 C-7,6 -2,4 0,0Z" fill="rgba(232,160,176,.67)"/>
+            <path d="M0,0 C7,-10 15,-7 11,0 C7,6 2,4 0,0Z"   fill="rgba(232,160,176,.67)"/>
+            <path d="M0,0 C-4,5 -8,10 -5,12 C-2,15 -1,10 0,0Z"  fill="rgba(249,228,233,.52)"/>
+            <path d="M0,0 C4,5 8,10 5,12 C2,15 1,10 0,0Z"   fill="rgba(249,228,233,.52)"/>
+            <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(59,13,26,.4)" stroke-width="1"/>
+          </g>
+          <!-- Butterfly 4 (small, far-right) -->
+          <g transform="translate(138,35) rotate(5)">
+            <path d="M0,0 C-5,-8 -12,-5 -9,0 C-5,5 -2,3 0,0Z"  fill="rgba(249,200,210,.72)"/>
+            <path d="M0,0 C5,-8 12,-5 9,0 C5,5 2,3 0,0Z"   fill="rgba(249,200,210,.72)"/>
+            <line x1="0" y1="0" x2="0" y2="9" stroke="rgba(59,13,26,.4)" stroke-width="1"/>
+          </g>
+          <!-- Pulsing sparkle dots -->
+          <circle cx="95" cy="42" r="2" fill="rgba(201,169,110,.92)">
+            <animate attributeName="opacity" values="0.35;1;0.35" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="72" cy="48" r="1.5" fill="rgba(249,228,233,.95)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="125" cy="65" r="1.5" fill="rgba(232,160,176,.9)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="48" cy="55" r="1.8" fill="rgba(201,169,110,.88)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.9s" begin="0.45s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="135" cy="48" r="1.3" fill="rgba(249,228,233,.92)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2.1s" begin="0.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="105" cy="28" r="1.6" fill="rgba(232,160,176,.88)">
+            <animate attributeName="opacity" values="0.35;1;0.35" dur="2.3s" begin="0.55s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="65" cy="38" r="1.4" fill="rgba(201,169,110,.92)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="118" cy="38" r="1.2" fill="rgba(249,228,233,.94)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="1.85s" begin="0.35s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div><!-- /.cin-gift-wrap -->
+
+    <!-- Brand text block -->
+    <div class="cin-brand-block">
+      <span class="cin-eyebrow">✦ &nbsp;Premium Gifting&nbsp; ✦</span>
+      <span class="cin-word-aneesa">Aneesa</span>
+      <span class="cin-word-hampers">Hampers</span>
+      <div class="cin-h-divider" aria-hidden="true"></div>
+      <span class="cin-tagline">Gifts crafted with love, delivered with care ✦</span>
+      <span class="cin-location">Est. Kadapa &nbsp;·&nbsp; Andhra Pradesh</span>
     </div>
-  </div>
 
-  <!-- Brand text + tagline -->
-  <div class="cin-tagline">
-    <span class="cin-brand-name"><span>Aneesa</span> Hampers</span>
-    <span class="cin-sub-text">Est. Kadapa · Andhra Pradesh</span>
-    <span class="cin-tagline-text">Gifts crafted with love, delivered with care ✦</span>
-  </div>
+  </div><!-- /.cin-stage -->
 
   <!-- Progress bar -->
-  <div class="cin-progress"><div class="cin-progress-bar"></div></div>
+  <div class="cin-progress" aria-hidden="true">
+    <div class="cin-progress-bar"></div>
+  </div>
 
 </div>
 <div class="cursor" id="cursor"></div>
@@ -1710,9 +1862,15 @@ try{
   </div>
 </section>
 
+<!-- REVIEW PHOTO LIGHTBOX -->
+<div id="rv-lightbox" role="dialog" aria-modal="true" aria-label="Product photo">
+  <button id="rv-lightbox-close" onclick="_rvLbClose()" aria-label="Close photo">✕</button>
+  <img id="rv-lightbox-img" src="" alt="Product photo" onclick="event.stopPropagation()"/>
+</div>
+
 <!-- REVIEW MODAL -->
 <div id="reviewModal" style="display:none;position:fixed;inset:0;background:rgba(30,6,16,.6);backdrop-filter:blur(6px);z-index:60000;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:white;border-radius:22px;width:100%;max-width:460px;padding:32px 28px;position:relative;box-shadow:0 24px 70px rgba(59,13,26,.25);max-height:90vh;overflow-y:auto;">
+  <div style="background:white;border-radius:22px;width:100%;max-width:480px;padding:32px 28px;position:relative;box-shadow:0 24px 70px rgba(59,13,26,.25);max-height:92vh;overflow-y:auto;">
     <button onclick="closeReviewModal()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
     <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;margin-bottom:4px;">Share Your <em style="font-style:italic;color:var(--deep-rose)">Experience</em></div>
     <div style="font-size:.78rem;opacity:.45;margin-bottom:22px;">Your real review helps others make better choices 🌸</div>
@@ -1740,6 +1898,25 @@ try{
         <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:5px;">Your Review *</div>
         <textarea id="rv-text" rows="4" placeholder="Tell others about your experience with Aneesa Hampers…" style="width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;resize:vertical;" onfocus="this.style.borderColor='#c0647a'" onblur="this.style.borderColor='rgba(192,100,122,.2)'"></textarea>
       </div>
+
+      <!-- ── PHOTO UPLOAD ── -->
+      <div>
+        <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:8px;">📷 Product Photo <span style="opacity:.6;text-transform:none;letter-spacing:0;font-size:.7rem;">(optional · JPG / PNG)</span></div>
+        <!-- Drop zone -->
+        <label id="rv-upload-zone" for="rv-photo-input" class="rv-upload-zone">
+          <div class="rv-upload-icon">📸</div>
+          <div class="rv-upload-text">Click or drag &amp; drop your photo here</div>
+          <div class="rv-upload-note">JPG or PNG · max 5 MB</div>
+          <input id="rv-photo-input" type="file" accept="image/jpeg,image/png" style="display:none;"/>
+        </label>
+        <!-- Preview strip -->
+        <div id="rv-photo-preview" class="rv-photo-preview" style="display:none;">
+          <img id="rv-preview-img" src="" alt="Preview"/>
+          <button type="button" id="rv-remove-photo" class="rv-remove-photo" title="Remove photo">✕</button>
+        </div>
+      </div>
+      <!-- /photo upload -->
+
       <button onclick="submitReview()" id="rv-submit-btn" style="padding:14px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--deep-rose)'" onmouseout="this.style.background='var(--burgundy)'">Submit Review 🌸</button>
     </div>
   </div>
@@ -1892,11 +2069,15 @@ import {
 import {
   getAuth, onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const app = initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
-const db   = getFirestore(app);
-const auth = getAuth(app);
-window._ahFirebase = { db, auth };
+const db      = getFirestore(app);
+const auth    = getAuth(app);
+const storage = getStorage(app);
+window._ahFirebase = { db, auth, storage };
 
 // CURSOR
 const C=document.getElementById('cursor'),R=document.getElementById('cursorRing');
@@ -2318,13 +2499,73 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 });
 
-// PRODUCTS (real-time)
-onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')), snap => {
-  document.getElementById('loader').classList.add('done');
-  const all=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(!all.length){document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;opacity:.4;padding:40px">Products coming soon! 🎁</div>';return;}
-  const show=all.slice(0,8);
-  document.getElementById('featGrid').innerHTML=show.map(p=>{
+// PRODUCTS (real-time) - with fallback if orderBy fails
+async function loadProducts() {
+  console.log('🔍 Attempting to load products...');
+  
+  try {
+    // Try with orderBy first
+    onSnapshot(
+      query(collection(db,'products'), orderBy('createdAt','desc')), 
+      snap => {
+        console.log('✅ Products query successful. Document count:', snap.docs.length);
+        const _cl1=document.getElementById('cin-loader');if(_cl1)_cl1.classList.add('cin-done');
+        const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+        console.log('Products data:', all);
+        
+        if(!all.length){
+          console.log('⚠️ No products found in Firestore');
+          document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;margin-bottom:16px;">No products available yet</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:10px 24px;border-radius:25px;font-size:.75rem;text-decoration:none;">Check Products Page</a></div>';
+          return;
+        }
+        
+        const show=all.slice(0,8);
+        renderProducts(show);
+      },
+      error => {
+        console.error('❌ Products query error (trying without orderBy):', error);
+        // Fallback: try without orderBy if index is missing
+        loadProductsWithoutOrder();
+      }
+    );
+  } catch (error) {
+    console.error('❌ Error setting up products query:', error);
+    loadProductsWithoutOrder();
+  }
+}
+
+// Fallback function without orderBy (in case Firestore index is missing)
+function loadProductsWithoutOrder() {
+  console.log('🔄 Loading products without orderBy...');
+  
+  onSnapshot(
+    collection(db,'products'), 
+    snap => {
+      console.log('✅ Products loaded (no ordering). Count:', snap.docs.length);
+      const _cl2=document.getElementById('cin-loader');if(_cl2)_cl2.classList.add('cin-done');
+      const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+      
+      if(!all.length){
+        console.log('⚠️ Still no products found');
+        document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;line-height:1.6;">Products collection is empty.<br/>Please add products through your admin panel or Firebase Console.</div></div>';
+        return;
+      }
+      
+      const show=all.slice(0,8);
+      renderProducts(show);
+    },
+    error => {
+      console.error('❌ Complete failure loading products:', error);
+      document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#e05050;"><div style="font-size:1.2rem;margin-bottom:12px;">⚠️</div><div style="line-height:1.6;">Error loading products.<br/>Please check browser console for details.</div></div>';
+    }
+  );
+}
+
+// Render products to DOM
+function renderProducts(products) {
+  console.log('🎨 Rendering', products.length, 'products');
+  
+  document.getElementById('featGrid').innerHTML=products.map(p=>{
     const disc=Math.max(Number(p.discount)||0,flashDiscount);
     const price=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
     const imgH=(p.images&&p.images[0])?`<img src="${p.images[0]}" alt="${(p.name||'').replace(/"/g,'')}" loading="lazy" decoding="async"/>`:(`<span>${p.emoji||'🎁'}</span>`);
@@ -2352,17 +2593,45 @@ onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')), snap =>
       </div>
     </div>`;
   }).join('');
+  
   // Re-apply currency AFTER products are in the DOM
   setTimeout(function(){ if(window.AH_reapplyCurrency) window.AH_reapplyCurrency(); }, 100);
-});
+  
+  console.log('✅ Products rendered successfully!');
+}
+
+// Start loading products after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadProducts);
+} else {
+  loadProducts();
+}
+
+// Also try after a short delay as fallback
+setTimeout(function() {
+  const grid = document.getElementById('featGrid');
+  if (grid && grid.innerHTML.includes('Loading products')) {
+    console.log('⚠️ Products still loading after timeout, retrying...');
+    loadProducts();
+  }
+}, 2000);
 
 // REVEAL
 const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// LOADER
-window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('done'),800));
-setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
+// LOADER — fallback safety-net only; primary dismiss logic is in the controller below.
+// These fire if the controller never ran (edge-case CSP block, etc.).
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    var _cl3=document.getElementById('cin-loader');
+    if(_cl3 && !_cl3.classList.contains('cin-done')) _cl3.classList.add('cin-done');
+  },800);
+});
+setTimeout(function(){
+  var _cl4=document.getElementById('cin-loader');
+  if(_cl4 && !_cl4.classList.contains('cin-done')) _cl4.classList.add('cin-done');
+},4500);
 
 // ═══════════════════════════════════════════════
 // PROMO POPUP — reads discount from Firestore siteSettings/config → welcomePopup
@@ -2914,10 +3183,25 @@ window.addEventListener('scroll',()=>{
         ? '<img src="'+r.photoURL+'" style="width:38px;height:38px;border-radius:50%;object-fit:cover;"/>'
         : '<div style="width:38px;height:38px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:600;color:var(--deep-rose);">'+initials+'</div>';
       const timeAgo = r.createdAt ? timeAgoStr(r.createdAt) : '';
+
+      // Build uploaded product photos section
+      var photosHtml = '';
+      var imgs = [];
+      if(r.imageURL) imgs.push(r.imageURL);
+      if(r.imageURLs && Array.isArray(r.imageURLs)) imgs = imgs.concat(r.imageURLs);
+      if(imgs.length){
+        photosHtml = '<div class="rv-card-photos">';
+        imgs.forEach(function(url){
+          photosHtml += '<img src="'+escHtml(url)+'" class="rv-card-photo" alt="Product photo" onclick="openReviewPhoto(this.src)"/>';
+        });
+        photosHtml += '</div>';
+      }
+
       return '<div class="test-card reveal">'
         +'<div class="test-badge">Verified ✓</div>'
         +'<div class="test-stars" style="color:#f5a623;font-size:.9rem;letter-spacing:1px;">'+starStr+'</div>'
         +'<p class="test-text">'+escHtml(text)+'</p>'
+        +photosHtml
         +'<div class="test-author">'
           +'<div class="test-avatar" style="padding:0;overflow:hidden;">'+avatar+'</div>'
           +'<div>'
@@ -2987,16 +3271,33 @@ window.addEventListener('scroll',()=>{
     if(!text || text.length < 10){ toast('⚠️ Please write a review (at least 10 characters)'); return; }
 
     var btn = document.getElementById('rv-submit-btn');
-    btn.disabled=true; btn.textContent='Submitting…';
+    btn.disabled=true; btn.textContent='Uploading…';
 
     try {
-      const dbRef = window._ahFirebase && window._ahFirebase.db;
+      const dbRef    = window._ahFirebase && window._ahFirebase.db;
+      const stgRef   = window._ahFirebase && window._ahFirebase.storage;
       if(!dbRef) throw new Error('DB not ready');
-      const m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+
+      const m  = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const ms = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js');
 
       // Get user info if logged in
       var u = null;
       try { u = JSON.parse(localStorage.getItem('ah_user')||'null'); } catch(e){}
+
+      // Upload image if selected
+      var imageURL = null;
+      var photoFile = window._rvPhotoFile || null;
+      if(photoFile && stgRef){
+        btn.textContent = 'Uploading photo…';
+        var ext  = photoFile.name.split('.').pop().toLowerCase();
+        var path = 'review-photos/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+        var fileRef = ms.ref(stgRef, path);
+        await ms.uploadBytes(fileRef, photoFile);
+        imageURL = await ms.getDownloadURL(fileRef);
+      }
+
+      btn.textContent = 'Saving review…';
 
       await m.addDoc(m.collection(dbRef,'reviews'), {
         name: name,
@@ -3005,8 +3306,9 @@ window.addEventListener('scroll',()=>{
         rating: _reviewStar,
         uid: u ? u.uid : null,
         photoURL: u ? (u.photoURL||null) : null,
+        imageURL: imageURL,
         createdAt: m.serverTimestamp(),
-        approved: true  // auto-approve; admin can add moderation later
+        approved: true
       });
 
       toast('🌸 Thank you! Your review has been posted.');
@@ -3016,11 +3318,120 @@ window.addEventListener('scroll',()=>{
       document.getElementById('rv-text').value='';
       document.getElementById('rv-loc').value='';
       window.setReviewStar(5);
+      _rvClearPhoto();
     } catch(e){
       toast('❌ Error: '+e.message);
     }
     btn.disabled=false; btn.textContent='Submit Review 🌸';
   };
+
+  // ── Photo upload wiring ──────────────────────────────────────────
+  window._rvPhotoFile = null;
+
+  function _rvSetFile(file){
+    if(!file) return;
+    // Type check: only JPG / PNG
+    if(!['image/jpeg','image/png'].includes(file.type)){
+      toast('⚠️ Only JPG or PNG images are allowed.');
+      return;
+    }
+    // Size check: max 5 MB
+    if(file.size > 5 * 1024 * 1024){
+      toast('⚠️ Image must be under 5 MB.');
+      return;
+    }
+    window._rvPhotoFile = file;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = document.getElementById('rv-preview-img');
+      var preview = document.getElementById('rv-photo-preview');
+      if(img && preview){
+        img.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      // Hide upload zone once a file is chosen
+      var zone = document.getElementById('rv-upload-zone');
+      if(zone) zone.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function _rvClearPhoto(){
+    window._rvPhotoFile = null;
+    var inp = document.getElementById('rv-photo-input');
+    if(inp) inp.value = '';
+    var img = document.getElementById('rv-preview-img');
+    if(img) img.src = '';
+    var preview = document.getElementById('rv-photo-preview');
+    if(preview) preview.style.display = 'none';
+    var zone = document.getElementById('rv-upload-zone');
+    if(zone) zone.style.display = 'flex';
+  }
+
+  // Wire file input
+  document.addEventListener('DOMContentLoaded', function(){
+    var inp = document.getElementById('rv-photo-input');
+    if(inp) inp.addEventListener('change', function(){
+      if(this.files && this.files[0]) _rvSetFile(this.files[0]);
+    });
+
+    // Drag-and-drop on the zone label
+    var zone = document.getElementById('rv-upload-zone');
+    if(zone){
+      zone.addEventListener('dragover', function(e){
+        e.preventDefault(); zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', function(){
+        zone.classList.remove('drag-over');
+      });
+      zone.addEventListener('drop', function(e){
+        e.preventDefault(); zone.classList.remove('drag-over');
+        var dt = e.dataTransfer;
+        if(dt && dt.files && dt.files[0]) _rvSetFile(dt.files[0]);
+      });
+    }
+
+    // Remove-photo button
+    var rmBtn = document.getElementById('rv-remove-photo');
+    if(rmBtn) rmBtn.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      _rvClearPhoto();
+    });
+  });
+
+  // Clear photo when modal closes
+  var _origClose = window.closeReviewModal;
+  window.closeReviewModal = function(){
+    if(_origClose) _origClose();
+    _rvClearPhoto();
+  };
+
+  // ── Lightbox ─────────────────────────────────────────────────────
+  window.openReviewPhoto = function(src){
+    var lb = document.getElementById('rv-lightbox');
+    var im = document.getElementById('rv-lightbox-img');
+    if(!lb || !im) return;
+    im.src = src;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window._rvLbClose = function(){
+    var lb = document.getElementById('rv-lightbox');
+    if(lb) lb.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  // Close lightbox on backdrop click
+  document.addEventListener('DOMContentLoaded', function(){
+    var lb = document.getElementById('rv-lightbox');
+    if(lb) lb.addEventListener('click', function(e){
+      if(e.target === lb) window._rvLbClose();
+    });
+    // ESC key to close lightbox
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') window._rvLbClose();
+    });
+  });
+  // ─────────────────────────────────────────────────────────────────
 
   loadReviews();
 })();
@@ -3294,69 +3705,171 @@ function launchConfetti(){
 (function(){
   var STORAGE_KEY = 'ah_intro_done';
 
-  /* ── Check session: if already played, instantly kill loader & bail ── */
-  var alreadyPlayed = false;
-  try{ alreadyPlayed = sessionStorage.getItem(STORAGE_KEY) === '1'; }catch(e){}
+  /* ══════════════════════════════════════════════════════════════
+     STEP 1 — Determine navigation type
+     Rules:
+       reload        → SHOW   (F5 / Ctrl+R feels like a fresh open)
+       back_forward  → SKIP   (returning from product/category pages)
+       navigate+new  → SHOW   (first time this session)
+       navigate+seen → SKIP   (already played — in-session link click)
+  ══════════════════════════════════════════════════════════════ */
+  var navType = '';
+  try{
+    if(performance && performance.getEntriesByType){
+      var _ne = performance.getEntriesByType('navigation');
+      if(_ne && _ne[0]) navType = _ne[0].type;
+    }
+    if(!navType && performance && performance.navigation){
+      var _lt = performance.navigation.type;
+      navType = _lt === 1 ? 'reload' : _lt === 2 ? 'back_forward' : 'navigate';
+    }
+  }catch(e){}
 
   var loader = document.getElementById('cin-loader');
 
-  if(alreadyPlayed){
-    /* Belt-and-suspenders: the inline <head> script should have hidden it already,
-       but if JS runs after DOM is ready, remove it now too — no flash possible. */
+  /* ── Back / Forward navigation → kill immediately, no animation ── */
+  if(navType === 'back_forward'){
     if(loader && loader.parentNode) loader.parentNode.removeChild(loader);
-    return; /* Skip ALL animation setup — nothing more to do */
+    return;
   }
 
-  /* ════ FIRST VISIT THIS SESSION — run full animation ════ */
+  /* ── Reload → clear flag so animation runs as if first time ── */
+  if(navType === 'reload'){
+    try{ sessionStorage.removeItem(STORAGE_KEY); }catch(e){}
+  }
 
-  /* ── Spawn floating sparkle particles ── */
+  /* ── Already played this session (normal in-session navigation) ── */
+  var alreadyPlayed = false;
+  try{ alreadyPlayed = sessionStorage.getItem(STORAGE_KEY) === '1'; }catch(e){}
+
+  if(alreadyPlayed){
+    if(loader && loader.parentNode) loader.parentNode.removeChild(loader);
+    return;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     STEP 2 — Apply dynamic theme colors to the loader
+     Reads the site's CSS custom properties (or falls back to
+     hardcoded brand values) and applies them as loader-scoped
+     CSS vars so the animation always matches the active palette.
+     Also adapts to prefers-color-scheme for future dark-mode.
+  ══════════════════════════════════════════════════════════════ */
+  function applyLoaderTheme(){
+    if(!loader) return;
+    var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches;
+
+    /* Read live brand CSS vars from :root (populated by style block at top of file) */
+    var cs = getComputedStyle(document.documentElement);
+    var brandRose   = (cs.getPropertyValue('--deep-rose') || '#c0647a').trim();
+    var brandGold   = (cs.getPropertyValue('--gold')      || '#c9a96e').trim();
+    var brandPale   = (cs.getPropertyValue('--rose')      || '#e8a0b0').trim();
+    var brandBlush  = (cs.getPropertyValue('--blush')     || '#f9e4e9').trim();
+    var brandBurg   = (cs.getPropertyValue('--burgundy')  || '#3b0d1a').trim();
+
+    /* Build dark/light variants */
+    if(isDark){
+      /* Dark mode — keep the rich dark bg, slightly cooler accents */
+      loader.style.setProperty('--cl-bg1','#0e0208');
+      loader.style.setProperty('--cl-bg2','#1f0610');
+      loader.style.setProperty('--cl-bg3','#321020');
+      loader.style.setProperty('--cl-bg4','#150408');
+      loader.style.setProperty('--cl-rose','rgba(160,60,90,.4)');
+      loader.style.setProperty('--cl-rose2','rgba(200,120,145,.25)');
+      loader.style.setProperty('--cl-gold','rgba(180,140,80,.2)');
+      loader.style.setProperty('--cl-spark','rgba(255,220,230,.65)');
+      loader.style.setProperty('--cl-progress-a','rgba(160,60,90,.7)');
+      loader.style.setProperty('--cl-progress-b','rgba(180,140,80,.85)');
+      loader.style.setProperty('--cl-progress-c','rgba(200,120,145,.65)');
+    } else {
+      /* Light / default brand mode — use real CSS-var hex values */
+      /* Convert hex accent to rgba for the blobs */
+      function hexToRgb(hex){
+        hex = hex.replace('#','');
+        if(hex.length === 3) hex = hex.split('').map(function(c){return c+c;}).join('');
+        var n = parseInt(hex,16);
+        return {r:(n>>16)&255, g:(n>>8)&255, b:n&255};
+      }
+      var r1 = hexToRgb(brandRose);
+      var r2 = hexToRgb(brandPale);
+      var r3 = hexToRgb(brandGold);
+      var rb = hexToRgb(brandBurg);
+
+      loader.style.setProperty('--cl-bg1', 'hsl(from '+brandBurg+' h s calc(l - 8%))');
+      /* Fallback for browsers without CSS relative color syntax */
+      loader.style.setProperty('--cl-bg1','rgb('+Math.max(0,rb.r-30)+','+Math.max(0,rb.g-8)+','+Math.max(0,rb.b-6)+')');
+      loader.style.setProperty('--cl-bg2',brandBurg);
+      loader.style.setProperty('--cl-bg3','rgb('+Math.min(255,rb.r+30)+','+Math.max(0,rb.g)+','+Math.max(0,rb.b+6)+')');
+      loader.style.setProperty('--cl-bg4','rgb('+Math.max(0,rb.r-15)+','+Math.max(0,rb.g-5)+','+Math.max(0,rb.b-3)+')');
+      loader.style.setProperty('--cl-rose','rgba('+r1.r+','+r1.g+','+r1.b+',.38)');
+      loader.style.setProperty('--cl-rose2','rgba('+r2.r+','+r2.g+','+r2.b+',.24)');
+      loader.style.setProperty('--cl-gold','rgba('+r3.r+','+r3.g+','+r3.b+',.2)');
+      loader.style.setProperty('--cl-spark','rgba('+r2.r+','+r2.g+','+r2.b+',.75)');
+      loader.style.setProperty('--cl-progress-a','rgba('+r1.r+','+r1.g+','+r1.b+',.65)');
+      loader.style.setProperty('--cl-progress-b','rgba('+r3.r+','+r3.g+','+r3.b+',.85)');
+      loader.style.setProperty('--cl-progress-c','rgba('+r2.r+','+r2.g+','+r2.b+',.65)');
+    }
+  }
+
+  /* Apply theme immediately (fonts+vars are already parsed at this point) */
+  applyLoaderTheme();
+  /* Re-apply if system color scheme changes while loader is visible */
+  try{
+    window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', applyLoaderTheme);
+  }catch(e){}
+
+  /* ══════════════════════════════════════════════════════════════
+     STEP 3 — Run the animation
+  ══════════════════════════════════════════════════════════════ */
+
+  /* Spawn floating sparkle particles */
   var pc = document.getElementById('cinParticles');
   if(pc){
-    for(var i=0;i<22;i++){
+    for(var i=0;i<35;i++){
       var s=document.createElement('div');
       s.className='cin-spark';
       s.style.cssText=[
         'left:'+(8+Math.random()*84)+'%',
         'top:'+(20+Math.random()*65)+'%',
-        '--dur:'+(2.5+Math.random()*3)+'s',
-        '--delay:'+(Math.random()*2.5)+'s',
-        'width:'+(2+Math.random()*3)+'px',
-        'height:'+(2+Math.random()*3)+'px',
-        'background:rgba('+(249+Math.round(Math.random()*6))+','+(Math.round(160+Math.random()*68))+','+(Math.round(160+Math.random()*73))+',.8)'
+        '--dur:'+(2+Math.random()*3)+'s',
+        '--delay:'+(Math.random()*3)+'s',
+        'width:'+(2+Math.random()*4)+'px',
+        'height:'+(2+Math.random()*4)+'px'
       ].join(';');
       pc.appendChild(s);
     }
   }
 
-  /* ── Floating luxury motion after reveal ── */
-  var lw = document.getElementById('cinLogoWrap');
-  if(lw) setTimeout(function(){ lw.classList.add('cin-float'); }, 1200);
+  /* (Gift box halo animation is pure CSS — no JS float trigger needed) */
 
-  /* ── Mark session as seen + dismiss loader ── */
+  /* ══════════════════════════════════════════════════════════════
+     STEP 4 — Dismiss
+     Mark session BEFORE the fade so mid-animation navigations
+     to other pages never show it again.
+  ══════════════════════════════════════════════════════════════ */
   function dismissLoader(){
     if(!loader || loader.classList.contains('cin-done')) return;
-    /* Save to sessionStorage BEFORE fade starts so any mid-animation
-       navigation to another page won't re-trigger the intro */
     try{ sessionStorage.setItem(STORAGE_KEY, '1'); }catch(e){}
     loader.classList.add('cin-done');
-    /* Remove from DOM fully after CSS transition ends (0.85s) */
-    setTimeout(function(){ if(loader && loader.parentNode) loader.parentNode.removeChild(loader); }, 950);
+    /* Remove from DOM after the 0.85s CSS transition to free memory */
+    setTimeout(function(){
+      if(loader && loader.parentNode) loader.parentNode.removeChild(loader);
+    }, 950);
   }
 
-  /* ── Timing: mobile = 2s, desktop = 3s ── */
   var isMobile = window.matchMedia('(max-width:600px)').matches;
-  var dismissDelay = isMobile ? 2000 : 3000;
+  /* Desktop: 3.8s — all text fully visible by ~3s. Mobile: 3.0s. */
+  var dismissDelay = isMobile ? 3000 : 3800;
 
-  /* Hard fallback — always dismisses no matter what */
+  /* Hard timeout fallback */
   setTimeout(dismissLoader, dismissDelay);
 
-  /* Early dismiss once DOM is ready (but never too soon — let animation breathe) */
+  /* Also dismiss once DOM is interactive, but never before minimum */
   function safeEarlyDismiss(){
     setTimeout(function(){
       if(document.readyState === 'complete' || document.readyState === 'interactive'){
         dismissLoader();
       }
-    }, isMobile ? 1800 : 2200);
+    }, isMobile ? 3000 : 3800);
   }
 
   if(document.readyState === 'loading'){
@@ -3364,6 +3877,7 @@ function launchConfetti(){
   } else {
     safeEarlyDismiss();
   }
+
 })();
 </script>
 </body>
