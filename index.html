@@ -2512,13 +2512,17 @@ async function loadProducts() {
         const all=snap.docs.map(d=>({id:d.id,...d.data()}));
         console.log('Products data:', all);
         
-        if(!all.length){
-          console.log('⚠️ No products found in Firestore');
-          document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;margin-bottom:16px;">No products available yet</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:10px 24px;border-radius:25px;font-size:.75rem;text-decoration:none;">Check Products Page</a></div>';
+        // Filter out out-of-stock products
+        const inStockProducts = all.filter(p => p.inStock !== false);
+        console.log(`Filtered: ${inStockProducts.length} in stock out of ${all.length} total products`);
+        
+        if(!inStockProducts.length){
+          console.log('⚠️ No in-stock products available');
+          document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;margin-bottom:16px;">No products available right now</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:10px 24px;border-radius:25px;font-size:.75rem;text-decoration:none;">Check Products Page</a></div>';
           return;
         }
         
-        const show=all.slice(0,8);
+        const show=inStockProducts.slice(0,8);
         renderProducts(show);
       },
       error => {
@@ -2543,13 +2547,17 @@ function loadProductsWithoutOrder() {
       console.log('✅ Products loaded (no ordering). Count:', snap.docs.length);
       const all=snap.docs.map(d=>({id:d.id,...d.data()}));
       
-      if(!all.length){
-        console.log('⚠️ Still no products found');
-        document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;line-height:1.6;">Products collection is empty.<br/>Please add products through your admin panel or Firebase Console.</div></div>';
+      // Filter out out-of-stock products
+      const inStockProducts = all.filter(p => p.inStock !== false);
+      console.log(`Filtered: ${inStockProducts.length} in stock out of ${all.length} total products`);
+      
+      if(!inStockProducts.length){
+        console.log('⚠️ No in-stock products available');
+        document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;line-height:1.6;">No products available right now.<br/>Please check back later!</div></div>';
         return;
       }
       
-      const show=all.slice(0,8);
+      const show=inStockProducts.slice(0,8);
       renderProducts(show);
     },
     error => {

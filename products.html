@@ -1765,6 +1765,10 @@
     function renderProducts() {
       const sort = document.getElementById('sortSelect').value;
       let list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === currentCat);
+      
+      // Filter out out-of-stock products
+      list = list.filter(p => p.inStock !== false);
+      
       // Subcategory filter
       if (currentSubcat !== 'all') {
         list = list.filter(p => p.subcategory === currentSubcat || p.subcat === currentSubcat);
@@ -1774,6 +1778,7 @@
       if (urlFilter === 'new') {
         const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
         list = allProducts.filter(p => {
+          if (p.inStock === false) return false; // Exclude out of stock
           if (p.badge === 'new') return true;
           const ts = p.createdAt?.toDate ? p.createdAt.toDate().getTime()
             : (typeof p.createdAt === 'number' ? p.createdAt : 0);
@@ -1784,15 +1789,15 @@
         if (countEl) countEl.innerHTML = `<span style="color:var(--deep-rose);font-weight:600;">✨ New Arrivals</span>`;
       } else if (urlFilter === 'bestseller') {
         const counts = JSON.parse(localStorage.getItem('ah_bestseller_counts') || '{}');
-        // Sort all products by order count descending
-        list = [...allProducts].sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0));
+        // Sort all products by order count descending, exclude out of stock
+        list = [...allProducts].filter(p => p.inStock !== false).sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0));
         // Keep only those with at least 1 order, or top 8 if none
         const withOrders = list.filter(p => (counts[p.id] || 0) > 0);
         list = withOrders.length > 0 ? withOrders : list.slice(0, 8);
         const countEl = document.getElementById('productsCount');
         if (countEl) countEl.innerHTML = `<span style="color:var(--deep-rose);font-weight:600;">⭐ Best Sellers</span>`;
       } else if (urlFilter === 'offers') {
-        list = allProducts.filter(p => (p.discount || 0) > 0 || flashSaleDiscount > 0);
+        list = allProducts.filter(p => p.inStock !== false && ((p.discount || 0) > 0 || flashSaleDiscount > 0));
         const countEl = document.getElementById('productsCount');
         if (countEl) countEl.innerHTML = `<span style="color:var(--deep-rose);font-weight:600;">⚡ Offers &amp; Deals</span>`;
       }

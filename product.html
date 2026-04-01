@@ -1607,6 +1607,163 @@
       transform: translateY(-2px);
     }
 
+    /* ═══════════════════════════════════════════════
+       REVIEW PHOTO UPLOAD — upload zone + preview
+    ═══════════════════════════════════════════════ */
+    .rv-upload-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 22px 16px;
+      border: 2px dashed rgba(192, 100, 122, .3);
+      border-radius: 14px;
+      background: var(--cream);
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .rv-upload-zone:hover,
+    .rv-upload-zone.drag-over {
+      border-color: #c0647a;
+      background: rgba(249, 228, 233, .45);
+    }
+
+    .rv-upload-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .rv-upload-text {
+      font-size: .82rem;
+      color: var(--burgundy);
+      font-weight: 500;
+    }
+
+    .rv-upload-note {
+      font-size: .68rem;
+      opacity: .45;
+      color: var(--burgundy);
+    }
+
+    /* Preview strip */
+    .rv-photo-preview {
+      position: relative;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(59, 13, 26, .12);
+      max-height: 200px;
+    }
+
+    .rv-photo-preview img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .rv-remove-photo {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      background: rgba(59, 13, 26, .72);
+      backdrop-filter: blur(4px);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: .75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+    }
+
+    .rv-remove-photo:hover {
+      background: rgba(192, 100, 122, .9);
+    }
+
+    /* ═══════════════════════════════════════════════
+       REVIEW CARD PHOTOS — photo grid inside each card
+    ═══════════════════════════════════════════════ */
+    .rv-card-photos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 6px;
+      margin: 10px 0 6px;
+    }
+
+    .rv-card-photo {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 9px;
+      cursor: pointer;
+      border: 1.5px solid rgba(192, 100, 122, .15);
+      transition: transform .18s, box-shadow .18s;
+    }
+
+    .rv-card-photo:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(59, 13, 26, .18);
+    }
+
+    /* ═══════════════════════════════════════════════
+       REVIEW PHOTO LIGHTBOX
+    ═══════════════════════════════════════════════ */
+    #rv-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99000;
+      background: rgba(10, 3, 10, .88);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #rv-lightbox.open {
+      display: flex;
+    }
+
+    #rv-lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 60px rgba(0, 0, 0, .6);
+    }
+
+    #rv-lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(8px);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+
+    #rv-lightbox-close:hover {
+      background: rgba(255, 255, 255, .25);
+    }
+
     /* LOADING */
     .loading {
       text-align: center;
@@ -2674,6 +2831,20 @@
           <label class="form-label">Your Review *</label>
           <textarea class="form-input" id="rvText" placeholder="Tell others about your experience…"></textarea>
         </div>
+        <!-- Photo Upload -->
+        <div class="form-group">
+          <label class="form-label">Add Photo (optional)</label>
+          <label id="rv-upload-zone" for="rv-photo-input" class="rv-upload-zone">
+            <div class="rv-upload-icon">📸</div>
+            <div class="rv-upload-text">Click or drag & drop your photo here</div>
+            <div class="rv-upload-note">JPG or PNG · max 5 MB</div>
+            <input id="rv-photo-input" type="file" accept="image/jpeg,image/png" style="display:none;"/>
+          </label>
+          <div id="rv-photo-preview" class="rv-photo-preview" style="display:none;">
+            <img id="rv-preview-img" src="" alt="Preview"/>
+            <button type="button" id="rv-remove-photo" class="rv-remove-photo" title="Remove photo">✕</button>
+          </div>
+        </div>
         <button class="submit-review-btn" onclick="submitReview()">Submit Review ✨</button>
       </div>
     </div>
@@ -2849,6 +3020,37 @@
         const il = $('detItems'); if (il) il.innerHTML = p.items.map(it => `<span class="item-chip">${it}</span>`).join('');
       }
 
+      // Check stock status and disable buttons if out of stock
+      const isOutOfStock = p.inStock === false;
+      ['addCartBtn', 'addCartBtn2', 'buyNowBtn', 'buyNowBtn2'].forEach(btnId => {
+        const btn = $(btnId);
+        if (btn) {
+          if (isOutOfStock) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+            btn.textContent = btnId.includes('buy') ? '❌ Out of Stock' : '❌ Out of Stock';
+            btn.onclick = (e) => { e.preventDefault(); toast('⚠️ This product is currently out of stock', 'err'); };
+          } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+          }
+        }
+      });
+
+      // Show out of stock notice
+      if (isOutOfStock) {
+        const priceSection = $('detPrice')?.parentElement;
+        if (priceSection && !$('stockNotice')) {
+          const notice = document.createElement('div');
+          notice.id = 'stockNotice';
+          notice.style.cssText = 'background:rgba(224,80,80,.08);border:1.5px solid rgba(224,80,80,.25);border-radius:12px;padding:12px 16px;margin:12px 0;color:rgba(224,80,80,.9);font-size:0.85rem;font-weight:500;';
+          notice.innerHTML = '❌ <strong>Out of Stock</strong> — This product is currently unavailable for purchase.';
+          priceSection.appendChild(notice);
+        }
+      }
+
       // Images
       _imgs = Array.isArray(p.images) && p.images.length ? p.images : [];
       const track = $('sliderTrack'), dots = $('slideDots'), thumbRow = $('thumbRow');
@@ -2863,7 +3065,11 @@
       }
 
       const bw = $('imgBadgeWrap');
-      if (bw) { if (disc > 0) bw.innerHTML += `<div class="img-badge">${disc}% OFF</div>`; if (p.badge) bw.innerHTML += `<div class="img-badge secondary">${p.badge}</div>`; }
+      if (bw) { 
+        if (isOutOfStock) bw.innerHTML += `<div class="img-badge" style="background:rgba(224,80,80,.95);border-color:rgba(224,80,80,1);">❌ Out of Stock</div>`;
+        else if (disc > 0) bw.innerHTML += `<div class="img-badge">${disc}% OFF</div>`; 
+        if (p.badge && !isOutOfStock) bw.innerHTML += `<div class="img-badge secondary">${p.badge}</div>`;
+      }
 
       _updateSummary(eff);
     }
@@ -2914,11 +3120,19 @@
     function _effPrice() { if (!_prod) return 0; const p = Number(_prod.price), d = Number(_prod.discount) || 0; return d > 0 ? Math.round(p * (1 - d / 100)) : p; }
     function _addToCart() {
       if (!_prod) return;
+      if (_prod.inStock === false) {
+        toast('⚠️ This product is currently out of stock', 'err');
+        return;
+      }
       const gm = $('giftCheck') && $('giftCheck').checked ? ($('giftMsg') && $('giftMsg').value || '') : '';
       Cart.add({ id: _prod.id, name: _prod.name, price: _effPrice(), image: _imgs[0] || '', qty: _qty, giftMsg: gm });
     }
     function _buyNow() {
       if (!_prod) return;
+      if (_prod.inStock === false) {
+        toast('⚠️ This product is currently out of stock', 'err');
+        return;
+      }
       const item = { id: _prod.id, name: _prod.name, price: _effPrice(), image: _imgs[0] || '', qty: _qty, isBuyNow: true };
       // Save as buy-now item — cart.html?buynow=1 will detect this and open the Buy Now overlay
       // which uses the same Razorpay checkout flow as the normal cart checkout
@@ -2956,12 +3170,17 @@
       list.innerHTML = rv.map(r => {
         const ini = (r.name || 'AN').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         const date = r.createdAt instanceof Date ? r.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
+        let photosHtml = '';
+        if (r.imageURL) {
+          photosHtml = `<div class="rv-card-photos"><img src="${r.imageURL}" class="rv-card-photo" alt="Review photo" onclick="openReviewPhoto('${r.imageURL}')"/></div>`;
+        }
         return `<div class="review-card">
       <div class="review-top">
         <div class="reviewer"><div class="reviewer-av">${ini}</div><div><div class="reviewer-name">${r.name || ''}</div><div class="reviewer-date">${date}</div></div></div>
         <div>${_starsHtml(r.rating || 5, '.85rem')}</div>
       </div>
       <div class="review-text">${r.text || ''}</div>
+      ${photosHtml}
       <div class="review-verified">✓ Verified Purchase</div>
     </div>`;
       }).join('');
@@ -3004,6 +3223,28 @@
       const btn = document.querySelector('.submit-review-btn');
       if (btn) { btn.textContent = 'Submitting…'; btn.disabled = true; }
       try {
+        let imageURL = null;
+
+        // Upload photo if selected
+        if (window._rvPhotoFile) {
+          btn.textContent = 'Uploading photo…';
+          const photoFile = window._rvPhotoFile;
+          const ext = photoFile.name.split('.').pop().toLowerCase();
+          const path = 'review-photos/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+          
+          // Use Firebase Storage REST API
+          const storageUrl = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJ}.appspot.com/o?uploadType=media&name=${encodeURIComponent(path)}`;
+          const uploadRes = await fetch(storageUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': photoFile.type },
+            body: photoFile
+          });
+          if (!uploadRes.ok) throw new Error('Photo upload failed');
+          const uploadData = await uploadRes.json();
+          imageURL = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJ}.appspot.com/o/${encodeURIComponent(uploadData.name)}?alt=media`;
+        }
+
+        btn.textContent = 'Saving review…';
         const body = {
           fields: {
             productId: { stringValue: _pid },
@@ -3013,6 +3254,8 @@
             text: { stringValue: text }
           }
         };
+        if (imageURL) body.fields.imageURL = { stringValue: imageURL };
+
         const res = await fetch(`${_FB_BASE}/reviews?key=${_FB_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         if (res.ok) {
           toast('✅ Thank you for your review! 🌸');
@@ -3020,10 +3263,98 @@
           _starRating = 0;
           document.querySelectorAll('.star-btn').forEach(b => b.textContent = '☆');
           const sl = $('starLabel'); if (sl) sl.textContent = '';
+          _rvClearPhoto();
           setTimeout(() => _loadReviews(_pid), 800);
         } else { toast('❌ Could not submit. Please try again.'); }
       } catch (e) { toast('❌ Network error. Please try again.'); }
       if (btn) { btn.textContent = 'Submit Review ✨'; btn.disabled = false; }
+    };
+
+    // ── Photo upload functions ──────────────────────────────────────────
+    window._rvPhotoFile = null;
+
+    function _rvSetFile(file) {
+      if (!file) return;
+      // Type check: only JPG / PNG
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        toast('⚠️ Only JPG or PNG images are allowed.');
+        return;
+      }
+      // Size check: max 5 MB
+      if (file.size > 5 * 1024 * 1024) {
+        toast('⚠️ Image must be under 5 MB.');
+        return;
+      }
+      window._rvPhotoFile = file;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = $('rv-preview-img');
+        const preview = $('rv-photo-preview');
+        if (img && preview) {
+          img.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        // Hide upload zone once a file is chosen
+        const zone = $('rv-upload-zone');
+        if (zone) zone.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function _rvClearPhoto() {
+      window._rvPhotoFile = null;
+      const inp = $('rv-photo-input');
+      if (inp) inp.value = '';
+      const img = $('rv-preview-img');
+      if (img) img.src = '';
+      const preview = $('rv-photo-preview');
+      if (preview) preview.style.display = 'none';
+      const zone = $('rv-upload-zone');
+      if (zone) zone.style.display = 'flex';
+    }
+
+    // Wire file input
+    setTimeout(function () {
+      const inp = $('rv-photo-input');
+      if (inp) inp.addEventListener('change', function () {
+        if (this.files && this.files[0]) _rvSetFile(this.files[0]);
+      });
+
+      // Drag-and-drop on the zone label
+      const zone = $('rv-upload-zone');
+      if (zone) {
+        zone.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', function () {
+          zone.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', function (e) {
+          e.preventDefault();
+          zone.classList.remove('drag-over');
+          const dt = e.dataTransfer;
+          if (dt && dt.files && dt.files[0]) _rvSetFile(dt.files[0]);
+        });
+      }
+
+      // Remove-photo button
+      const rmBtn = $('rv-remove-photo');
+      if (rmBtn) rmBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        _rvClearPhoto();
+      });
+    }, 500);
+
+    // ── Lightbox ─────────────────────────────────────────────────────
+    window.openReviewPhoto = function (src) {
+      const lb = $('rv-lightbox');
+      const im = $('rv-lightbox-img');
+      if (lb && im) {
+        im.src = src;
+        lb.classList.add('open');
+      }
     };
 
     // ── Related products via REST ──
@@ -3116,6 +3447,13 @@
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
     })();
   </script>
+
+  <!-- REVIEW PHOTO LIGHTBOX -->
+  <div id="rv-lightbox" onclick="if(event.target===this) this.classList.remove('open')">
+    <img id="rv-lightbox-img" src="" alt="Review photo"/>
+    <button id="rv-lightbox-close" onclick="document.getElementById('rv-lightbox').classList.remove('open')">✕</button>
+  </div>
+
 </body>
 
 </html>

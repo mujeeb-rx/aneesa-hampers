@@ -347,14 +347,21 @@ textarea.fi{resize:vertical;min-height:80px;}
       <div class="card">
         <div class="card-hd">
           <div><div class="card-title">All Orders</div><div class="card-sub">Real-time — manage customer orders</div></div>
-          <select class="fi" id="orderFilter" style="width:150px;padding:8px 12px" onchange="renderOrders()">
-            <option value="all">All Status</option>
-            <option value="pending">⏳ Pending</option>
-            <option value="confirmed">✅ Confirmed</option>
-            <option value="shipped">🚚 Shipped</option>
-            <option value="delivered">🎁 Delivered</option>
-            <option value="cancelled">❌ Cancelled</option>
-          </select>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <select class="fi" id="orderFilter" style="width:150px;padding:8px 12px" onchange="renderOrders()">
+              <option value="all">All Status</option>
+              <option value="pending">⏳ Pending</option>
+              <option value="confirmed">✅ Confirmed</option>
+              <option value="shipped">🚚 Shipped</option>
+              <option value="delivered">🎁 Delivered</option>
+              <option value="cancelled">❌ Cancelled</option>
+            </select>
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 14px;background:rgba(192,100,122,.06);border-radius:10px;border:1.5px solid rgba(192,100,122,.15);">
+              <span style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;white-space:nowrap;">📊 Export</span>
+              <select class="fi" id="exportMonth" style="width:140px;padding:6px 10px;font-size:.75rem;"></select>
+              <button onclick="exportMonthlyOrders()" style="padding:7px 16px;background:var(--deep-rose);color:white;border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;">Download CSV</button>
+            </div>
+          </div>
         </div>
         <div class="tbl-wrap">
           <table>
@@ -599,7 +606,10 @@ textarea.fi{resize:vertical;min-height:80px;}
           <div style="font-size:.78rem;font-weight:500;margin:14px 0 8px;color:rgba(59,13,26,.6);">Images (max 6)</div>
           <div id="galleryEditorList" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;"></div>
           <button onclick="addGalleryItem()" style="width:100%;padding:9px;background:rgba(192,100,122,.08);border:1.5px dashed rgba(192,100,122,.3);border-radius:10px;color:var(--deep-rose);font-family:inherit;font-size:.75rem;cursor:pointer;margin-bottom:12px;">+ Add Image</button>
-          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveGallery()">💾 Save Gallery</button>
+          <div style="background:rgba(37,211,102,.06);border-radius:10px;padding:10px 14px;font-size:.72rem;color:rgba(26,122,64,.8);margin-bottom:12px;">
+            ✨ <strong>Auto-save enabled!</strong> Changes to images save instantly. Use the button below to save text changes.
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveGallery()">💾 Save Text Changes</button>
         </div>
 
       </div>
@@ -685,7 +695,10 @@ textarea.fi{resize:vertical;min-height:80px;}
       <div class="fg"><label class="fl">Price (₹)</label><input class="fi" id="ePrice" type="number"/></div>
       <div class="fg"><label class="fl">Discount %</label><input class="fi" id="eDisc" type="number" min="0" max="90"/></div>
       <div class="fg"><label class="fl">Badge</label><select class="fi" id="eBadge"><option value="">None</option><option value="new">🆕 New</option><option value="bestseller">⭐ Bestseller</option><option value="trending">🔥 Trending</option></select></div>
-      <div class="fg"><label class="fl">In Stock</label><select class="fi" id="eStock"><option value="true">✅ In Stock</option><option value="false">❌ Out of Stock</option></select></div>
+      <div class="fg"><label class="fl">In Stock</label><select class="fi" id="eStock" onchange="updateStockNotice()"><option value="true">✅ In Stock</option><option value="false">❌ Out of Stock</option></select></div>
+      <div id="stockNotice" style="display:none;grid-column:1/-1;background:rgba(224,80,80,.06);border-radius:10px;padding:10px 14px;font-size:.72rem;color:rgba(224,80,80,.8);border:1.5px solid rgba(224,80,80,.2);">
+        ⚠️ <strong>Out of Stock:</strong> This product will be hidden from the website and customers won't be able to purchase it.
+      </div>
       <div class="fg form-full"><label class="fl">Description</label><textarea class="fi" id="eDesc"></textarea></div>
       <div class="fg form-full"><label class="fl">Items Included</label><input class="fi" id="eItems"/></div>
       <div class="fg form-full">
@@ -1202,6 +1215,7 @@ function init() {
   loadSettings();
   setupCatModal();
   setupEmojiPicker();
+  populateMonthSelector();
 }
 
 // ── LISTENERS ──
@@ -1320,6 +1334,129 @@ window.renderOrders = function() {
     </tr>`;
   }).join('');
 };
+
+// ── POPULATE MONTH SELECTOR ──
+function populateMonthSelector() {
+  const selector = document.getElementById('exportMonth');
+  if (!selector) return;
+  
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                  'July', 'August', 'September', 'October', 'November', 'December'];
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  
+  // Generate last 12 months
+  let options = [];
+  for (let i = 0; i < 12; i++) {
+    const monthOffset = currentMonth - i;
+    const year = monthOffset < 0 ? currentYear - 1 : currentYear;
+    const month = monthOffset < 0 ? 12 + monthOffset : monthOffset;
+    const label = `${months[month]} ${year}`;
+    const value = `${year}-${String(month + 1).padStart(2, '0')}`;
+    options.push(`<option value="${value}" ${i === 0 ? 'selected' : ''}>${label}</option>`);
+  }
+  
+  selector.innerHTML = options.join('');
+}
+
+// ── EXPORT MONTHLY ORDERS TO CSV ──
+window.exportMonthlyOrders = function() {
+  const selector = document.getElementById('exportMonth');
+  const selectedMonth = selector.value; // Format: "YYYY-MM"
+  
+  if (!selectedMonth) {
+    alert('Please select a month to export');
+    return;
+  }
+  
+  const [year, month] = selectedMonth.split('-').map(Number);
+  
+  // Filter orders by selected month
+  const filteredOrders = _orders.filter(o => {
+    let d = null;
+    if (o.createdAt?.toDate) d = o.createdAt.toDate();
+    else if (o.createdAt?.seconds) d = new Date(o.createdAt.seconds * 1000);
+    else if (o.createdAt) d = new Date(o.createdAt);
+    
+    if (!d || isNaN(d)) return false;
+    return d.getFullYear() === year && (d.getMonth() + 1) === month;
+  });
+  
+  if (filteredOrders.length === 0) {
+    alert('No orders found for the selected month');
+    return;
+  }
+  
+  // Generate CSV content
+  const headers = ['Order ID', 'User Name', 'Email', 'Products', 'Total Amount', 'Payment Status', 'Date'];
+  let csvContent = headers.join(',') + '\n';
+  
+  filteredOrders.forEach(order => {
+    const orderId = '#' + (order.id || '').slice(-6).toUpperCase();
+    const userName = escapeCSV(order.customerName || order.name || '—');
+    const email = escapeCSV(order.customerEmail || order.email || '—');
+    
+    // Format products
+    const products = (order.items || [])
+      .map(i => `${i.name} x${i.qty}`)
+      .join('; ') || escapeCSV(order.productName || '—');
+    const productsEscaped = escapeCSV(products);
+    
+    const totalAmount = '₹' + Number(order.total || 0).toLocaleString('en-IN');
+    const paymentStatus = order.status || 'pending';
+    
+    // Format date
+    let dateStr = '—';
+    let d = null;
+    if (order.createdAt?.toDate) d = order.createdAt.toDate();
+    else if (order.createdAt?.seconds) d = new Date(order.createdAt.seconds * 1000);
+    else if (order.createdAt) d = new Date(order.createdAt);
+    
+    if (d && !isNaN(d)) {
+      dateStr = d.toLocaleDateString('en-IN') + ' ' + d.toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'});
+    }
+    
+    const row = [orderId, userName, email, productsEscaped, totalAmount, paymentStatus, dateStr];
+    csvContent += row.join(',') + '\n';
+  });
+  
+  // Download CSV
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+  const filename = `Orders_${monthNames[month - 1]}_${year}.csv`;
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  
+  if (navigator.msSaveBlob) {
+    // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  // Show success message
+  const monthName = monthNames[month - 1];
+  alert(`✅ Exported ${filteredOrders.length} order${filteredOrders.length !== 1 ? 's' : ''} from ${monthName} ${year}`);
+};
+
+// Helper function to escape CSV values
+function escapeCSV(str) {
+  if (str === null || str === undefined) return '';
+  str = String(str);
+  // If the string contains comma, newline, or quotes, wrap it in quotes and escape internal quotes
+  if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
 
 // ── ORDER DETAIL / STATUS ──
 window.openOrder = function(id) {
@@ -1687,10 +1824,15 @@ function renderProducts() {
   grid.innerHTML = _prods.map(p => {
     const imgH = (p.images&&p.images[0]) ? `<img src="${p.images[0]}" alt="${p.name||''}"/>` : (p.emoji||'🎁');
     const disc = p.discount ? ` <span style="font-size:.7rem;color:#2d7a4f;font-weight:600">${p.discount}% OFF</span>` : '';
-    return `<div class="prod-card">
+    const isInStock = p.inStock !== false;
+    const stockBtnText = isInStock ? '❌ Mark Out of Stock' : '✅ Mark In Stock';
+    const stockBtnClass = isInStock ? 'btn-del' : 'btn-green';
+    
+    return `<div class="prod-card" style="${!isInStock ? 'opacity:0.7;' : ''}">
       <div class="prod-img">
-        <span class="stock-tag ${p.inStock!==false?'in-stock':'out-stock'}">${p.inStock!==false?'In Stock':'Out'}</span>
+        <span class="stock-tag ${isInStock?'in-stock':'out-stock'}">${isInStock?'✅ In Stock':'❌ Out of Stock'}</span>
         ${imgH}
+        ${!isInStock ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;"><span style="background:rgba(224,80,80,0.95);color:white;padding:6px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Unavailable</span></div>' : ''}
       </div>
       <div class="prod-body">
         <div class="prod-cat">${p.category||''}</div>
@@ -1699,7 +1841,7 @@ function renderProducts() {
         <div class="prod-actions">
           <button class="btn btn-edit btn-sm" onclick="openEditProd('${p.id}')">✏️ Edit</button>
           <button class="btn btn-del btn-sm" onclick="delProduct('${p.id}')">🗑️</button>
-          <button class="btn ${p.inStock!==false?'btn-del':'btn-green'} btn-sm" onclick="toggleStock('${p.id}',${p.inStock!==false})">${p.inStock!==false?'Mark Out':'Mark In'}</button>
+          <button class="btn ${stockBtnClass} btn-sm" style="white-space:nowrap;" onclick="toggleStock('${p.id}',${isInStock})" title="Toggle stock availability">${stockBtnText}</button>
         </div>
       </div>
     </div>`;
@@ -1764,6 +1906,10 @@ window.openEditProd = function(id) {
   document.getElementById('eStock').value    = p.inStock!==false?'true':'false';
   document.getElementById('eDesc').value     = p.description||'';
   document.getElementById('eItems').value    = (p.items||[]).join(', ');
+  
+  // Update stock notice visibility
+  updateStockNotice();
+  
   // Load subcategory — refresh dropdown first then set value
   setTimeout(() => {
     refreshSubcatSelects('eSubCat','eCat');
@@ -1797,8 +1943,37 @@ window.delProduct = async function(id) {
   await deleteDoc(doc(db,'products',id));
   toast('🗑️ Product deleted.');
 };
+
+// Update stock notice visibility
+window.updateStockNotice = function() {
+  const stockSelect = document.getElementById('eStock');
+  const notice = document.getElementById('stockNotice');
+  if (stockSelect && notice) {
+    notice.style.display = stockSelect.value === 'false' ? 'block' : 'none';
+  }
+};
+
 window.toggleStock = async function(id, cur) {
-  await updateDoc(doc(db,'products',id), {inStock:!cur}); toast('✅ Stock updated!');
+  const product = _prods.find(p => p.id === id);
+  const newStatus = !cur;
+  const statusText = newStatus ? 'in stock' : 'out of stock';
+  const productName = product ? product.name : 'Product';
+  
+  try {
+    // Update Firebase with new stock status
+    await updateDoc(doc(db,'products',id), {
+      inStock: newStatus,
+      updatedAt: serverTimestamp()
+    });
+    
+    // Show success message with product name and status
+    toast(`✅ ${productName} marked ${statusText}!`);
+    
+    // The UI will update automatically via the real-time listener
+  } catch(e) {
+    toast(`❌ Failed to update stock: ${e.message}`, 'err');
+    console.error('Stock update error:', e);
+  }
 };
 
 // refresh category dropdowns
@@ -2538,7 +2713,7 @@ function renderGalleryEditor() {
           📷 Replace
           <input type="file" accept="image/*" style="display:none" onchange="uploadGalleryItem(this,${i})"/>
         </label>
-        <button onclick="_adminGallery.splice(${i},1);renderGalleryEditor()"
+        <button onclick="deleteGalleryItem(${i})"
           style="width:32px;background:rgba(200,60,60,.1);border:none;border-radius:7px;color:rgba(200,60,60,.7);cursor:pointer;font-size:.85rem;">✕</button>
       </div>
     </div>
@@ -2552,41 +2727,88 @@ window.addGalleryItem = async function() {
   input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
   input.onchange = async function() {
     const files = Array.from(this.files).slice(0, 6 - _adminGallery.length);
+    let uploadCount = 0;
     for(const file of files) {
-      toast('⏳ Uploading…');
+      toast(`⏳ Uploading ${uploadCount + 1}/${files.length}…`);
       try {
         const url = await uploadToImgbb(file, ()=>{});
         _adminGallery.push({ image: url, caption: '', link: '' });
-        toast('✅ Image added!');
-      } catch(e) { toast('❌ Upload failed', 'err'); }
+        uploadCount++;
+      } catch(e) { 
+        toast('❌ Upload failed', 'err'); 
+        console.error(e);
+      }
     }
     renderGalleryEditor();
+    
+    // Auto-save to Firebase after adding images
+    if (uploadCount > 0) {
+      try {
+        await autoSaveGallery();
+        toast(`✅ ${uploadCount} image${uploadCount > 1 ? 's' : ''} added & saved!`);
+      } catch(e) {
+        toast('❌ Failed to save to Firebase', 'err');
+        console.error(e);
+      }
+    }
   };
   input.click();
 };
 
 window.uploadGalleryItem = async function(input, idx) {
   const file = input.files[0]; if(!file) return;
+  const oldImage = _adminGallery[idx]?.image; // Track old image URL
   toast('⏳ Uploading…');
   try {
     const url = await uploadToImgbb(file, ()=>{});
     _adminGallery[idx].image = url;
-    toast('✅ Replaced!');
     renderGalleryEditor();
-  } catch(e) { toast('❌ Upload failed', 'err'); }
+    
+    // Auto-save to Firebase after replacing
+    await autoSaveGallery();
+    toast('✅ Image replaced & saved!');
+    
+    // Note: imgbb doesn't provide easy deletion without delete_hash stored during upload
+    // Old image URL will remain on imgbb but won't be referenced in the site
+  } catch(e) { 
+    toast('❌ Upload failed', 'err'); 
+  }
   input.value = '';
 };
 
-window.saveGallery = async function() {
+// Delete gallery item with auto-save
+window.deleteGalleryItem = async function(idx) {
+  if (!confirm('Delete this image? This will update the site immediately.')) return;
+  
+  const oldImage = _adminGallery[idx]?.image;
+  _adminGallery.splice(idx, 1);
+  renderGalleryEditor();
+  
+  // Auto-save to Firebase after deletion
+  try {
+    await autoSaveGallery();
+    toast('✅ Image deleted & site updated!');
+  } catch(e) {
+    toast('❌ Failed to save changes', 'err');
+    console.error(e);
+  }
+};
+
+// Auto-save gallery helper function
+async function autoSaveGallery() {
   const gallery = {
-    eyebrow:  document.getElementById('galEyebrow').value.trim() || 'Follow Us',
-    title:    document.getElementById('galTitle').value.trim()   || 'Our Latest|Creations',
-    subtitle: document.getElementById('galSub').value.trim(),
-    handle:   document.getElementById('galHandle').value.trim(),
+    eyebrow:  document.getElementById('galEyebrow')?.value.trim() || 'Follow Us',
+    title:    document.getElementById('galTitle')?.value.trim() || 'Our Latest|Creations',
+    subtitle: document.getElementById('galSub')?.value.trim() || '',
+    handle:   document.getElementById('galHandle')?.value.trim() || '',
     items:    _adminGallery
   };
+  await setDoc(doc(db,'siteSettings','config'), { gallery }, { merge: true });
+}
+
+window.saveGallery = async function() {
   try {
-    await setDoc(doc(db,'siteSettings','config'), { gallery }, { merge: true });
+    await autoSaveGallery();
     toast('✅ Gallery saved! Live on site now.');
   } catch(e) { toast('❌ ' + e.message, 'err'); }
 };
@@ -2621,7 +2843,13 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     if(g.title)   document.getElementById('galTitle').value = g.title;
     if(g.subtitle) document.getElementById('galSub').value = g.subtitle;
     if(g.handle)   document.getElementById('galHandle').value = g.handle;
-    if(g.items)    { _adminGallery = g.items.map(i=>({...i})); renderGalleryEditor(); }
+    // Always update gallery items, even if empty - this ensures real-time sync
+    _adminGallery = (g.items && Array.isArray(g.items)) ? g.items.map(i=>({...i})) : [];
+    renderGalleryEditor();
+  } else {
+    // Reset gallery if no config exists
+    _adminGallery = [];
+    renderGalleryEditor();
   }
 
   // Popup
