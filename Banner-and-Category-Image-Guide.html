@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aneesa Hampers - Image Size Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f4ed;
+            padding: 40px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #c0647a;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #3b0d1a;
+            margin-bottom: 10px;
+        }
+        .header h2 {
+            font-size: 1.3rem;
+            color: #c0647a;
+            font-weight: 400;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: #3b0d1a;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid #c0647a;
+        }
+        .subsection {
+            margin-bottom: 25px;
+            background: #fbeaf0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .subsection h3 {
+            font-size: 1.3rem;
+            color: #c0647a;
+            margin-bottom: 15px;
+        }
+        .size-box {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #c0647a;
+        }
+        .size-box strong {
+            color: #3b0d1a;
+            font-size: 1.1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #3b0d1a;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .search-term {
+            background: #fff3f7;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            color: #c0647a;
+            font-weight: 600;
+        }
+        .tip-box {
+            background: #fff9e6;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .tip-box strong {
+            color: #ff6f00;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+        .resource-list li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+        .resource-list strong {
+            color: #2e7d32;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎁 Aneesa Hampers</h1>
+            <h2>Image Size & Search Guide</h2>
+            <p style="margin-top: 10px; color: #666;">Complete reference for banner and category images</p>
+        </div>
+
+        <!-- BANNER SECTION -->
+        <div class="section">
+            <h2 class="section-title">📐 Banner Image Sizes</h2>
+            
+            <div class="subsection">
+                <h3>🖼️ Responsive Banner (Single Image for All Devices)</h3>
+                <div class="size-box">
+                    <strong>Recommended Size:</strong> 1920 x 800 pixels (2.4:1 ratio)<br>
+                    <strong>Alternative:</strong> 1920 x 1080 pixels (16:9 ratio)<br>
+                    <strong>Usage:</strong> Single banner that works on both desktop and mobile<br>
+                    <strong>Important:</strong> Keep essential content in center 50% (safe area) to avoid cropping
+                </div>
+                <div class="tip-box">
+                    <strong>🎯 Safe Area Guidelines:</strong>
+                    ✅ Place important text/logos in center 960px width<br>
+                    ✅ Avoid placing critical content at edges (may be cropped on mobile)<br>
+                    ✅ Use object-fit: cover with center positioning<br>
+                    ✅ Banner scales responsively using clamp() - no distortion
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⭕ Circular Hero Visual</h3>
+                <div class="size-box">
+                    <strong>Recommended Size:</strong> 1200 x 1200 pixels (square)<br>
+                    <strong>Alternative:</strong> 800 x 800 pixels<br>
+                    <strong>Usage:</strong> Hero circle element with gift icon
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Banner Type</th>
+                        <th>Dimensions</th>
+                        <th>Aspect Ratio</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Responsive Banner</strong></td>
+                        <td>1920 x 800</td>
+                        <td>2.4:1</td>
+                        <td>All devices (recommended)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Wide Banner</strong></td>
+                        <td>1920 x 1080</td>
+                        <td>16:9</td>
+                        <td>Alternative option</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Circular Visual</strong></td>
+                        <td>1200 x 1200</td>
+                        <td>1:1</td>
+                        <td>Hero circle element</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AI PROMPT FOR BANNERS -->
+        <div class="section">
+            <h2 class="section-title">🤖 ChatGPT / Gemini Prompts for Banners</h2>
+            
+            <div class="subsection">
+                <h3>For Responsive Banner (Recommended):</h3>
+                <div class="search-term">
+                    "Generate a premium gift hamper banner image, 1920x800 pixels, landscape orientation, suitable for responsive e-commerce hero section. Keep important content in center 50% (safe area). Include elegant hampers, soft cream and rose pink tones, premium aesthetic, modern design, horizontal composition."
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>For Wide Banner (Alternative):</h3>
+                <div class="search-term">
+                    "Generate a premium gift hamper banner image, 1920x1080 pixels, 16:9 ratio, suitable for a luxury e-commerce hero section. Place key elements in center area. Include elegant hampers, soft cream and rose pink tones, premium aesthetic, modern design."
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>For Circular Visual:</h3>
+                <div class="search-term">
+                    "Generate a circular banner image, 1200x1200 pixels, featuring a premium gift hamper, soft pink (#c0647a) and cream (#f8f4ed) background, luxury aesthetic, centered composition, suitable for circular display."
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Pro Tips for Responsive Banner Design:</strong>
+                ✅ Always specify exact dimensions (1920x800 recommended)<br>
+                ✅ Request "high resolution" and "web-optimized"<br>
+                ✅ Match brand colors: cream (#f8f4ed) and rose pink (#c0647a)<br>
+                ✅ <strong>Keep essential content in center 960px width (safe area)</strong><br>
+                ✅ Avoid placing text/logos at edges (may be cropped on mobile)<br>
+                ✅ Request "premium," "luxury," or "elegant" aesthetics<br>
+                ✅ Use horizontal composition for better mobile scaling
+            </div>
+        </div>
+
+        <!-- CATEGORY CIRCLES SECTION -->
+        <div class="section">
+            <h2 class="section-title">⭕ Category Circle Image Sizes</h2>
+            
+            <div class="subsection">
+                <h3>📏 Circle Dimensions</h3>
+                <div class="size-box">
+                    <strong>Mobile:</strong> 72px x 72px<br>
+                    <strong>Desktop:</strong> 88px x 88px<br>
+                    <strong>Recommended Upload:</strong> 300px x 300px (square, high quality)<br>
+                    <strong>Format:</strong> PNG with transparent background (preferred) or JPG
+                </div>
+            </div>
+        </div>
+
+        <!-- GOOGLE SEARCH TERMS -->
+        <div class="section">
+            <h2 class="section-title">🔍 Google Search Terms by Category</h2>
+            
+            <div class="subsection">
+                <h3>🎁 Gift Hampers</h3>
+                <div class="search-term">"gift hamper top view png"</div>
+                <div class="search-term">"luxury hamper overhead shot"</div>
+                <div class="search-term">"gift basket flat lay transparent"</div>
+                <div class="search-term">"hamper box top angle"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>🎂 Cakes</h3>
+                <div class="search-term">"cake top view png"</div>
+                <div class="search-term">"birthday cake overhead shot"</div>
+                <div class="search-term">"cake flat lay transparent background"</div>
+                <div class="search-term">"decorated cake round view"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>🎨 Decor / Decorations</h3>
+                <div class="search-term">"party decoration flat lay png"</div>
+                <div class="search-term">"balloon decor top view"</div>
+                <div class="search-term">"floral decoration overhead shot"</div>
+                <div class="search-term">"event decor transparent background"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>✨ Resin Products</h3>
+                <div class="search-term">"resin art product top view"</div>
+                <div class="search-term">"resin coaster overhead shot"</div>
+                <div class="search-term">"resin craft flat lay png"</div>
+                <div class="search-term">"resin keychain top angle"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>💍 Wedding Essentials</h3>
+                <div class="search-term">"wedding favor top view png"</div>
+                <div class="search-term">"bridal accessories flat lay"</div>
+                <div class="search-term">"wedding ring box overhead shot"</div>
+                <div class="search-term">"wedding decoration transparent"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>🌸 Flowers / Bouquets</h3>
+                <div class="search-term">"flower bouquet flat lay png"</div>
+                <div class="search-term">"rose arrangement top view"</div>
+                <div class="search-term">"floral gift overhead shot"</div>
+            </div>
+
+            <div class="subsection">
+                <h3>🍫 Chocolates</h3>
+                <div class="search-term">"chocolate box top view png"</div>
+                <div class="search-term">"premium chocolates overhead shot"</div>
+                <div class="search-term">"chocolate gift flat lay"</div>
+            </div>
+        </div>
+
+        <!-- GOOGLE SEARCH TIPS -->
+        <div class="section">
+            <h2 class="section-title">⚙️ Google Image Search Filters</h2>
+            
+            <div class="tip-box">
+                <strong>📌 How to Use Google Image Search Effectively:</strong>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Step 1:</strong> Search with one of the terms above</li>
+                    <li><strong>Step 2:</strong> Click "Tools" below the search bar</li>
+                    <li><strong>Step 3:</strong> Select <strong>"Size → Large"</strong> for high quality</li>
+                    <li><strong>Step 4:</strong> Select <strong>"Color → Transparent"</strong> for PNG</li>
+                    <li><strong>Step 5:</strong> Select <strong>"Type → Clipart"</strong> for clean icons</li>
+                </ol>
+            </div>
+
+            <div class="subsection">
+                <h3>🎯 Search Modifiers to Add:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Modifier</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>png</strong></td>
+                            <td>Transparent backgrounds</td>
+                            <td>"gift hamper png"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>top view</strong></td>
+                            <td>Overhead angle (perfect for circles)</td>
+                            <td>"cake top view"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>flat lay</strong></td>
+                            <td>Clean product photography</td>
+                            <td>"decor flat lay"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>transparent</strong></td>
+                            <td>No background</td>
+                            <td>"hamper transparent"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>isolated</strong></td>
+                            <td>Single item, no clutter</td>
+                            <td>"chocolate isolated"</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FREE RESOURCES -->
+        <div class="section">
+            <h2 class="section-title">🎨 Free Image Resources</h2>
+            
+            <ul class="resource-list">
+                <li><strong>Freepik</strong> - freepik.com → Search: "hamper top view circle"</li>
+                <li><strong>Pngtree</strong> - pngtree.com → Search: "gift hamper png"</li>
+                <li><strong>Flaticon</strong> - flaticon.com → Search category icons</li>
+                <li><strong>Unsplash</strong> - unsplash.com → Search: "flat lay hamper"</li>
+                <li><strong>Pexels</strong> - pexels.com → Search: "gift box overhead"</li>
+                <li><strong>Pixabay</strong> - pixabay.com → Search: "hamper transparent"</li>
+            </ul>
+        </div>
+
+        <!-- QUICK REFERENCE -->
+        <div class="section">
+            <h2 class="section-title">📋 Quick Reference Checklist</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image Type</th>
+                        <th>Size</th>
+                        <th>Format</th>
+                        <th>Search Term Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Responsive Banner (Single Image)</td>
+                        <td>1920 x 800</td>
+                        <td>JPG/PNG</td>
+                        <td>"luxury hamper banner 1920x800 horizontal"</td>
+                    </tr>
+                    <tr>
+                        <td>Wide Banner (Alternative)</td>
+                        <td>1920 x 1080</td>
+                        <td>JPG/PNG</td>
+                        <td>"luxury hamper banner 1920x1080"</td>
+                    </tr>
+                    <tr>
+                        <td>Circle Visual</td>
+                        <td>1200 x 1200</td>
+                        <td>PNG</td>
+                        <td>"gift hamper circular design"</td>
+                    </tr>
+                    <tr>
+                        <td>Category Circles</td>
+                        <td>300 x 300</td>
+                        <td>PNG</td>
+                        <td>"[category] top view png"</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="tip-box">
+                <strong>📱 Responsive Design Note:</strong>
+                No need for separate mobile/desktop banners! The system now uses a single image with:<br>
+                ✅ <code>clamp(300px, 40vh, 500px)</code> for responsive height<br>
+                ✅ <code>object-fit: cover</code> and <code>object-position: center</code><br>
+                ✅ Perfect scaling across all devices with no distortion or white gaps<br>
+                ✅ Center content stays visible on all screen sizes
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Aneesa Hampers</strong> | Premium Handcrafted Gift Solutions</p>
+            <p style="margin-top: 5px;">Made with love in Kadapa, Andhra Pradesh 💖</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">Instagram: @aneesa.hampers | WhatsApp: +91 86390 66613</p>
+        </div>
+    </div>
+</body>
+</html>

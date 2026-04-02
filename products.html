@@ -1838,7 +1838,7 @@
 
       grid.innerHTML = list.map(p => {
         const imgs = p.images && p.images.length ? p.images : [];
-        const effDiscount = Math.max(p.discount || 0, flashSaleDiscount);
+        const effDiscount = p.discount || 0;  // Only use product's own discount, not flash sale
         const effectivePrice = effDiscount > 0 ? Math.round(Number(p.price) * (1 - effDiscount / 100)) : Number(p.price);
         const hasMulti = imgs.length > 1;
         const wished = isWished(p.id);
@@ -1952,21 +1952,22 @@
     _fsSnap(_fsDoc(db, 'siteSettings', 'config'), snap => {
       if (!snap.exists()) return;
       const cfg = snap.data();
-      if (cfg.flashSale && cfg.flashSale.active && cfg.flashSale.discount > 0) {
-        flashSaleDiscount = cfg.flashSale.discount;
-        let bar = document.getElementById('flashSaleBanner');
-        if (!bar) {
-          bar = document.createElement('div');
-          bar.id = 'flashSaleBanner';
-          bar.style.cssText = 'background:linear-gradient(135deg,#c0647a,#3b0d1a);color:white;text-align:center;padding:14px;font-family:Jost,sans-serif;font-size:.84rem;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:10px;';
-          bar.innerHTML = `<span style="font-size:1.2rem">⚡</span><strong>${cfg.flashSale.discount}% OFF Everything!</strong> — ${cfg.flashSale.message || 'Flash Sale! Limited time.'} <span style="font-size:1.2rem">⚡</span>`;
-          document.body.insertBefore(bar, document.body.children[2]);
-        }
-      } else {
-        flashSaleDiscount = 0;
-        const bar = document.getElementById('flashSaleBanner');
-        if (bar) bar.remove();
-      }
+      // Flash sale banner disabled - discounts now only apply via promo codes at checkout
+      // if (cfg.flashSale && cfg.flashSale.active && cfg.flashSale.discount > 0) {
+      //   flashSaleDiscount = cfg.flashSale.discount;
+      //   let bar = document.getElementById('flashSaleBanner');
+      //   if (!bar) {
+      //     bar = document.createElement('div');
+      //     bar.id = 'flashSaleBanner';
+      //     bar.style.cssText = 'background:linear-gradient(135deg,#c0647a,#3b0d1a);color:white;text-align:center;padding:14px;font-family:Jost,sans-serif;font-size:.84rem;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:10px;';
+      //     bar.innerHTML = `<span style="font-size:1.2rem">⚡</span><strong>${cfg.flashSale.discount}% OFF Everything!</strong> — ${cfg.flashSale.message || 'Flash Sale! Limited time.'} <span style="font-size:1.2rem">⚡</span>`;
+      //     document.body.insertBefore(bar, document.body.children[2]);
+      //   }
+      // } else {
+      //   flashSaleDiscount = 0;
+      //   const bar = document.getElementById('flashSaleBanner');
+      //   if (bar) bar.remove();
+      // }
       renderProducts();
     });
 

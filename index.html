@@ -15,8 +15,18 @@
   --white:#fff;--green:#25D366;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;padding-top:108px;}
+html{scroll-behavior:smooth;overflow-x:hidden;width:100%;}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--cream);
+  color:var(--burgundy);
+  overflow-x:hidden;
+  padding-top:108px;
+  width:100%;
+  max-width:100vw;
+  position:relative;
+  margin:0;
+}
 img{max-width:100%;display:block;}
 a{text-decoration:none;}
 
@@ -283,14 +293,26 @@ a{text-decoration:none;}
 .ham-btn span{display:block;width:16px;height:2px;background:white;border-radius:2px;}
 
 /* ANNOUNCEMENT */
-#annBar{display:none;background:var(--burgundy);color:white;padding:0 44px;height:38px;align-items:center;justify-content:center;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;}
+#annBar{display:none;background:var(--burgundy);color:white;padding:0 44px;height:38px;align-items:center;justify-content:center;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;margin:0;}
 #annBar.show{display:flex;}
 #annBar span{flex:1;text-align:center;}
 .ann-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:14px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;}
 .ann-close:hover{color:white;}
 
 /* FLASH SALE */
-#flashStrip{display:none;background:linear-gradient(90deg,#f5a623,#e87a23);color:white;padding:11px 28px;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+#flashStrip{
+  display:none;
+  background:linear-gradient(90deg,#f5a623,#e87a23);
+  color:white;
+  padding:11px 28px;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:0;
+  position:relative;
+  top:0;
+}
 #flashStrip.show{display:flex;}
 .fs-left{display:flex;align-items:center;gap:10px;}
 .fs-bolt{font-size:1.3rem;}
@@ -301,16 +323,33 @@ a{text-decoration:none;}
 .fs-timer span{font-weight:700;margin-left:4px;}
 
 /* ── BANNER CAROUSEL ── */
-#bannerCarousel{display:none;position:relative;overflow:hidden;width:100%;}
-#bannerCarousel.show{display:block;}
-.btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
+#bannerCarousel{
+  display:none;
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:0;
+}
+#bannerCarousel.show{display:block;margin-top:0;}
+.btrack{
+  display:flex;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+  width:100%;
+  margin:0;
+  padding:0;
+}
 
-/* Slide — 350px desktop, responsive on mobile */
-/* ── BANNER SLIDE ── */
+/* ── BANNER SLIDE ── Fully responsive with single image */
 .bslide{
+  flex:0 0 100%;
   min-width:100%;
-  height:auto;
-  aspect-ratio:16/5;
+  max-width:100%;
+  width:100%;
+  /* Responsive height using clamp() - scales smoothly across all devices */
+  height:clamp(300px, 40vh, 500px);
   position:relative;
   overflow:hidden;
   display:flex;
@@ -319,7 +358,7 @@ a{text-decoration:none;}
   background:linear-gradient(135deg,var(--burgundy),#5a1528);
 }
 
-/* Photo fills perfectly — no gaps, no distortion */
+/* Single image fits perfectly — no gaps, no distortion, center safe area */
 .bslide-bg{
   position:absolute;
   inset:0;
@@ -327,6 +366,7 @@ a{text-decoration:none;}
   height:100%;
   object-fit:cover;
   object-position:center center;
+  display:block;
 }
 
 /* Beautiful dark gradient over photo — makes text readable + looks polished */
@@ -966,15 +1006,17 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 ═══════════════════════════════════════════════ */
 #ah-mobile-search{
   display:none;
-  padding:10px 14px;
+  padding:0;
+  margin:0;
   background:white;
   border-bottom:1px solid rgba(192,100,122,.08);
-  position:sticky;top:56px;z-index:500;
+  position:relative;
 }
 .msb-inner{
   display:flex;align-items:center;gap:10px;
   background:#fdf6f0;border:1.5px solid rgba(192,100,122,.18);
   border-radius:50px;padding:10px 18px;transition:border-color .2s,box-shadow .2s;
+  margin:8px 14px;
 }
 .msb-inner:focus-within{border-color:#c0647a;box-shadow:0 0 0 3px rgba(192,100,122,.1);}
 .msb-icon{color:rgba(59,13,26,.35);font-size:1rem;flex-shrink:0;}
@@ -984,7 +1026,12 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 }
 .msb-input::placeholder{color:rgba(59,13,26,.32);}
 .msb-mic{background:none;border:none;cursor:pointer;color:rgba(59,13,26,.3);font-size:1rem;padding:0;}
-@media(max-width:900px){#ah-mobile-search{display:block;}}
+@media(max-width:900px){
+  #ah-mobile-search{display:block;}
+  #flashStrip{margin-top:0!important;}
+  #annBar{margin-top:0!important;}
+  #bannerCarousel{margin-top:0!important;}
+}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;}
@@ -1146,11 +1193,21 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-thumb{height:180px;}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
   .bslide-overlay{padding:0 20px;}
-  .bslide{aspect-ratio:16/6;}
+  .bslide{
+    aspect-ratio:16/6;
+    flex:0 0 100%;
+    min-width:100%;
+    max-width:100%;
+  }
   footer{padding:46px 28px 26px;}
   .foot-grid{grid-template-columns:1fr 1fr;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
-  #bannerCarousel{margin-top:0!important;}
+  #bannerCarousel{
+    margin-top:0!important;
+    margin-bottom:0;
+    max-width:100vw;
+    overflow-x:hidden;
+  }
 }
 
 /* Large mobile — iPhone 14 Pro Max 430px, iPhone Plus */
@@ -1174,10 +1231,20 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .foot-bottom{flex-direction:column;gap:4px;text-align:center;}
   footer{padding:36px 16px 70px;}
   .bslide-overlay{padding:0 16px;}
-  .bslide{aspect-ratio:4/3;}
+  /* Banner uses clamp() height - no need for mobile override */
   .bslide-title{font-size:1.6rem;}
   .barrow{display:none;}
-  #bannerCarousel{margin-top:0;}
+  #bannerCarousel{
+    margin-top:0;
+    margin-bottom:0;
+    overflow:hidden;
+    width:100%;
+    max-width:100vw;
+  }
+  .btrack{
+    width:100%;
+    max-width:100%;
+  }
   #floatWA{display:none!important;}
 }
 
@@ -2001,7 +2068,7 @@ try{
   <div class="sec-head reveal">
     <div class="sec-eyebrow" id="galleryEyebrow">Follow Us</div>
     <h2 class="sec-title" id="galleryTitle">Our Latest <em id="galleryTitleEm">Creations</em></h2>
-    <p class="sec-sub" id="gallerySub">Tag us <strong style="color:var(--deep-rose);">@aneesahampers</strong> and get featured on our page!</p>
+    <p class="sec-sub" id="gallerySub">Tag us <strong style="color:var(--deep-rose);">@aneesa.hampers</strong> and get featured on our page!</p>
   </div>
   <div class="insta-grid reveal" id="galleryGrid"></div>
   <p class="insta-handle" id="galleryHandle"></p>
@@ -2022,7 +2089,7 @@ try{
       <a href="index.html" class="foot-logo"><span>Aneesa</span> Hampers</a>
       <p class="foot-desc">Premium handcrafted gift hampers for every occasion — Hampers, Cakes, Decors, Resin &amp; Wedding Essentials. Made with love in Kadapa, Andhra Pradesh.</p>
       <div style="margin-top:18px;display:flex;gap:10px;">
-        <a href="https://instagram.com/aneesahampers" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📸</a>
+        <a href="https://www.instagram.com/aneesa.hampers_/" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📸</a>
         <a href="https://wa.me/918639066613" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">💬</a>
         <a href="tel:+918639066613" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📞</a>
       </div>
@@ -2251,25 +2318,27 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     document.getElementById('annClose').onclick=()=>{document.getElementById('annBar').classList.remove('show');};
   }
 
-  // ── Flash sale ──
+  // ── Flash sale ── (Disabled - now handled via promo codes at checkout only)
   const fs=document.getElementById('flashStrip');
-  if(cfg.flashSale?.active){
-    flashDiscount=Number(cfg.flashSale.discount)||0;
-    document.getElementById('flashPct').textContent=flashDiscount+'%';
-    document.getElementById('flashNote').textContent=cfg.flashSale.message||'Limited time';
-    document.getElementById('flashBadge').textContent=flashDiscount+'% OFF';
-    fs.classList.add('show');
-    if(cfg.flashSale.endsAt){
-      let iv;const tick=()=>{
-        const end=cfg.flashSale.endsAt.toMillis?cfg.flashSale.endsAt.toMillis():new Date(cfg.flashSale.endsAt).getTime();
-        const d=end-Date.now();
-        if(d<=0){document.getElementById('flashTimer').textContent='Ended';clearInterval(iv);return;}
-        const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
-        document.getElementById('flashTimer').textContent=(h<10?'0'+h:h)+'h '+(m<10?'0'+m:m)+'m '+(s<10?'0'+s:s)+'s';
-      };
-      tick();iv=setInterval(tick,1000);
-    }
-  } else { flashDiscount=0; fs.classList.remove('show'); }
+  flashDiscount=0; // Reset to 0
+  fs.classList.remove('show'); // Hide the flash sale strip
+  // if(cfg.flashSale?.active){
+  //   flashDiscount=Number(cfg.flashSale.discount)||0;
+  //   document.getElementById('flashPct').textContent=flashDiscount+'%';
+  //   document.getElementById('flashNote').textContent=cfg.flashSale.message||'Limited time';
+  //   document.getElementById('flashBadge').textContent=flashDiscount+'% OFF';
+  //   fs.classList.add('show');
+  //   if(cfg.flashSale.endsAt){
+  //     let iv;const tick=()=>{
+  //       const end=cfg.flashSale.endsAt.toMillis?cfg.flashSale.endsAt.toMillis():new Date(cfg.flashSale.endsAt).getTime();
+  //       const d=end-Date.now();
+  //       if(d<=0){document.getElementById('flashTimer').textContent='Ended';clearInterval(iv);return;}
+  //       const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+  //       document.getElementById('flashTimer').textContent=(h<10?'0'+h:h)+'h '+(m<10?'0'+m:m)+'m '+(s<10?'0'+s:s)+'s';
+  //     };
+  //     tick();iv=setInterval(tick,1000);
+  //   }
+  // } else { flashDiscount=0; fs.classList.remove('show'); }
 
   // ── Banners ──
   if(cfg.banners?.length) renderBanners(cfg.banners);
@@ -2351,7 +2420,7 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     if(cfg.gallery.subtitle) document.getElementById('gallerySub').innerHTML=cfg.gallery.subtitle;
     if(cfg.gallery.handle){
       document.getElementById('galleryHandle').innerHTML=
-        `Follow us: <a href="https://instagram.com/${cfg.gallery.handle.replace('@','')}" target="_blank" style="color:var(--deep-rose);font-weight:600;text-decoration:none;">${cfg.gallery.handle}</a>`;
+        `Follow us: <a href="https://www.instagram.com/aneesa.hampers_/" target="_blank" style="color:var(--deep-rose);font-weight:600;text-decoration:none;">@aneesa.hampers</a>`;
     }
     // Render gallery items
     const grid=document.getElementById('galleryGrid');
@@ -2572,7 +2641,7 @@ function renderProducts(products) {
   console.log('🎨 Rendering', products.length, 'products');
   
   document.getElementById('featGrid').innerHTML=products.map(p=>{
-    const disc=Math.max(Number(p.discount)||0,flashDiscount);
+    const disc=Number(p.discount)||0;  // Only use product's own discount, not flash sale
     const price=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
     const imgH=(p.images&&p.images[0])?`<img src="${p.images[0]}" alt="${(p.name||'').replace(/"/g,'')}" loading="lazy" decoding="async"/>`:(`<span>${p.emoji||'🎁'}</span>`);
     const sname=(p.name||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
