@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Scratch Card Reward — Aneesa Hampers</title>
+<title>Scratch Card Reward � Aneesa Hampers</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -19,14 +19,14 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ── Demo wrapper ── */
+/* -- Demo wrapper -- */
 .demo-wrap{
   max-width:480px;
   margin:0 auto;
   padding:0 0 60px;
 }
 
-/* ── Success screen (simulated) ── */
+/* -- Success screen (simulated) -- */
 .success-banner{
   background:linear-gradient(135deg,#3b0d1a 0%,#5a1a2e 100%);
   padding:36px 20px 30px;
@@ -59,7 +59,7 @@ body{
   letter-spacing:1px;
 }
 
-/* ── Card sections ── */
+/* -- Card sections -- */
 .co-section{background:white;margin:0 0 8px;padding:16px;}
 .section-lbl{
   font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;
@@ -76,7 +76,7 @@ body{
 .total-lbl{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;opacity:.5;}
 .total-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--deep-rose);}
 
-/* ── Reward banner (post-scratch) ── */
+/* -- Reward banner (post-scratch) -- */
 #confRewardBanner{
   background:linear-gradient(135deg,#fdf0f4,#fff9f5);
   border:1.5px solid rgba(192,100,122,.2);
@@ -89,7 +89,7 @@ body{
 }
 #confRewardBanner.show{display:flex;}
 
-/* ── Action buttons ── */
+/* -- Action buttons -- */
 .conf-actions{display:flex;flex-direction:column;gap:10px;padding:16px;}
 .btn-wa{
   display:flex;align-items:center;justify-content:center;gap:8px;
@@ -105,7 +105,7 @@ body{
   letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;
 }
 
-/* ── Trigger button (demo) ── */
+/* -- Trigger button (demo) -- */
 .demo-trigger{
   margin:0 16px 16px;
   background:linear-gradient(135deg,#c0647a,#a04060);
@@ -118,9 +118,9 @@ body{
 @keyframes pulseBtn{0%,100%{box-shadow:0 6px 20px rgba(192,100,122,.3)}50%{box-shadow:0 8px 32px rgba(192,100,122,.5)}}
 .demo-trigger:hover{transform:translateY(-2px);}
 
-/* ═══════════════════════════════════════════
+/* -------------------------------------------
    SCRATCH CARD OVERLAY
-═══════════════════════════════════════════ */
+------------------------------------------- */
 #ah-scratch-overlay{
   position:fixed;inset:0;z-index:8000;
   background:rgba(20,5,12,.88);
@@ -228,36 +228,36 @@ body{
   <!-- Simulated success screen -->
   <div class="success-banner">
     <div class="tick-wrap">
-      <div class="tick">✓</div>
+      <div class="tick">?</div>
     </div>
     <div class="success-title">Order <em>Confirmed!</em></div>
-    <div class="success-sub">Your payment is confirmed.<br/>Your hamper is being prepared with love! 🌸</div>
-    <div class="tracking-pill">🔖 AHXK7R2P &nbsp;·&nbsp; Tap to copy</div>
+    <div class="success-sub">Your payment is confirmed.<br/>Your hamper is being prepared with love! ??</div>
+    <div class="tracking-pill">?? AHXK7R2P &nbsp;�&nbsp; Tap to copy</div>
   </div>
 
   <div class="co-section">
-    <div class="section-lbl"><span>🛍️</span> Order Summary</div>
+    <div class="section-lbl"><span>???</span> Order Summary</div>
     <div class="order-item">
-      <div class="order-img">🎁</div>
+      <div class="order-img">??</div>
       <div>
         <div class="order-name">Blush Hamper Delight</div>
-        <div class="order-sub">Qty: 1 · Standard Delivery</div>
+        <div class="order-sub">Qty: 1 � Standard Delivery</div>
       </div>
-      <div class="order-price">₹1,499</div>
+      <div class="order-price">?1,499</div>
     </div>
     <div class="total-row">
       <span class="total-lbl">Total Paid</span>
-      <span class="total-val" id="displayTotal">₹1,499</span>
+      <span class="total-val" id="displayTotal">?1,499</span>
     </div>
   </div>
 
   <!-- Reward banner (appears after scratch) -->
   <div id="confRewardBanner">
-    <span style="font-size:1.6rem">🎁</span>
+    <span style="font-size:1.6rem">??</span>
     <div style="flex:1">
       <div style="font-size:.78rem;font-weight:600;color:#3b0d1a" id="rewardLabel">Reward saved!</div>
       <div style="font-size:.67rem;color:rgba(59,13,26,.45);margin-top:2px">
-        Will apply at your next checkout ·
+        Will apply at your next checkout �
         <span id="rewardExpiry"></span>
       </div>
     </div>
@@ -265,36 +265,36 @@ body{
   </div>
 
   <div class="co-section" style="margin-top:8px">
-    <div class="section-lbl"><span>📦</span> What's Next?</div>
+    <div class="section-lbl"><span>??</span> What's Next?</div>
     <div style="font-size:.78rem;line-height:1.8;opacity:.6">
-      📧 Order confirmation sent to your email<br/>
-      🚚 Estimated delivery: 2–5 business days<br/>
-      📱 You'll receive a WhatsApp update when dispatched
+      ?? Order confirmation sent to your email<br/>
+      ?? Estimated delivery: 2�5 business days<br/>
+      ?? You'll receive a WhatsApp update when dispatched
     </div>
   </div>
 
   <!-- Demo trigger button -->
   <div style="margin:16px 0 0;">
     <button class="demo-trigger" onclick="launchScratchCard()">
-      🎁 Scratch Your Reward Card
+      ?? Scratch Your Reward Card
     </button>
   </div>
 
   <div class="conf-actions">
-    <a class="btn-wa" href="#">💬 Message on WhatsApp</a>
-    <button class="btn-track">📦 Track My Order</button>
+    <a class="btn-wa" href="#">?? Message on WhatsApp</a>
+    <button class="btn-track">?? Track My Order</button>
   </div>
 
 </div>
 
 
-<!-- ═══════════════════════════════════════════
+<!-- -------------------------------------------
      SCRATCH CARD OVERLAY
-═══════════════════════════════════════════ -->
+------------------------------------------- -->
 <div id="ah-scratch-overlay">
   <div id="ah-scratch-box">
     <div class="scr-header">
-      <span class="scr-gift">🎁</span>
+      <span class="scr-gift">??</span>
       <h2>You've <em>Won</em> a Reward!</h2>
       <p>Scratch to reveal your surprise gift</p>
     </div>
@@ -302,21 +302,21 @@ body{
       <div class="scr-canvas-wrap" id="scrCanvasWrap">
         <!-- Prize layer (hidden under canvas) -->
         <div class="scr-prize-layer" id="scrPrizeLayer">
-          <span class="scr-prize-icon" id="prizeIcon">🎁</span>
-          <div class="scr-prize-label" id="prizeLabel">₹100 Off</div>
+          <span class="scr-prize-icon" id="prizeIcon">??</span>
+          <div class="scr-prize-label" id="prizeLabel">?100 Off</div>
           <div class="scr-prize-desc" id="prizeDesc">Cash Discount</div>
-          <div class="scr-prize-min" id="prizeMin">On orders above ₹600</div>
+          <div class="scr-prize-min" id="prizeMin">On orders above ?600</div>
         </div>
         <canvas id="ah-scratch-canvas"></canvas>
       </div>
-      <div class="scr-hint" id="scrHint">✦ Scratch anywhere to reveal ✦</div>
+      <div class="scr-hint" id="scrHint">? Scratch anywhere to reveal ?</div>
       <div class="scr-progress"><div class="scr-progress-fill" id="scrProgFill"></div></div>
       <div class="scr-reveal-msg" id="scrRevealMsg">
-        <div class="scr-congrats">🌸 Congratulations!</div>
-        <div class="scr-valid" id="scrValidText">Valid for 30 days · Applied at checkout</div>
+        <div class="scr-congrats">?? Congratulations!</div>
+        <div class="scr-valid" id="scrValidText">Valid for 30 days � Applied at checkout</div>
       </div>
       <div class="scr-actions">
-        <button class="scr-btn-primary" id="scrUseBtn" onclick="useCoupon()">🛍️ Save to My Account</button>
+        <button class="scr-btn-primary" id="scrUseBtn" onclick="useCoupon()">??? Save to My Account</button>
         <button class="scr-btn-skip" onclick="dismissCard()">Maybe later</button>
       </div>
     </div>
@@ -325,17 +325,17 @@ body{
 
 
 <script>
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 //  Reward pool (matches Firestore structure)
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 const REWARD_POOL = [
-  { id:'r1', label:'₹50 Off',       type:'fixed',    value:50,  prob:30, minOrder:300,  icon:'🎀' },
-  { id:'r2', label:'₹100 Off',      type:'fixed',    value:100, prob:15, minOrder:600,  icon:'💝' },
-  { id:'r3', label:'₹200 Off',      type:'fixed',    value:200, prob:5,  minOrder:1000, icon:'🌟' },
-  { id:'r4', label:'10% Off',        type:'percent',  value:10,  prob:25, minOrder:400,  icon:'🎊' },
-  { id:'r5', label:'15% Off',        type:'percent',  value:15,  prob:10, minOrder:700,  icon:'✨' },
-  { id:'r6', label:'Free Delivery',  type:'delivery', value:0,   prob:10, minOrder:0,    icon:'🚀' },
-  { id:'r7', label:'₹25 Off',       type:'fixed',    value:25,  prob:5,  minOrder:200,  icon:'🎁' },
+  { id:'r1', label:'?50 Off',       type:'fixed',    value:50,  prob:30, minOrder:300,  icon:'??' },
+  { id:'r2', label:'?100 Off',      type:'fixed',    value:100, prob:15, minOrder:600,  icon:'??' },
+  { id:'r3', label:'?200 Off',      type:'fixed',    value:200, prob:5,  minOrder:1000, icon:'??' },
+  { id:'r4', label:'10% Off',        type:'percent',  value:10,  prob:25, minOrder:400,  icon:'??' },
+  { id:'r5', label:'15% Off',        type:'percent',  value:15,  prob:10, minOrder:700,  icon:'?' },
+  { id:'r6', label:'Free Delivery',  type:'delivery', value:0,   prob:10, minOrder:0,    icon:'??' },
+  { id:'r7', label:'?25 Off',       type:'fixed',    value:25,  prob:5,  minOrder:200,  icon:'??' },
 ];
 
 function pickReward() {
@@ -351,9 +351,9 @@ function pickReward() {
 let currentReward = null;
 let isRevealed = false;
 
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 //  Canvas scratch engine
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 const W = 312, H = 180;
 let ctx, isDrawing = false;
 
@@ -385,7 +385,7 @@ function initCanvas(reward) {
     for (let y = 0; y < H; y += 22) {
       ctx.fillStyle = '#fff';
       ctx.font = '13px serif';
-      ctx.fillText('✦', x, y + 13);
+      ctx.fillText('?', x, y + 13);
     }
   }
   ctx.globalAlpha = 1;
@@ -394,7 +394,7 @@ function initCanvas(reward) {
   ctx.fillStyle = 'rgba(255,255,255,0.92)';
   ctx.font = 'bold 14px Jost, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('✦   SCRATCH HERE   ✦', W / 2, H / 2 - 10);
+  ctx.fillText('?   SCRATCH HERE   ?', W / 2, H / 2 - 10);
   ctx.font = '500 11px Jost, sans-serif';
   ctx.globalAlpha = 0.55;
   ctx.fillText('Your reward is hiding underneath', W / 2, H / 2 + 12);
@@ -465,12 +465,12 @@ function onRevealed() {
   const exp = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   document.getElementById('scrValidText').textContent =
     'Valid until ' + exp.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) +
-    ' · Applied at checkout';
+    ' � Applied at checkout';
 }
 
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 //  Confetti burst
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 function confettiBurst() {
   const colors = ['#c0647a','#e8a0b0','#c9a96e','#f9e4e9','#3b0d1a','#fff','#a04060'];
   const cx = window.innerWidth / 2;
@@ -501,21 +501,21 @@ function confettiBurst() {
   }
 }
 
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 //  Show card
-// ─────────────────────────────────────────────────────────
+// ---------------------------------------------------------
 function launchScratchCard() {
   currentReward = pickReward();
 
   // Update prize layer
-  const icons = { fixed:'🎁', percent:'💝', delivery:'🚚' };
+  const icons = { fixed:'??', percent:'??', delivery:'??' };
   const descs = { fixed:'Cash Discount', percent:'Percent Off', delivery:'Free Delivery' };
 
   document.getElementById('prizeIcon').textContent  = currentReward.icon || icons[currentReward.type];
   document.getElementById('prizeLabel').textContent = currentReward.label;
   document.getElementById('prizeDesc').textContent  = descs[currentReward.type];
   document.getElementById('prizeMin').textContent   = currentReward.minOrder > 0
-    ? `On orders above ₹${currentReward.minOrder.toLocaleString('en-IN')}`
+    ? `On orders above ?${currentReward.minOrder.toLocaleString('en-IN')}`
     : 'No minimum order required';
 
   // Reset UI
@@ -540,14 +540,14 @@ function dismissCard() {
   // Show reward banner on success screen
   showRewardBanner(currentReward);
   // Hide trigger button (optional)
-  document.querySelector('.demo-trigger').textContent = '🎁 View Saved Reward';
+  document.querySelector('.demo-trigger').textContent = '?? View Saved Reward';
   document.querySelector('.demo-trigger').onclick = () => launchScratchCard();
 }
 
 function useCoupon() {
   document.getElementById('ah-scratch-overlay').classList.remove('show');
   showRewardBanner(currentReward);
-  document.querySelector('.demo-trigger').textContent = '🎁 Reward Saved ✓';
+  document.querySelector('.demo-trigger').textContent = '?? Reward Saved ?';
   document.querySelector('.demo-trigger').style.background = 'linear-gradient(135deg,#2d7a4f,#1a5a35)';
   document.querySelector('.demo-trigger').disabled = true;
   document.querySelector('.demo-trigger').style.animation = 'none';
@@ -556,7 +556,7 @@ function useCoupon() {
 function showRewardBanner(reward) {
   const banner = document.getElementById('confRewardBanner');
   banner.classList.add('show');
-  document.getElementById('rewardLabel').textContent = `🎉 You won: ${reward.label}!`;
+  document.getElementById('rewardLabel').textContent = `?? You won: ${reward.label}!`;
   const exp = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   document.getElementById('rewardExpiry').textContent =
     'Valid till ' + exp.toLocaleDateString('en-IN', {day:'numeric',month:'short'});

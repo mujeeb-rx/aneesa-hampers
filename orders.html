@@ -323,7 +323,14 @@
   </div>
 </div>
 
+
+
+
+
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, query, where, orderBy, onSnapshot }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -689,9 +696,11 @@ window.reorder = function(orderId) {
   setTimeout(() => window.location.href = "cart.html", 1200);
 };
 
-</script>
 
-<script type="module">
+
+// ---------------------------------------------
+
+
 // ── ORDER PAGE REVIEW WITH PHOTO UPLOAD ─────────────────────────────────
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, addDoc, collection, serverTimestamp }
@@ -850,9 +859,11 @@ window.submitOrdReview = async function(){
 
 // Init stars
 window.ordSetStar(5);
+
+
 </script>
 
-<script src="mobilenav.js"></script>
-<script src="bottomnav.js"></script>
 </body>
 </html>
+
+

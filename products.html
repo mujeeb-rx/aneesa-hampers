@@ -280,40 +280,90 @@
 
     /* FILTERS */
     .filters-bar {
-      padding: 16px 60px;
+      padding: 18px 60px;
       background: var(--white);
       border-bottom: 1px solid rgba(192, 100, 122, .1);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
       position: sticky;
       top: 68px;
       z-index: 100;
       box-shadow: 0 2px 12px rgba(59, 13, 26, .05);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .filters-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .filters-bar::-webkit-scrollbar-track {
+      background: rgba(192, 100, 122, .05);
+    }
+
+    .filters-bar::-webkit-scrollbar-thumb {
+      background: var(--deep-rose);
+      border-radius: 4px;
     }
 
     .filter-pill {
-      padding: 8px 20px;
+      padding: 10px 24px;
       border-radius: 30px;
       border: 1.5px solid rgba(192, 100, 122, .2);
       background: transparent;
       font-family: 'Jost', sans-serif;
-      font-size: .7rem;
+      font-size: .72rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--burgundy);
       cursor: pointer;
-      transition: all .25s;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
     }
 
-    .filter-pill:hover,
+    .filter-pill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--burgundy), var(--deep-rose));
+      opacity: 0;
+      transition: opacity .3s;
+      z-index: -1;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--deep-rose);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 13, 26, .15);
+    }
+
+    .filter-pill:hover::before {
+      opacity: .1;
+    }
+
     .filter-pill.active {
-      background: var(--burgundy);
+      background: linear-gradient(135deg, var(--burgundy), var(--deep-rose));
       color: white;
       border-color: var(--burgundy);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 13, 26, .2);
+      box-shadow: 0 6px 18px rgba(59, 13, 26, .25);
+      font-weight: 600;
+    }
+
+    .filter-pill.active::before {
+      opacity: 1;
+    }
+
+    .filter-pill:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(59, 13, 26, .15);
     }
 
     .filter-right {
@@ -387,6 +437,8 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                  transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* ══════════════════════════════════════
@@ -1463,6 +1515,13 @@
       background: rgba(192, 100, 122, .08);
       border-color: rgba(192, 100, 122, .25);
     }
+    /* Badge update animation */
+    .badge-updated{animation:badgePulse .6s ease-out;}
+    @keyframes badgePulse{
+      0%{transform:scale(1);}
+      50%{transform:scale(1.1);}
+      100%{transform:scale(1);}
+    }
 
     .esb-logout-btn {
       width: 100%;
@@ -1606,7 +1665,7 @@
       <div class="esb-settings-row">
         <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
           Top</button>
-        <button class="esb-settings-btn" onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+        <button class="esb-settings-btn discount-badge-btn" data-discount-badge onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
       </div>
       <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
     </div>
@@ -1651,7 +1710,12 @@
   <!-- 15% OFF floating promo bubble -->
   <div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">🎁</div>
 
-  <script type="module">
+  
+  <script src="lang-currency.js"></script>
+  <script src="mobilenav.js"></script>
+  <script src="bottomnav.js"></script>
+<script type="module">
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, query, orderBy, onSnapshot, doc, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1724,12 +1788,86 @@
     document.getElementById('navWA').onclick = e => { e.preventDefault(); waOpen('Hi! I want to order a hamper 🎁'); };
     document.getElementById('floatWA').onclick = e => { e.preventDefault(); waOpen('Hi! I want to order 🎁'); };
 
-    // 15% OFF promo bubble — show after 4s, clicking goes to home page popup
+    // Dynamic discount badge system with real-time updates
     window.ahPopupOpen = function () { window.location.href = 'index.html?promo=1'; };
-    setTimeout(function () {
-      var bubble = document.getElementById('ah-popup-float');
-      if (bubble) bubble.classList.add('show');
-    }, 4000);
+    
+    // Real-time discount listener
+    import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m) {
+      m.onSnapshot(m.doc(db, 'siteSettings', 'config'), function(snap) {
+        if (!snap.exists()) {
+          console.warn('⚠️ No siteSettings/config found');
+          hideDiscountBadges();
+          return;
+        }
+        var wp = snap.data().welcomePopup;
+        if (!wp) {
+          console.warn('⚠️ No welcomePopup config found');
+          hideDiscountBadges();
+          return;
+        }
+        var active = wp.active !== false;
+        var discount = Number(wp.discount) || 0;
+        
+        console.log('✅ Products page - Discount config updated:', {active: active, discount: discount});
+        
+        // Update all discount badges
+        updateDiscountBadges(active, discount);
+      }, function(error) {
+        console.error('❌ Error listening to discount config:', error);
+        hideDiscountBadges();
+      });
+    }).catch(function(err) {
+      console.error('❌ Failed to load Firestore:', err);
+    });
+    
+    function updateDiscountBadges(active, discount) {
+      var badges = document.querySelectorAll('[data-discount-badge]');
+      var floatBtn = document.getElementById('ah-popup-float');
+      
+      if (active && discount > 0) {
+        // Update sidebar badges
+        badges.forEach(function(badge) {
+          badge.style.display = '';
+          badge.style.visibility = 'visible';
+          badge.style.opacity = '1';
+          badge.innerHTML = '🎁 ' + discount + '% OFF';
+          badge.title = 'Claim your ' + discount + '% OFF discount';
+          badge.classList.add('badge-updated');
+          setTimeout(function() { badge.classList.remove('badge-updated'); }, 600);
+        });
+        
+        // Update float button
+        if (floatBtn) {
+          floatBtn.style.display = 'flex';
+          floatBtn.title = 'Claim your ' + discount + '% OFF';
+          
+          // Update ::after content dynamically
+          var style = document.getElementById('dynamic-discount-float-style') || document.createElement('style');
+          style.id = 'dynamic-discount-float-style';
+          style.textContent = '#ah-popup-float::after{content:"' + discount + '%"!important;}';
+          if (!style.parentNode) document.head.appendChild(style);
+        }
+      } else {
+        hideDiscountBadges();
+      }
+    }
+    
+    function hideDiscountBadges() {
+      var badges = document.querySelectorAll('[data-discount-badge]');
+      var floatBtn = document.getElementById('ah-popup-float');
+      
+      badges.forEach(function(badge) {
+        badge.style.opacity = '0';
+        setTimeout(function() {
+          badge.style.display = 'none';
+          badge.style.visibility = 'hidden';
+        }, 300);
+      });
+      
+      if (floatBtn) {
+        floatBtn.style.display = 'none';
+      }
+    }
 
     // Cursor (desktop only)
     const cur = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
@@ -1909,12 +2047,39 @@
 
     // FILTERS
     window.setCat = function (cat, btn) {
+      // Add smooth filtering animation
+      const grid = document.getElementById('prodGrid');
+      if (grid) {
+        grid.style.opacity = '0.5';
+        grid.style.transform = 'translateY(10px)';
+      }
+
+      // Update active state
       document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      
+      // Update filters
       currentCat = cat;
       currentSubcat = 'all';
       updateSubcatBar(cat);
-      renderProducts();
+      
+      // Smooth scroll to top of products (optional, for better UX)
+      const productsSection = document.querySelector('.products-section');
+      if (productsSection && window.scrollY > productsSection.offsetTop - 150) {
+        window.scrollTo({ top: productsSection.offsetTop - 100, behavior: 'smooth' });
+      }
+      
+      // Render products with fade-in animation
+      setTimeout(() => {
+        renderProducts();
+        if (grid) {
+          setTimeout(() => {
+            grid.style.opacity = '1';
+            grid.style.transform = 'translateY(0)';
+          }, 50);
+        }
+      }, 150);
+      
       // Update URL without reload
       const url = new URL(window.location.href);
       if (cat === 'all') { url.searchParams.delete('cat'); } else { url.searchParams.set('cat', cat); }
@@ -2027,11 +2192,11 @@
         }, 100);
       }
     });
-  </script>
-  <script src="lang-currency.js"></script>
-  <script src="mobilenav.js"></script>
-  <script src="bottomnav.js"></script>
-  <script>
+  
+
+// ---------------------------------------------
+
+
     (function () {
       var user = null;
       try { user = JSON.parse(localStorage.getItem('ah_user') || 'null'); } catch (e) { }
@@ -2083,7 +2248,11 @@
       }, { passive: true });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
     })();
-  </script>
+  
+
+</script>
+
 </body>
 
 </html>
+

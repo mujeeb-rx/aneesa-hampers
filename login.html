@@ -177,7 +177,10 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy)
   </div>
 </div>
 
+
+<script src="bottomnav.js"></script>
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
@@ -326,7 +329,11 @@ window.switchTab=tab=>{
   document.getElementById('paneReg').classList.toggle('on',!si);
   document.getElementById('authTitle').innerHTML=si?'Welcome <em>Back</em>':'Create <em>Account</em>';
 };
+
+
 </script>
-<script src="bottomnav.js"></script>
+
 </body>
 </html>
+
+

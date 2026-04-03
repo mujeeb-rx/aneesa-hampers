@@ -570,8 +570,21 @@ a{text-decoration:none;}
 /* PRODUCTS */
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 .sec-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;}
-.view-all-lnk{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);display:flex;align-items:center;gap:5px;opacity:.8;transition:opacity .2s;border-bottom:1px solid rgba(192,100,122,.3);padding-bottom:2px;}
-.view-all-lnk:hover{opacity:1;}
+.view-all-lnk{
+  font-size:.68rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--deep-rose);display:inline-flex;align-items:center;gap:5px;
+  opacity:.9;transition:all .3s;
+  border-bottom:1px solid rgba(192,100,122,.3);padding-bottom:2px;
+}
+.view-all-lnk:hover{
+  opacity:1;
+  background:var(--deep-rose);
+  color:white;
+  padding:10px 24px;
+  border-radius:8px;
+  border-bottom:none;
+  transform:translateX(4px);
+}
 .prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
 .prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
 .prod-thumb{
@@ -610,17 +623,127 @@ a{text-decoration:none;}
 .promo-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:white;margin-bottom:5px;}
 .promo-text{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.7;}
 
+/* ═══════════════════════════════════════════════
+   PROMOTIONAL BANNERS (Vertical Stack)
+═══════════════════════════════════════════════ */
+.promo-banners-wrap{
+  width:100%;
+  padding:0;
+  margin:0;
+  background:var(--cream);
+}
+.promo-banners-container{
+  max-width:100%;
+  margin:0 auto;
+}
+.promo-banner{
+  position:relative;
+  width:100%;
+  min-height:clamp(280px, 35vw, 450px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  margin-bottom:0;
+  cursor:pointer;
+  transition:transform .3s ease;
+  text-decoration:none;
+}
+.promo-banner:hover{
+  transform:scale(1.01);
+}
+.promo-banner-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  z-index:1;
+}
+.promo-banner-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to right,
+    rgba(59,13,26,.75) 0%,
+    rgba(59,13,26,.35) 50%,
+    transparent 100%
+  );
+  z-index:2;
+}
+.promo-banner-content{
+  position:relative;
+  z-index:3;
+  max-width:1200px;
+  width:100%;
+  padding:40px 52px;
+  color:white;
+}
+.promo-banner-content h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem, 4vw, 3.5rem);
+  font-weight:600;
+  margin-bottom:12px;
+  line-height:1.2;
+}
+.promo-banner-content h3{
+  font-size:clamp(1.1rem, 2vw, 1.5rem);
+  font-weight:400;
+  margin-bottom:20px;
+  opacity:.9;
+}
+.promo-banner-content p{
+  font-size:clamp(.9rem, 1.5vw, 1.1rem);
+  margin-bottom:24px;
+  opacity:.85;
+  max-width:600px;
+}
+.promo-banner-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:white;
+  color:var(--burgundy);
+  padding:14px 32px;
+  border-radius:50px;
+  font-size:clamp(.8rem, 1.2vw, .95rem);
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  text-decoration:none;
+  transition:all .3s;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.promo-banner-cta:hover{
+  background:var(--deep-rose);
+  color:white;
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(192,100,122,.3);
+}
+
+/* Lazy Load Animation */
+.promo-banner[data-lazy="true"]{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.promo-banner[data-lazy="loaded"]{
+  opacity:1;
+  transform:translateY(0);
+}
+
 /* FOOTER */
 footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
-.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px;padding-top:48px;}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1.3fr 1fr 1fr;gap:40px;margin-bottom:40px;padding-top:48px;}
 .foot-logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-style:italic;display:block;margin-bottom:14px;color:white;}
 .foot-logo span{color:var(--rose);}
 .foot-desc{font-size:.81rem;opacity:.4;line-height:1.9;font-weight:300;}
 .foot-col h4{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:18px;}
 .foot-col ul{list-style:none;}
-.foot-col ul li{margin-bottom:10px;}
-.foot-col ul li a{color:rgba(255,255,255,.42);font-size:.82rem;font-weight:300;transition:color .3s;}
-.foot-col ul li a:hover{color:white;}
+.foot-col ul:not(.contact-info) li{margin-bottom:10px;}
+.foot-col ul:not(.contact-info) li a{color:rgba(255,255,255,.42);font-size:.82rem;font-weight:300;transition:color .3s;}
+.foot-col ul:not(.contact-info) li a:hover{color:white;}
+.contact-info li a:hover{color:var(--rose)!important;}
 .foot-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;font-size:.72rem;opacity:.28;}
 
 /* TOAST */
@@ -958,6 +1081,13 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   display:flex;align-items:center;justify-content:center;gap:5px;
 }
 .esb-settings-btn:hover{background:rgba(192,100,122,.08);border-color:rgba(192,100,122,.25);}
+/* Badge update animation */
+.badge-updated{animation:badgePulse .6s ease-out;}
+@keyframes badgePulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
 .esb-logout-btn{
   width:100%;margin-top:8px;padding:10px;background:transparent;
   border:1px solid rgba(200,60,60,.2);border-radius:10px;
@@ -1147,6 +1277,20 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .why-grid{grid-template-columns:repeat(2,1fr);}
   .insta-grid{grid-template-columns:repeat(3,1fr);}
   .offer-banner{grid-template-columns:1fr;padding:44px 28px;}
+  /* Promotional Banners Mobile */
+  .promo-banner{
+    min-height:clamp(240px, 40vw, 350px);
+  }
+  .promo-banner-content{
+    padding:32px 28px;
+  }
+  .promo-banner-overlay{
+    background:linear-gradient(to bottom,
+      transparent 0%,
+      rgba(59,13,26,.5) 40%,
+      rgba(59,13,26,.85) 100%
+    );
+  }
 }
 @media(max-width:600px){
   .stats-bar{grid-template-columns:repeat(2,1fr);padding:18px 14px;gap:0;}
@@ -1157,6 +1301,17 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .insta-grid{grid-template-columns:repeat(3,1fr);gap:5px;}
   .offer-banner{padding:34px 16px;}
   .marquee-strip{display:none;}
+  /* Promotional Banners - Very Small Screens */
+  .promo-banner{
+    min-height:280px;
+  }
+  .promo-banner-content{
+    padding:24px 20px;
+  }
+  .promo-banner-cta{
+    padding:12px 24px;
+    font-size:.75rem;
+  }
 }
 
 /* BOTTOM NAV */
@@ -1200,7 +1355,8 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
     max-width:100%;
   }
   footer{padding:46px 28px 26px;}
-  .foot-grid{grid-template-columns:1fr 1fr;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:28px;}
+  .foot-grid > div:first-child{grid-column:1 / -1;}
   .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
   #bannerCarousel{
     margin-top:0!important;
@@ -1454,51 +1610,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 </style>
 
 <!-- ══ FLICKER-FREE LOADER GATE — runs synchronously before first paint ══ -->
-<script>
-/**
- * Decide whether to show the cinematic loader BEFORE anything paints.
- * Rules:
- *   reload        → SHOW   (user did F5 / Ctrl+R — treat as fresh entry)
- *   back_forward  → SKIP   (user pressed browser Back from another page)
- *   navigate+seen → SKIP   (same-session link navigation, already played)
- *   navigate+new  → SHOW   (very first visit this session)
- *
- * We use the Navigation Timing API to read the navigation type.
- * The inline <style> written here is the ONLY way to hide before paint with
- * zero flicker — no setTimeout, no requestAnimationFrame can match it.
- */
-try{
-  var _nt = '';
-  /* Modern API (Chrome 57+, Firefox 58+, Safari 15+) */
-  if(performance && performance.getEntriesByType){
-    var _ne = performance.getEntriesByType('navigation');
-    if(_ne && _ne[0]) _nt = _ne[0].type; /* 'navigate' | 'reload' | 'back_forward' | 'prerender' */
-  }
-  /* Legacy fallback (IE, old Safari) */
-  if(!_nt && performance && performance.navigation){
-    var _lt = performance.navigation.type;
-    _nt = _lt === 1 ? 'reload' : _lt === 2 ? 'back_forward' : 'navigate';
-  }
 
-  var _shouldHide = false;
-  if(_nt === 'back_forward'){
-    /* Always skip on Back/Forward — no animation flash when returning from product pages */
-    _shouldHide = true;
-  } else if(_nt === 'reload'){
-    /* Always show on hard refresh — feels like a fresh start */
-    _shouldHide = false;
-    /* Reset the flag so the controller below also plays the full animation */
-    sessionStorage.removeItem('ah_intro_done');
-  } else {
-    /* Normal navigation or first load — skip if already seen this session */
-    _shouldHide = sessionStorage.getItem('ah_intro_done') === '1';
-  }
-
-  if(_shouldHide){
-    document.write('<style>#cin-loader{display:none!important;}</style>');
-  }
-}catch(e){}
-</script>
 
 </head>
 <body>
@@ -1834,14 +1946,26 @@ try{
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════
+     PROMOTIONAL BANNERS (Vertical Stack)
+═══════════════════════════════════════════════ -->
+<section id="promoBannersSection" class="promo-banners-wrap" style="display:none;">
+  <div class="promo-banners-container" id="promoBannersContainer">
+    <!-- Banners loaded dynamically from Firestore -->
+  </div>
+</section>
+
 <!-- FEATURED PRODUCTS (real-time) -->
 <section class="sec-wrap" id="featured">
   <div class="sec-top reveal">
-    <div><div class="sec-eyebrow">Handpicked</div><h2 class="sec-title">Featured <em>Products</em></h2></div>
-    <a href="products.html" class="view-all-lnk">View All →</a>
+    <div>
+      <div class="sec-eyebrow">Handpicked Just For You</div>
+      <h2 class="sec-title">Latest <em>Arrivals</em></h2>
+    </div>
+    <a href="products.html" class="view-all-lnk" style="font-size:.75rem;padding:10px 24px;background:rgba(192,100,122,.08);border-radius:8px;border:none;">View All Products →</a>
   </div>
   <div class="prod-grid" id="featGrid">
-    <div style="grid-column:1/-1;text-align:center;opacity:.4;padding:40px">Loading products…</div>
+    <div style="grid-column:1/-1;text-align:center;opacity:.4;padding:40px">Loading latest products…</div>
   </div>
 </section>
 
@@ -2095,11 +2219,30 @@ try{
       </div>
     </div>
     <div class="foot-col">
+      <h4>Contact Us</h4>
+      <ul class="contact-info">
+        <li style="margin-bottom:12px;">
+          <div style="font-size:.75rem;opacity:.5;margin-bottom:4px;">Address</div>
+          <div style="font-size:.82rem;line-height:1.6;opacity:.7;">13/384, Rahmatullah Street<br/>near Facebook Fashion<br/>Kadapa – 516001, Andhra Pradesh</div>
+        </li>
+        <li style="margin-bottom:12px;">
+          <div style="font-size:.75rem;opacity:.5;margin-bottom:4px;">Phone</div>
+          <a href="tel:+919866168786" style="display:block;color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:4px;transition:color .2s;">📞 +91 98661 68786</a>
+          <a href="tel:+919700210086" style="display:block;color:rgba(255,255,255,.7);font-size:.82rem;transition:color .2s;">📞 +91 97002 10086</a>
+        </li>
+        <li>
+          <div style="font-size:.75rem;opacity:.5;margin-bottom:4px;">Email</div>
+          <a href="mailto:aneesahampers@gmail.com" style="color:rgba(255,255,255,.7);font-size:.82rem;transition:color .2s;">✉️ aneesahampers@gmail.com</a>
+        </li>
+      </ul>
+      <a href="https://maps.google.com/?q=13/384,Rahmatullah+Street,Kadapa,516001" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:8px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:rgba(255,255,255,.7);font-size:.7rem;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📍 View on Map</a>
+    </div>
+    <div class="foot-col">
       <h4>Navigate</h4>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="products.html">Collections</a></li>
-<li><a href="orders.html">My Orders</a></li>
+        <li><a href="orders.html">My Orders</a></li>
         <li><a href="cart.html">Cart</a></li>
         <li><a href="account.html">My Account</a></li>
       </ul>
@@ -2127,7 +2270,200 @@ try{
 
 <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20order%20a%20hamper" target="_blank" id="floatWA">💬 Order via WhatsApp</a>
 
+
+<script src="lang-currency.js"></script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
+
+<!-- ═══════ ENHANCED SIDEBAR ═══════ -->
+<div id="enh-overlay" onclick="enhSbClose()"></div>
+<nav id="enh-sidebar" aria-label="Site navigation">
+  <div class="esb-user-area">
+    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
+    <div class="esb-avatar" id="esb-av">&#128100;</div>
+    <div class="esb-greeting">Hello,</div>
+    <div class="esb-name" id="esb-nm">Guest Visitor</div>
+    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
+  </div>
+  <div class="esb-scroll">
+    <!-- MAIN MENU -->
+    <div class="esb-section-lbl">Menu</div>
+    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
+      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-cat-sub">
+      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+    </div>
+
+    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- CUSTOMER SERVICES -->
+    <div class="esb-section-lbl">My Account</div>
+    <a href="orders.html" class="esb-link" id="esb-orders"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- SUPPORT -->
+    <div class="esb-section-lbl">Support</div>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-faq-sub">
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+    </div>
+
+    <div class="esb-divider"></div>
+
+    <!-- SETTINGS -->
+    <div class="esb-section-lbl">Settings</div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+    </div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+    </div>
+    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+      <span class="esb-link-icon">&#128205;</span>Delivery Location
+      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+    </div>
+    <div class="esb-divider"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="esb-footer">
+    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
+    <div class="esb-settings-row">
+      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593; Top</button>
+      <button class="esb-settings-btn discount-badge-btn" data-discount-badge onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+    </div>
+    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
+  </div>
+</nav>
+
+
+
+<!-- ═══════ ORDER CONFIRMATION ANIMATION ═══════ -->
+<div id="order-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(30,6,16,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+  <div id="order-confirm-box" style="background:white;border-radius:28px;width:100%;max-width:400px;text-align:center;padding:40px 32px 36px;position:relative;transform:scale(.85) translateY(30px);opacity:0;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s ease;overflow:hidden;">
+
+    <!-- confetti canvas -->
+    <canvas id="oc-confetti" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:28px;"></canvas>
+
+    <!-- top ribbon -->
+    <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#3b0d1a,#c0647a,#e8a0b0,#c0647a,#3b0d1a);background-size:200%;animation:ocShimmer 2.5s linear infinite;"></div>
+
+    <!-- checkmark circle -->
+    <div id="oc-check-wrap" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#3b0d1a,#c0647a);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;transform:scale(0);transition:transform .6s .2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 40px rgba(192,100,122,.4);">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path id="oc-tick" d="M10 22 L19 31 L34 14" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" style="transition:stroke-dashoffset .6s .7s ease;"/>
+      </svg>
+    </div>
+
+    <!-- text -->
+    <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#3b0d1a;margin-bottom:6px;opacity:0;transform:translateY(12px);transition:all .5s .5s ease;" id="oc-title">Order Placed! 🎉</div>
+    <div style="font-size:.85rem;color:rgba(59,13,26,.55);line-height:1.75;margin-bottom:24px;opacity:0;transform:translateY(12px);transition:all .5s .65s ease;" id="oc-sub">Thank you! We've received your order.<br/>You'll get a WhatsApp confirmation shortly.</div>
+
+    <!-- order id pill -->
+    <div id="oc-id" style="display:inline-block;background:#fde8ed;border:1.5px dashed #c0647a;color:#3b0d1a;font-size:.85rem;font-weight:700;letter-spacing:3px;padding:10px 24px;border-radius:12px;margin-bottom:24px;opacity:0;transition:opacity .5s .8s ease;"></div>
+
+    <!-- buttons -->
+    <div style="display:flex;gap:10px;justify-content:center;opacity:0;transition:opacity .5s .95s ease;" id="oc-btns">
+      <a href="orders.html" style="flex:1;padding:12px;background:#3b0d1a;color:white;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">📦 Track Order</a>
+      <button onclick="closeOrderConfirm()" style="flex:1;padding:12px;background:var(--blush,#f9e4e9);color:#3b0d1a;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;">Continue Shopping</button>
+    </div>
+
+    <!-- close -->
+    <button onclick="closeOrderConfirm()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(59,13,26,.07);border:none;border-radius:50%;font-size:1rem;cursor:pointer;color:rgba(59,13,26,.4);display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+</div>
+
+<style>
+@keyframes ocShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes ocFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#order-confirm-overlay.show{display:flex!important;}
+#order-confirm-overlay.show #order-confirm-box{transform:scale(1) translateY(0);opacity:1;}
+#order-confirm-overlay.show #oc-check-wrap{transform:scale(1);}
+#order-confirm-overlay.show #oc-tick{stroke-dashoffset:0;}
+#order-confirm-overlay.show #oc-title,
+#order-confirm-overlay.show #oc-sub{opacity:1;transform:translateY(0);}
+#order-confirm-overlay.show #oc-id,
+#order-confirm-overlay.show #oc-btns{opacity:1;}
+</style>
+
+
+
+
+<!-- ═══════ CINEMATIC LOADER CONTROLLER ═══════ -->
 <script type="module">
+
+/**
+ * Decide whether to show the cinematic loader BEFORE anything paints.
+ * Rules:
+ *   reload        → SHOW   (user did F5 / Ctrl+R — treat as fresh entry)
+ *   back_forward  → SKIP   (user pressed browser Back from another page)
+ *   navigate+seen → SKIP   (same-session link navigation, already played)
+ *   navigate+new  → SHOW   (very first visit this session)
+ *
+ * We use the Navigation Timing API to read the navigation type.
+ * The inline <style> written here is the ONLY way to hide before paint with
+ * zero flicker — no setTimeout, no requestAnimationFrame can match it.
+ */
+try{
+  var _nt = '';
+  /* Modern API (Chrome 57+, Firefox 58+, Safari 15+) */
+  if(performance && performance.getEntriesByType){
+    var _ne = performance.getEntriesByType('navigation');
+    if(_ne && _ne[0]) _nt = _ne[0].type; /* 'navigate' | 'reload' | 'back_forward' | 'prerender' */
+  }
+  /* Legacy fallback (IE, old Safari) */
+  if(!_nt && performance && performance.navigation){
+    var _lt = performance.navigation.type;
+    _nt = _lt === 1 ? 'reload' : _lt === 2 ? 'back_forward' : 'navigate';
+  }
+
+  var _shouldHide = false;
+  if(_nt === 'back_forward'){
+    /* Always skip on Back/Forward — no animation flash when returning from product pages */
+    _shouldHide = true;
+  } else if(_nt === 'reload'){
+    /* Always show on hard refresh — feels like a fresh start */
+    _shouldHide = false;
+    /* Reset the flag so the controller below also plays the full animation */
+    sessionStorage.removeItem('ah_intro_done');
+  } else {
+    /* Normal navigation or first load — skip if already seen this session */
+    _shouldHide = sessionStorage.getItem('ah_intro_done') === '1';
+  }
+
+  if(_shouldHide){
+    document.write('<style>#cin-loader{display:none!important;}</style>');
+  }
+}catch(e){}
+
+
+// ---------------------------------------------
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore, collection, query, orderBy, onSnapshot, doc,
@@ -2569,30 +2905,59 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
 });
 
 // PRODUCTS (real-time) - with fallback if orderBy fails
+// ═══════════════════════════════════════════════
+// HOMEPAGE PRODUCTS CONFIGURATION
+// ═══════════════════════════════════════════════
+const HOMEPAGE_PRODUCT_LIMIT = 8;  // Number of products to show on homepage
+const SHOW_FEATURED_FIRST = true;  // Prioritize products with featured flag
+const SHOW_ONLY_IN_STOCK = true;   // Hide out-of-stock items
+
 async function loadProducts() {
-  console.log('🔍 Attempting to load products...');
+  console.log(`🔍 Loading ${HOMEPAGE_PRODUCT_LIMIT} latest products for homepage...`);
   
   try {
-    // Try with orderBy first
+    // Optimized query: limit at database level for better performance
+    const productQuery = query(
+      collection(db,'products'), 
+      orderBy('createdAt','desc'),
+      limit(20)  // Fetch 20 to account for out-of-stock filtering, then show top 8
+    );
+    
     onSnapshot(
-      query(collection(db,'products'), orderBy('createdAt','desc')), 
+      productQuery, 
       snap => {
         console.log('✅ Products query successful. Document count:', snap.docs.length);
         const all=snap.docs.map(d=>({id:d.id,...d.data()}));
         console.log('Products data:', all);
         
-        // Filter out out-of-stock products
-        const inStockProducts = all.filter(p => p.inStock !== false);
-        console.log(`Filtered: ${inStockProducts.length} in stock out of ${all.length} total products`);
+        // Filter out out-of-stock products if enabled
+        let availableProducts = SHOW_ONLY_IN_STOCK 
+          ? all.filter(p => p.inStock !== false)
+          : all;
         
-        if(!inStockProducts.length){
-          console.log('⚠️ No in-stock products available');
-          document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;margin-bottom:16px;">No products available right now</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:10px 24px;border-radius:25px;font-size:.75rem;text-decoration:none;">Check Products Page</a></div>';
+        console.log(`Filtered: ${availableProducts.length} available out of ${all.length} total products`);
+        
+        // Prioritize featured products if enabled
+        if (SHOW_FEATURED_FIRST) {
+          availableProducts.sort((a, b) => {
+            const aFeatured = a.featured || a.isFeatured || false;
+            const bFeatured = b.featured || b.isFeatured || false;
+            if (aFeatured === bFeatured) return 0;
+            return bFeatured ? 1 : -1;  // Featured products first
+          });
+          console.log('🌟 Sorted: Featured products prioritized');
+        }
+        
+        if(!availableProducts.length){
+          console.log('⚠️ No products available to display');
+          document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><div style="font-size:2.5rem;margin-bottom:16px;">🎁</div><div style="font-size:1.1rem;color:var(--burgundy);margin-bottom:8px;">No products available right now</div><div style="opacity:.6;margin-bottom:24px;font-size:.88rem;">Check back soon for amazing new hampers!</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:12px 28px;border-radius:25px;font-size:.75rem;text-decoration:none;letter-spacing:1px;text-transform:uppercase;">Browse All Products</a></div>';
           return;
         }
         
-        const show=inStockProducts.slice(0,8);
-        renderProducts(show);
+        // Limit to configured number for homepage
+        const displayProducts = availableProducts.slice(0, HOMEPAGE_PRODUCT_LIMIT);
+        console.log(`📦 Displaying ${displayProducts.length} products on homepage`);
+        renderProducts(displayProducts);
       },
       error => {
         console.error('❌ Products query error (trying without orderBy):', error);
@@ -2608,7 +2973,7 @@ async function loadProducts() {
 
 // Fallback function without orderBy (in case Firestore index is missing)
 function loadProductsWithoutOrder() {
-  console.log('🔄 Loading products without orderBy...');
+  console.log('🔄 Loading products without orderBy (fallback mode)...');
   
   onSnapshot(
     collection(db,'products'), 
@@ -2616,22 +2981,35 @@ function loadProductsWithoutOrder() {
       console.log('✅ Products loaded (no ordering). Count:', snap.docs.length);
       const all=snap.docs.map(d=>({id:d.id,...d.data()}));
       
-      // Filter out out-of-stock products
-      const inStockProducts = all.filter(p => p.inStock !== false);
-      console.log(`Filtered: ${inStockProducts.length} in stock out of ${all.length} total products`);
+      // Filter and limit products
+      let availableProducts = SHOW_ONLY_IN_STOCK 
+        ? all.filter(p => p.inStock !== false)
+        : all;
       
-      if(!inStockProducts.length){
-        console.log('⚠️ No in-stock products available');
-        document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:1.2rem;margin-bottom:12px;">🎁</div><div style="opacity:.6;line-height:1.6;">No products available right now.<br/>Please check back later!</div></div>';
+      console.log(`Filtered: ${availableProducts.length} available out of ${all.length} total products`);
+      
+      if(!availableProducts.length){
+        console.log('⚠️ No products available');
+        document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><div style="font-size:2.5rem;margin-bottom:16px;">🎁</div><div style="font-size:1.1rem;color:var(--burgundy);margin-bottom:8px;">No products available</div><div style="opacity:.6;margin-bottom:24px;font-size:.88rem;">Check back soon!</div><a href="products.html" style="display:inline-block;background:var(--deep-rose);color:white;padding:12px 28px;border-radius:25px;font-size:.75rem;text-decoration:none;">Browse Products</a></div>';
         return;
       }
       
-      const show=inStockProducts.slice(0,8);
-      renderProducts(show);
+      // Manual sort by createdAt if available
+      if (availableProducts[0]?.createdAt) {
+        availableProducts.sort((a, b) => {
+          const aTime = a.createdAt?.toMillis?.() || 0;
+          const bTime = b.createdAt?.toMillis?.() || 0;
+          return bTime - aTime;  // Newest first
+        });
+      }
+      
+      const displayProducts = availableProducts.slice(0, HOMEPAGE_PRODUCT_LIMIT);
+      console.log(`📦 Displaying ${displayProducts.length} products (fallback mode)`);
+      renderProducts(displayProducts);
     },
     error => {
       console.error('❌ Complete failure loading products:', error);
-      document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#e05050;"><div style="font-size:1.2rem;margin-bottom:12px;">⚠️</div><div style="line-height:1.6;">Error loading products.<br/>Please check browser console for details.</div></div>';
+      document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#e05050;"><div style="font-size:2.5rem;margin-bottom:16px;">⚠️</div><div style="font-size:1.1rem;margin-bottom:8px;">Error loading products</div><div style="opacity:.7;margin-bottom:24px;font-size:.85rem;">Please refresh the page or check your connection</div><button onclick="location.reload()" style="background:var(--burgundy);color:white;border:none;padding:12px 28px;border-radius:25px;font-size:.75rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;">Reload Page</button></div>';
     }
   );
 }
@@ -2691,6 +3069,157 @@ setTimeout(function() {
   }
 }, 2000);
 
+// ═══════════════════════════════════════════════
+// PROMOTIONAL BANNERS (Vertical Stack)
+// ═══════════════════════════════════════════════
+
+let promoBannersData = [];
+
+// Load promotional banners from Firestore
+function loadPromotionalBanners() {
+  console.log('🎯 Loading promotional banners...');
+  
+  try {
+    onSnapshot(
+      doc(db, 'siteSettings', 'config'),
+      (docSnap) => {
+        if (!docSnap.exists()) {
+          console.log('⚠️ No siteSettings config found');
+          return;
+        }
+        
+        const data = docSnap.data();
+        const banners = data.promoBanners || [];
+        
+        // Filter active banners and sort by order
+        const activeBanners = banners
+          .filter(b => b.active !== false)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        console.log(`✅ Found ${activeBanners.length} active promotional banners`);
+        
+        if (activeBanners.length > 0) {
+          promoBannersData = activeBanners;
+          renderPromotionalBanners(activeBanners);
+        } else {
+          document.getElementById('promoBannersSection').style.display = 'none';
+        }
+      },
+      (error) => {
+        console.error('❌ Error loading promotional banners:', error);
+      }
+    );
+  } catch (error) {
+    console.error('❌ Error setting up promo banners listener:', error);
+  }
+}
+
+// Render promotional banners to DOM
+function renderPromotionalBanners(banners) {
+  const container = document.getElementById('promoBannersContainer');
+  const section = document.getElementById('promoBannersSection');
+  
+  if (!container || !section) return;
+  
+  // Build HTML for each banner
+  const bannersHTML = banners.map((banner, index) => {
+    const {
+      title = 'Special Offer',
+      subtitle = '',
+      description = '',
+      ctaText = 'Shop Now',
+      ctaLink = 'products.html',
+      image = '',
+      imageMobile = '',
+      bgColor = '#f9e4e9',
+      textColor = '#ffffff'
+    } = banner;
+    
+    // Use mobile image if available and on small screen
+    const isMobile = window.innerWidth <= 768;
+    const bannerImage = (isMobile && imageMobile) ? imageMobile : image;
+    
+    // Lazy loading: first banner eager, rest lazy
+    const loadingAttr = index === 0 ? 'eager' : 'lazy';
+    const lazyAttr = index === 0 ? 'loaded' : 'true';
+    
+    return `
+      <a href="${ctaLink}" 
+         class="promo-banner" 
+         data-lazy="${lazyAttr}"
+         style="background-color:${bgColor};color:${textColor};"
+         onclick="return handleBannerClick(event, '${ctaLink}')">
+        ${bannerImage ? `
+          <img src="${bannerImage}" 
+               alt="${title}" 
+               class="promo-banner-bg" 
+               loading="${loadingAttr}"
+               onload="this.parentElement.setAttribute('data-lazy','loaded')"/>
+        ` : ''}
+        <div class="promo-banner-overlay"></div>
+        <div class="promo-banner-content">
+          ${title ? `<h2>${title}</h2>` : ''}
+          ${subtitle ? `<h3>${subtitle}</h3>` : ''}
+          ${description ? `<p>${description}</p>` : ''}
+          ${ctaText ? `<span class="promo-banner-cta">${ctaText} →</span>` : ''}
+        </div>
+      </a>
+    `;
+  }).join('');
+  
+  container.innerHTML = bannersHTML;
+  section.style.display = 'block';
+  
+  console.log(`🎨 Rendered ${banners.length} promotional banners`);
+  
+  // Initialize Intersection Observer for lazy loading
+  initBannerLazyLoading();
+}
+
+// Handle banner click
+window.handleBannerClick = function(event, link) {
+  console.log('🎯 Banner clicked:', link);
+  // Allow default navigation
+  return true;
+};
+
+// Lazy loading with Intersection Observer
+function initBannerLazyLoading() {
+  if ('IntersectionObserver' in window) {
+    const lazyBanners = document.querySelectorAll('.promo-banner[data-lazy="true"]');
+    
+    const bannerObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const banner = entry.target;
+          const img = banner.querySelector('.promo-banner-bg');
+          
+          if (img && !img.complete) {
+            img.addEventListener('load', () => {
+              banner.setAttribute('data-lazy', 'loaded');
+            });
+          } else {
+            banner.setAttribute('data-lazy', 'loaded');
+          }
+          
+          bannerObserver.unobserve(banner);
+        }
+      });
+    }, {
+      rootMargin: '50px 0px' // Start loading 50px before entering viewport
+    });
+    
+    lazyBanners.forEach(banner => bannerObserver.observe(banner));
+  }
+}
+
+// Initialize promotional banners on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadPromotionalBanners);
+} else {
+  setTimeout(loadPromotionalBanners, 100);
+}
+
 // REVEAL
 const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
@@ -2722,38 +3251,85 @@ setTimeout(function(){
   var _active    = true;
   var _settingsLoaded = false;
 
-  // Load popup settings from Firestore
+  // Load popup settings from Firestore with REAL-TIME LISTENER
   function _loadSettings() {
     try {
       var dbRef = window._ahFirebase && window._ahFirebase.db;
       if (!dbRef) { setTimeout(_loadSettings, 600); return; }
       import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m) {
-        m.getDoc(m.doc(dbRef, 'siteSettings', 'config')).then(function(snap) {
+        // *** CHANGED: Use onSnapshot for real-time updates instead of getDoc ***
+        m.onSnapshot(m.doc(dbRef, 'siteSettings', 'config'), function(snap) {
           _settingsLoaded = true;
-          if (!snap.exists()) return;
+          if (!snap.exists()) {
+            console.warn('⚠️ No siteSettings/config found');
+            _active = false;
+            _applyToUI();
+            return;
+          }
           var wp = snap.data().welcomePopup;
-          if (!wp) return;
+          if (!wp) {
+            console.warn('⚠️ No welcomePopup config found');
+            _active = false;
+            _applyToUI();
+            return;
+          }
           _active    = wp.active !== false;
           _disc      = Number(wp.discount) || 15;
           _prefix    = (wp.codePrefix || ('AH' + _disc)).toUpperCase().trim();
           _validDays = Number(wp.validDays) || 30;
           _minOrder  = Number(wp.minOrder)  || 0;
 
+          console.log('✅ Discount config updated in real-time:', {active: _active, discount: _disc});
+
           // Update popup UI with correct values
           _applyToUI();
 
           // If popup should be hidden per admin, don't auto-show
-          if (!_active) {
+          if (!_active || _disc <= 0) {
             clearTimeout(_autoShowTimer);
             var fb = document.getElementById('ah-popup-float');
             if(fb) fb.style.display = 'none';
+          } else {
+            // Show float button if discount is active
+            var fb = document.getElementById('ah-popup-float');
+            if(fb) fb.style.display = '';
           }
-        }).catch(function(){_settingsLoaded=true;});
+        }, function(error) {
+          console.error('❌ Error listening to discount config:', error);
+          _settingsLoaded=true;
+          _active = false;
+          _applyToUI();
+        });
       }).catch(function(){_settingsLoaded=true;});
     } catch(e){_settingsLoaded=true;}
   }
 
   function _applyToUI() {
+    // Update all discount badges on the page
+    var badges = document.querySelectorAll('[data-discount-badge]');
+    badges.forEach(function(badge) {
+      if (_active && _disc > 0) {
+        badge.style.display = '';
+        badge.style.visibility = 'visible';
+        badge.style.opacity = '1';
+        // Update badge text
+        var icon = badge.querySelector('.badge-icon') ? badge.querySelector('.badge-icon').outerHTML : '🎁';
+        if (!badge.querySelector('.badge-icon')) icon = '🎁';
+        badge.innerHTML = icon + ' ' + _disc + '% OFF';
+        badge.title = 'Claim your ' + _disc + '% OFF discount';
+        // Trigger animation
+        badge.classList.add('badge-updated');
+        setTimeout(function() { badge.classList.remove('badge-updated'); }, 600);
+      } else {
+        // Hide badge
+        badge.style.opacity = '0';
+        setTimeout(function() {
+          badge.style.display = 'none';
+          badge.style.visibility = 'hidden';
+        }, 300);
+      }
+    });
+
     // Update headline % in both popup instances
     document.querySelectorAll('.popup-headline span, .popup-headline-disc').forEach(function(el) {
       el.textContent = _disc + '% OFF';
@@ -2771,6 +3347,12 @@ setTimeout(function(){
     st.id = '_ppf_st';
     st.textContent = '#ah-popup-float::after{content:"' + _disc + '%"!important;}';
     if(!st.parentNode) document.head.appendChild(st);
+    
+    // Update tooltip text on float button
+    var st2 = document.getElementById('_ppf_tooltip') || document.createElement('style');
+    st2.id = '_ppf_tooltip';
+    st2.textContent = '#ah-popup-float::before{content:"Tap for ' + _disc + '% OFF"!important;}';
+    if(!st2.parentNode) document.head.appendChild(st2);
   }
 
   // Open / Close
@@ -3510,147 +4092,11 @@ window.addEventListener('scroll',()=>{
 
   loadReviews();
 })();
-</script>
-<script src="lang-currency.js"></script>
-<script src="mobilenav.js"></script>
-<script src="bottomnav.js"></script>
-
-<!-- ═══════ ENHANCED SIDEBAR ═══════ -->
-<div id="enh-overlay" onclick="enhSbClose()"></div>
-<nav id="enh-sidebar" aria-label="Site navigation">
-  <div class="esb-user-area">
-    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
-    <div class="esb-avatar" id="esb-av">&#128100;</div>
-    <div class="esb-greeting">Hello,</div>
-    <div class="esb-name" id="esb-nm">Guest Visitor</div>
-    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
-  </div>
-  <div class="esb-scroll">
-    <!-- MAIN MENU -->
-    <div class="esb-section-lbl">Menu</div>
-    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
-
-    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
-      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
-    </button>
-    <div class="esb-sub" id="esb-cat-sub">
-      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
-      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
-      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
-      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
-      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
-      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
-    </div>
-
-    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
-    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
-    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
-
-    <div class="esb-divider"></div>
-
-    <!-- CUSTOMER SERVICES -->
-    <div class="esb-section-lbl">My Account</div>
-    <a href="orders.html" class="esb-link" id="esb-orders"><span class="esb-link-icon">&#128230;</span>My Orders</a>
-    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
-<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
-
-    <div class="esb-divider"></div>
-
-    <!-- SUPPORT -->
-    <div class="esb-section-lbl">Support</div>
-    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
-    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
-
-    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
-      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
-    </button>
-    <div class="esb-sub" id="esb-faq-sub">
-      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
-      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
-      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
-    </div>
-
-    <div class="esb-divider"></div>
-
-    <!-- SETTINGS -->
-    <div class="esb-section-lbl">Settings</div>
-    <div class="esb-link" style="cursor:default;justify-content:space-between;">
-      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
-      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
-    </div>
-    <div class="esb-link" style="cursor:default;justify-content:space-between;">
-      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
-      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
-    </div>
-    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
-      <span class="esb-link-icon">&#128205;</span>Delivery Location
-      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
-    </div>
-    <div class="esb-divider"></div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="esb-footer">
-    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
-    <div class="esb-settings-row">
-      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593; Top</button>
-      <button class="esb-settings-btn" onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
-    </div>
-    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
-  </div>
-</nav>
 
 
+// ---------------------------------------------
 
-<!-- ═══════ ORDER CONFIRMATION ANIMATION ═══════ -->
-<div id="order-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(30,6,16,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
-  <div id="order-confirm-box" style="background:white;border-radius:28px;width:100%;max-width:400px;text-align:center;padding:40px 32px 36px;position:relative;transform:scale(.85) translateY(30px);opacity:0;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s ease;overflow:hidden;">
 
-    <!-- confetti canvas -->
-    <canvas id="oc-confetti" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:28px;"></canvas>
-
-    <!-- top ribbon -->
-    <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#3b0d1a,#c0647a,#e8a0b0,#c0647a,#3b0d1a);background-size:200%;animation:ocShimmer 2.5s linear infinite;"></div>
-
-    <!-- checkmark circle -->
-    <div id="oc-check-wrap" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#3b0d1a,#c0647a);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;transform:scale(0);transition:transform .6s .2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 40px rgba(192,100,122,.4);">
-      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path id="oc-tick" d="M10 22 L19 31 L34 14" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40" style="transition:stroke-dashoffset .6s .7s ease;"/>
-      </svg>
-    </div>
-
-    <!-- text -->
-    <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#3b0d1a;margin-bottom:6px;opacity:0;transform:translateY(12px);transition:all .5s .5s ease;" id="oc-title">Order Placed! 🎉</div>
-    <div style="font-size:.85rem;color:rgba(59,13,26,.55);line-height:1.75;margin-bottom:24px;opacity:0;transform:translateY(12px);transition:all .5s .65s ease;" id="oc-sub">Thank you! We've received your order.<br/>You'll get a WhatsApp confirmation shortly.</div>
-
-    <!-- order id pill -->
-    <div id="oc-id" style="display:inline-block;background:#fde8ed;border:1.5px dashed #c0647a;color:#3b0d1a;font-size:.85rem;font-weight:700;letter-spacing:3px;padding:10px 24px;border-radius:12px;margin-bottom:24px;opacity:0;transition:opacity .5s .8s ease;"></div>
-
-    <!-- buttons -->
-    <div style="display:flex;gap:10px;justify-content:center;opacity:0;transition:opacity .5s .95s ease;" id="oc-btns">
-      <a href="orders.html" style="flex:1;padding:12px;background:#3b0d1a;color:white;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">📦 Track Order</a>
-      <button onclick="closeOrderConfirm()" style="flex:1;padding:12px;background:var(--blush,#f9e4e9);color:#3b0d1a;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;">Continue Shopping</button>
-    </div>
-
-    <!-- close -->
-    <button onclick="closeOrderConfirm()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(59,13,26,.07);border:none;border-radius:50%;font-size:1rem;cursor:pointer;color:rgba(59,13,26,.4);display:flex;align-items:center;justify-content:center;">✕</button>
-  </div>
-</div>
-
-<style>
-@keyframes ocShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-@keyframes ocFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-#order-confirm-overlay.show{display:flex!important;}
-#order-confirm-overlay.show #order-confirm-box{transform:scale(1) translateY(0);opacity:1;}
-#order-confirm-overlay.show #oc-check-wrap{transform:scale(1);}
-#order-confirm-overlay.show #oc-tick{stroke-dashoffset:0;}
-#order-confirm-overlay.show #oc-title,
-#order-confirm-overlay.show #oc-sub{opacity:1;transform:translateY(0);}
-#order-confirm-overlay.show #oc-id,
-#order-confirm-overlay.show #oc-btns{opacity:1;}
-</style>
-
-<script>
 function showOrderConfirm(orderData){
   const overlay=document.getElementById('order-confirm-overlay');
   // Set order ID
@@ -3772,11 +4218,11 @@ function launchConfetti(){
   window.showOrderConfirm=showOrderConfirm;
   window.closeOrderConfirm=closeOrderConfirm;
 })();
-</script>
 
 
-<!-- ═══════ CINEMATIC LOADER CONTROLLER ═══════ -->
-<script>
+// ---------------------------------------------
+
+
 (function(){
   var STORAGE_KEY = 'ah_intro_done';
 
@@ -3954,6 +4400,11 @@ function launchConfetti(){
   }
 
 })();
+
+
 </script>
+
 </body>
 </html>
+
+

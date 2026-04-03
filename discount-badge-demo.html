@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dynamic Discount Badge - Test Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+  }
+  
+  .demo-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .badge-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+  
+  .discount-badge {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .discount-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  }
+  
+  .badge-updated {
+    animation: badgePulse 0.6s ease-out;
+  }
+  
+  @keyframes badgePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .control-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .control-group input,
+  .control-group select {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  .control-group input:focus,
+  .control-group select:focus {
+    border-color: #667eea;
+  }
+  
+  .btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .status {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: none;
+  }
+  
+  .status.success {
+    background: #d4edda;
+    color: #155724;
+    display: block;
+  }
+  
+  .status.error {
+    background: #f8d7da;
+    color: #721c24;
+    display: block;
+  }
+  
+  .info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #2196F3;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+  }
+  
+  .info-box h3 {
+    color: #1976D2;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+  
+  .info-box p {
+    color: #555;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  
+  .hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+  
+  code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #e83e8c;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>?? Dynamic Discount Badge System</h1>
+  <p class="subtitle">Real-time demonstration of the discount badge update system</p>
+  
+  <!-- Current Badges Section -->
+  <div class="demo-section">
+    <div class="section-title">?? Live Discount Badges</div>
+    <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">
+      These badges update automatically when you change the discount value below:
+    </p>
+    <div class="badge-container">
+      <button class="discount-badge" data-discount-badge>?? 15% OFF</button>
+      <button class="discount-badge" data-discount-badge>?? 15% OFF</button>
+      <button class="discount-badge" data-discount-badge>?? 15% OFF</button>
+    </div>
+  </div>
+  
+  <!-- Admin Controls Section -->
+  <div class="demo-section">
+    <div class="section-title">?? Admin Controls (Simulated)</div>
+    <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">
+      Simulate admin panel changes to see badges update in real-time:
+    </p>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label>Discount Active</label>
+        <select id="activeStatus">
+          <option value="true" selected>? Active</option>
+          <option value="false">? Inactive</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label>Discount Percentage</label>
+        <input type="number" id="discountValue" value="15" min="0" max="90" />
+      </div>
+    </div>
+    
+    <button class="btn" onclick="updateDiscounts()">?? Apply Changes</button>
+    
+    <div id="statusMessage" class="status"></div>
+  </div>
+  
+  <!-- Info Box -->
+  <div class="info-box">
+    <h3>?? How It Works</h3>
+    <p>
+      This demo simulates the real system behavior. In production, changes are saved to 
+      <code>Firestore: siteSettings/config ? welcomePopup</code> and automatically synced to 
+      all connected users via Firebase <code>onSnapshot()</code> listener. No page refresh needed!
+    </p>
+  </div>
+  
+  <!-- Feature List -->
+  <div class="demo-section" style="background: linear-gradient(135deg, #667eea10, #764ba210);">
+    <div class="section-title">? Key Features</div>
+    <ul style="line-height: 2; color: #555; padding-left: 20px;">
+      <li>? Real-time updates across all pages simultaneously</li>
+      <li>? Automatic show/hide when discount is activated/deactivated</li>
+      <li>? Smooth animations on value changes</li>
+      <li>? No page refresh required</li>
+      <li>? Admin panel integration in <code>admin.html</code></li>
+      <li>? Works on index.html, products.html, and all user pages</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Simulate the real-time update system
+  function updateDiscounts() {
+    const active = document.getElementById('activeStatus').value === 'true';
+    const discount = parseInt(document.getElementById('discountValue').value) || 0;
+    const statusEl = document.getElementById('statusMessage');
+    
+    // Validate
+    if (discount < 0 || discount > 90) {
+      statusEl.className = 'status error';
+      statusEl.textContent = '? Discount must be between 0 and 90';
+      return;
+    }
+    
+    // Update all badges
+    const badges = document.querySelectorAll('[data-discount-badge]');
+    
+    if (active && discount > 0) {
+      // Show and update badges
+      badges.forEach(badge => {
+        badge.classList.remove('hidden');
+        badge.innerHTML = `?? ${discount}% OFF`;
+        badge.title = `Claim your ${discount}% OFF discount`;
+        
+        // Trigger pulse animation
+        badge.classList.add('badge-updated');
+        setTimeout(() => badge.classList.remove('badge-updated'), 600);
+      });
+      
+      statusEl.className = 'status success';
+      statusEl.textContent = `? Discount updated to ${discount}% OFF and shown to all users!`;
+    } else {
+      // Hide badges
+      badges.forEach(badge => {
+        badge.style.opacity = '0';
+        setTimeout(() => {
+          badge.classList.add('hidden');
+        }, 300);
+      });
+      
+      statusEl.className = 'status success';
+      statusEl.textContent = active 
+        ? '? Discount set to 0% - badges hidden from all users'
+        : '? Discount deactivated - badges hidden from all users';
+    }
+    
+    // Hide status after 3 seconds
+    setTimeout(() => {
+      statusEl.style.display = 'none';
+    }, 3000);
+  }
+  
+  // Test automatic pulse animation every 5 seconds
+  setInterval(() => {
+    const badges = document.querySelectorAll('[data-discount-badge]:not(.hidden)');
+    badges.forEach(badge => {
+      badge.classList.add('badge-updated');
+      setTimeout(() => badge.classList.remove('badge-updated'), 600);
+    });
+  }, 5000);
+</script>
+
+</body>
+</html>

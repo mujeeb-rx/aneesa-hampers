@@ -409,7 +409,12 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
   <a href="account.html" class="bn-item active"><span class="bn-icon">👤</span><span>Account</span></a>
 </nav>
 
+
+<script src="lang-currency.js"></script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore, doc, setDoc, getDoc, collection, query,
@@ -837,9 +842,11 @@ window.doLogout = async function() {
   Object.keys(localStorage).filter(k=>k.startsWith('ah_')).forEach(k=>localStorage.removeItem(k));
   window.location.href='index.html';
 };
+
+
 </script>
-<script src="lang-currency.js"></script>
-<script src="mobilenav.js"></script>
-<script src="bottomnav.js"></script>
+
 </body>
 </html>
+
+

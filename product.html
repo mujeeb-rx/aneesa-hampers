@@ -649,44 +649,171 @@
       margin-top: 2px;
     }
 
-    /* OFFERS */
+    /* OFFERS - PREMIUM DESIGN */
     .offers-section {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .offers-title {
-      font-size: .62rem;
+      font-size: .7rem;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      opacity: .5;
-      margin-bottom: 10px;
+      color: var(--burgundy);
+      opacity: .7;
+      margin-bottom: 16px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .offer-item {
+    .offers-title::before {
+      content: '✨';
+      font-size: 1rem;
+    }
+
+    .offer-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      border: 1.5px solid rgba(192, 100, 122, .12);
+      box-shadow: 0 2px 8px rgba(59, 13, 26, .04);
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offer-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 13, 26, .1);
+      border-color: rgba(192, 100, 122, .25);
+    }
+
+    .offer-card.best-deal {
+      background: linear-gradient(135deg, #fff9fb 0%, #fff 100%);
+      border: 2px solid var(--deep-rose);
+      box-shadow: 0 4px 12px rgba(192, 100, 122, .15);
+    }
+
+    .offer-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, var(--deep-rose), var(--rose));
+      color: white;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(192, 100, 122, .3);
+    }
+
+    .offer-header {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 12px;
-      background: var(--cream);
-      border-radius: var(--radius-sm);
-      margin-bottom: 8px;
-      border: 1px solid rgba(192, 100, 122, .08);
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
     .offer-icon {
-      font-size: 1.1rem;
+      font-size: 1.5rem;
       flex-shrink: 0;
-      margin-top: 1px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--blush);
+      border-radius: 10px;
+      border: 1px solid rgba(192, 100, 122, .1);
     }
 
-    .offer-text {
-      font-size: .78rem;
+    .offer-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .offer-title {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--burgundy);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .offer-desc {
+      font-size: .75rem;
       line-height: 1.5;
+      color: var(--burgundy);
+      opacity: .7;
+      margin-bottom: 8px;
     }
 
-    .offer-text strong {
+    .offer-conditions {
+      font-size: .68rem;
+      color: var(--burgundy);
+      opacity: .5;
+      line-height: 1.4;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(192, 100, 122, .15);
+    }
+
+    .offer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .offer-terms {
+      font-size: .65rem;
+      color: var(--burgundy);
+      opacity: .45;
+      font-style: italic;
+    }
+
+    .offer-action {
+      padding: 8px 16px;
+      background: var(--burgundy);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .offer-action:hover {
+      background: var(--deep-rose);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(59, 13, 26, .2);
+    }
+
+    .offer-action.secondary {
+      background: transparent;
       color: var(--deep-rose);
+      border: 1.5px solid var(--deep-rose);
+      padding: 7px 15px;
+    }
+
+    .offer-action.secondary:hover {
+      background: var(--blush);
+      transform: translateY(-1px);
+      box-shadow: none;
     }
 
     .coupon-toggle {
@@ -719,6 +846,92 @@
       border-radius: var(--radius-sm);
       padding: 14px;
       border: 1px dashed rgba(192, 100, 122, .35);
+    }
+
+    /* RESPONSIVE - OFFERS */
+    @media(max-width:600px) {
+      .offer-card {
+        padding: 14px 16px;
+      }
+
+      .offer-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+      }
+
+      .offer-title {
+        font-size: .78rem;
+      }
+
+      .offer-desc {
+        font-size: .72rem;
+      }
+
+      .offer-conditions {
+        font-size: .65rem;
+      }
+
+      .offer-badge {
+        font-size: .58rem;
+        padding: 3px 8px;
+      }
+
+      .offer-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .offer-action {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media(max-width:480px) {
+      .offers-title {
+        font-size: .65rem;
+        letter-spacing: 2px;
+      }
+
+      .offer-card {
+        padding: 12px 14px;
+        margin-bottom: 10px;
+      }
+
+      .offer-header {
+        gap: 10px;
+      }
+
+      .offer-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+      }
+
+      .offer-title {
+        font-size: .75rem;
+      }
+
+      .offer-desc {
+        font-size: .7rem;
+      }
+
+      .offer-conditions {
+        font-size: .63rem;
+        margin-top: 6px;
+        padding-top: 6px;
+      }
+
+      .offer-terms {
+        font-size: .62rem;
+      }
+
+      .offer-action {
+        font-size: .68rem;
+        padding: 7px 14px;
+      }
     }
 
     .coupon-box.open {
@@ -2642,26 +2855,60 @@
       <!-- OFFERS & COUPON -->
       <div class="offers-section">
         <div class="offers-title">Available Offers</div>
-        <div class="offer-item">
-          <span class="offer-icon">🎁</span>
-          <div class="offer-text"><strong>Free Gift Wrap</strong> on all orders — no minimum purchase.</div>
-        </div>
-        <div class="offer-item">
-          <span class="offer-icon">🚚</span>
-          <div class="offer-text"><strong>Free Delivery</strong> in Kadapa. Same-day if ordered before 2 PM.</div>
-        </div>
-        <div class="offer-item">
-          <span class="offer-icon">💬</span>
-          <div class="offer-text">Order on WhatsApp and get <strong>₹50 OFF</strong> on your next purchase.</div>
-        </div>
-        <button class="coupon-toggle" onclick="toggleCoupon()">🏷️ Show Coupon Code</button>
-        <div class="coupon-box" id="couponBox">
-          <p style="font-size:.75rem;margin-bottom:10px;opacity:.7;">Apply at checkout for extra savings:</p>
-          <div class="coupon-code">
-            <span id="couponCodeText">ANEESA10</span>
-            <button class="coupon-copy" onclick="copyCoupon()">Copy</button>
+        
+        <!-- Offer 1: Free Delivery - Best Deal -->
+        <div class="offer-card best-deal">
+          <div class="offer-badge">Best Deal</div>
+          <div class="offer-header">
+            <div class="offer-icon">🚚</div>
+            <div class="offer-content">
+              <div class="offer-title">Free Same-Day Delivery</div>
+              <div class="offer-desc">Get your order delivered the same day at no extra cost</div>
+            </div>
           </div>
-          <p style="font-size:.7rem;margin-top:8px;opacity:.55;">Valid on orders above ₹499. One-time use.</p>
+          <div class="offer-conditions">
+            📍 Available in Kadapa only • Order before 2 PM for same-day delivery • No minimum order value
+          </div>
+          <div class="offer-footer">
+            <span class="offer-terms">T&C apply</span>
+            <button class="offer-action" onclick="scrollToCheckout()">Shop Now</button>
+          </div>
+        </div>
+
+        <!-- Offer 2: Gift Wrap -->
+        <div class="offer-card">
+          <div class="offer-header">
+            <div class="offer-icon">🎁</div>
+            <div class="offer-content">
+              <div class="offer-title">Complimentary Gift Wrap</div>
+              <div class="offer-desc">Beautiful premium gift wrapping on all orders</div>
+            </div>
+          </div>
+          <div class="offer-conditions">
+            Available on all orders • No minimum purchase required • Perfect for gifting
+          </div>
+          <div class="offer-footer">
+            <span class="offer-terms">Auto-applied at checkout</span>
+            <button class="offer-action secondary" onclick="scrollToCheckout()">View Details</button>
+          </div>
+        </div>
+
+        <!-- Offer 3: First Order Discount -->
+        <div class="offer-card">
+          <div class="offer-header">
+            <div class="offer-icon">🏷️</div>
+            <div class="offer-content">
+              <div class="offer-title">First Order Discount</div>
+              <div class="offer-desc">Get 10% off on your first purchase with us</div>
+            </div>
+          </div>
+          <div class="offer-conditions">
+            Minimum order value: ₹499 • Valid for new customers only • Code: WELCOME10
+          </div>
+          <div class="offer-footer">
+            <span class="offer-terms">Limited time offer</span>
+            <button class="offer-action secondary" onclick="copyFirstOrderCode()">Copy Code</button>
+          </div>
         </div>
       </div>
 
@@ -2862,7 +3109,19 @@
   <a href="#" id="floatWA">💬 Order via WhatsApp</a>
 
 
-  <script>
+  
+  <script src="lang-currency.js"></script>
+  <script src="mobilenav.js"></script>
+  <script src="bottomnav.js"></script>
+  
+
+  <!-- REVIEW PHOTO LIGHTBOX -->
+  <div id="rv-lightbox" onclick="if(event.target===this) this.classList.remove('open')">
+    <img id="rv-lightbox-img" src="" alt="Review photo"/>
+    <button id="rv-lightbox-close" onclick="document.getElementById('rv-lightbox').classList.remove('open')">✕</button>
+  </div>
+<script type="module">
+
     // ============================================================
     // ANEESA HAMPERS — product.html
     // Uses Firestore REST API directly (no SDK module needed)
@@ -3115,6 +3374,28 @@
     window.toggleCoupon = () => { const cb = $('couponBox'); if (cb) cb.classList.toggle('open'); };
     window.copyCoupon = () => { navigator.clipboard && navigator.clipboard.writeText('ANEESA10').then(() => toast('✅ Coupon copied!')); };
     window.upsellAdd = (name, price) => Cart.add({ id: 'ups_' + name.replace(/\s/g, '_'), name, price: Number(price), image: '' });
+
+    // ── New Offer Functions ──
+    window.scrollToCheckout = () => {
+      const buyBtn = $('buyNowBtn') || $('addCartBtn');
+      if (buyBtn) {
+        buyBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+          buyBtn.style.transform = 'scale(1.05)';
+          setTimeout(() => { buyBtn.style.transform = 'scale(1)'; }, 200);
+        }, 500);
+      }
+    };
+    
+    window.copyFirstOrderCode = () => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText('WELCOME10').then(() => {
+          toast('✅ Coupon code WELCOME10 copied!');
+        });
+      } else {
+        toast('✅ Use code: WELCOME10 at checkout');
+      }
+    };
 
     // ── Add to Cart / Buy Now ──
     function _effPrice() { if (!_prod) return 0; const p = Number(_prod.price), d = Number(_prod.discount) || 0; return d > 0 ? Math.round(p * (1 - d / 100)) : p; }
@@ -3391,11 +3672,11 @@
       }).join('');
       sec.style.display = 'block';
     }
-  </script>
-  <script src="lang-currency.js"></script>
-  <script src="mobilenav.js"></script>
-  <script src="bottomnav.js"></script>
-  <script>
+  
+
+// ---------------------------------------------
+
+
     (function () {
       var user = null;
       try { user = JSON.parse(localStorage.getItem('ah_user') || 'null'); } catch (e) { }
@@ -3446,14 +3727,11 @@
       }, { passive: true });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
     })();
-  </script>
+  
 
-  <!-- REVIEW PHOTO LIGHTBOX -->
-  <div id="rv-lightbox" onclick="if(event.target===this) this.classList.remove('open')">
-    <img id="rv-lightbox-img" src="" alt="Review photo"/>
-    <button id="rv-lightbox-close" onclick="document.getElementById('rv-lightbox').classList.remove('open')">✕</button>
-  </div>
+</script>
 
 </body>
 
 </html>
+

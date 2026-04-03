@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cart &amp; Checkout &ndash; Aneesa Hampers</title>
-<script>if(location.search.indexOf('buynow=1')!==-1){document.documentElement.classList.add('buynow-mode-pre')}</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 /* ── BUY NOW PRE-HIDE — applied inline before CSS load to prevent flash ── */
@@ -1097,7 +1097,20 @@ body.buynow-mode footer{display:none!important;}
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<!-- ══ SCRATCH CARD SYSTEM (non-module, runs after Firebase module) ══ -->
+
+
+<script src="lang-currency.js"></script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
 <script type="module">
+if(location.search.indexOf('buynow=1')!==-1){document.documentElement.classList.add('buynow-mode-pre')}
+
+// ---------------------------------------------
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, getDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -3005,10 +3018,11 @@ document.getElementById("floatWA").addEventListener("click", function(e){
 renderCart();
 updateSummary();
 
-</script>
 
-<!-- ══ SCRATCH CARD SYSTEM (non-module, runs after Firebase module) ══ -->
-<script>
+
+// ---------------------------------------------
+
+
 // ================================================================
 // SCRATCH CARD REWARD SYSTEM
 // Firestore collections:
@@ -3423,10 +3437,10 @@ updateSummary();
   };
 
 })();
+
+
 </script>
 
-<script src="lang-currency.js"></script>
-<script src="mobilenav.js"></script>
-<script src="bottomnav.js"></script>
 </body>
 </html>
+

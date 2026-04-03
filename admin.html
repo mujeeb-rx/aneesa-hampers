@@ -146,20 +146,50 @@ textarea.fi{resize:vertical;min-height:80px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-full{grid-column:1/-1;}
 
-/* PRODUCT GRID */
-.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.prod-card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(59,13,26,.05);transition:transform .2s;}
-.prod-card:hover{transform:translateY(-2px);}
-.prod-img{height:148px;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden;}
-.prod-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.stock-tag{position:absolute;top:8px;right:8px;font-size:.57rem;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:600;z-index:1;}
-.in-stock{background:#e8fdf0;color:#2d7a4f;}
-.out-stock{background:#fde8e8;color:#e05050;}
-.prod-body{padding:13px 15px;}
-.prod-cat{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:3px;}
-.prod-name{font-family:'Cormorant Garamond',serif;font-size:1rem;margin-bottom:6px;line-height:1.3;}
-.prod-price{font-size:.9rem;font-weight:600;margin-bottom:10px;}
-.prod-actions{display:flex;gap:6px;flex-wrap:wrap;}
+/* PRODUCT TABLE - MODERN ADMIN DESIGN */
+.prod-controls{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.prod-search{flex:1;min-width:250px;max-width:400px;position:relative;}
+.prod-search input{width:100%;padding:9px 38px 9px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;font-family:'Jost',sans-serif;font-size:.82rem;color:var(--burgundy);background:white;outline:none;transition:all .25s;}
+.prod-search input:focus{border-color:var(--deep-rose);box-shadow:0 0 0 3px rgba(192,100,122,.1);}
+.prod-search input.has-value{border-color:var(--deep-rose);background:rgba(249,228,233,.2);}
+.prod-search input::placeholder{opacity:.45;}
+.prod-search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(192,100,122,.15);border:none;color:var(--deep-rose);font-size:.85rem;width:24px;height:24px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s;}
+.prod-search-clear:hover{background:var(--deep-rose);color:white;}
+.prod-search-clear.show{display:flex;}
+.prod-sort{display:flex;align-items:center;gap:8px;}
+.prod-sort select{padding:8px 12px;border:1.5px solid rgba(192,100,122,.2);border-radius:8px;font-family:'Jost',sans-serif;font-size:.75rem;color:var(--burgundy);background:white;cursor:pointer;outline:none;transition:border-color .25s;}
+.prod-sort select:focus{border-color:var(--deep-rose);}
+.prod-table-wrap{background:white;border-radius:14px;box-shadow:0 2px 14px rgba(59,13,26,.06);overflow:hidden;}
+.prod-table{width:100%;border-collapse:collapse;}
+.prod-table thead{background:var(--blush);border-bottom:2px solid rgba(192,100,122,.15);}
+.prod-table th{padding:14px 16px;text-align:left;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--burgundy);font-weight:600;white-space:nowrap;cursor:pointer;user-select:none;transition:background .2s;}
+.prod-table th:hover{background:rgba(192,100,122,.08);}
+.prod-table th.sortable::after{content:'⇅';margin-left:6px;opacity:.3;font-size:.8rem;}
+.prod-table th.sorted-asc::after{content:'↑';opacity:.8;}
+.prod-table th.sorted-desc::after{content:'↓';opacity:.8;}
+.prod-table tbody tr{border-bottom:1px solid rgba(192,100,122,.08);transition:background .15s;}
+.prod-table tbody tr:hover{background:rgba(249,228,233,.3);}
+.prod-table tbody tr.out-of-stock{opacity:.6;}
+.prod-table td{padding:12px 16px;font-size:.8rem;vertical-align:middle;}
+.prod-thumb{width:50px;height:50px;border-radius:8px;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden;flex-shrink:0;border:1px solid rgba(192,100,122,.1);}
+.prod-thumb img{width:100%;height:100%;object-fit:cover;}
+.prod-name-cell{max-width:250px;}
+.prod-name-text{font-weight:500;color:var(--burgundy);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.prod-id-text{font-size:.68rem;opacity:.4;font-family:monospace;}
+.prod-cat-badge{display:inline-block;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--deep-rose);background:rgba(192,100,122,.08);padding:3px 10px;border-radius:12px;font-weight:600;}
+.prod-price-cell{font-weight:600;color:var(--burgundy);}
+.prod-discount-badge{display:inline-block;font-size:.65rem;font-weight:700;color:#2d7a4f;background:#e8fdf0;padding:3px 8px;border-radius:10px;margin-left:6px;}
+.stock-badge{display:inline-flex;align-items:center;gap:4px;font-size:.63rem;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:12px;font-weight:600;white-space:nowrap;}
+.stock-badge.in-stock{background:#e8fdf0;color:#2d7a4f;}
+.stock-badge.out-stock{background:#fde8e8;color:#e05050;}
+.prod-actions{display:flex;gap:6px;flex-wrap:nowrap;}
+.prod-actions .btn-sm{padding:6px 10px;font-size:.68rem;white-space:nowrap;}
+.prod-empty{padding:60px 20px;text-align:center;opacity:.5;font-size:.85rem;}
+.prod-empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.3;}
+.prod-count{font-size:.72rem;opacity:.5;margin-left:auto;white-space:nowrap;}
+.prod-actions .btn-sm{padding:6px 10px;font-size:.68rem;white-space:nowrap;}
+.prod-empty{padding:60px 20px;text-align:center;opacity:.4;}
+.prod-count{font-size:.72rem;opacity:.5;margin-left:auto;}
 
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
@@ -209,8 +239,10 @@ textarea.fi{resize:vertical;min-height:80px;}
 
 /* RESPONSIVE */
 @media(max-width:1200px){.stats-row{grid-template-columns:repeat(3,1fr);gap:10px;}
-  .prod-grid{grid-template-columns:repeat(2,1fr);}
   .cat-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-table th,.prod-table td{padding:10px 12px;font-size:.75rem;}
+  .prod-thumb{width:45px;height:45px;}
+  .prod-actions .btn-sm{padding:5px 8px;font-size:.65rem;}
 }
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);}
@@ -223,14 +255,25 @@ textarea.fi{resize:vertical;min-height:80px;}
   .tb-date{display:none;}
   .page-wrap{padding:18px 14px;}
   .stats-row{grid-template-columns:1fr 1fr;gap:10px;}
+  .prod-controls{flex-direction:column;align-items:stretch;}
+  .prod-search{max-width:100%;}
+  .prod-sort{justify-content:space-between;}
+  .prod-count{margin-left:0;margin-top:8px;}
+  .prod-table th:nth-child(3),.prod-table td:nth-child(3){display:none;} /* Hide category on tablet */
+  .prod-table th:nth-child(6),.prod-table td:nth-child(6){display:none;} /* Hide discount column on tablet */
 }
 @media(max-width:600px){
   .stats-row{grid-template-columns:1fr 1fr;gap:8px;}
   .stat-val{font-size:1.6rem;}
-  .prod-grid{grid-template-columns:1fr 1fr;}
   .cat-grid{grid-template-columns:1fr 1fr;}
   .form-grid{grid-template-columns:1fr;}
   .modal-box{padding:20px 16px;}
+  .prod-table-wrap{overflow-x:auto;}
+  .prod-table{min-width:650px;} /* Enable horizontal scroll on mobile */
+  .prod-table th,.prod-table td{padding:8px 10px;font-size:.72rem;}
+  .prod-thumb{width:40px;height:40px;font-size:1.2rem;}
+  .prod-actions{flex-direction:column;gap:4px;}
+  .prod-actions .btn-sm{width:100%;padding:6px 8px;font-size:.65rem;}
 }
 </style>
 </head>
@@ -378,7 +421,46 @@ textarea.fi{resize:vertical;min-height:80px;}
         <div><div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem">Manage <em style="color:var(--deep-rose)">Products</em></div><div style="font-size:.7rem;opacity:.4;margin-top:2px">Add, edit or remove hampers — changes go live instantly</div></div>
         <button class="btn btn-primary" onclick="openAddProduct()">+ Add Product</button>
       </div>
-      <div class="prod-grid" id="prodGrid"><div style="opacity:.4;padding:40px;text-align:center;grid-column:1/-1">Loading products…</div></div>
+      
+      <!-- Search & Sort Controls -->
+      <div class="prod-controls">
+        <div class="prod-search">
+          <input type="text" id="prodSearchInput" placeholder="🔍 Search products by name, category, or price..." oninput="filterProducts()" />
+          <button class="prod-search-clear" id="prodSearchClear" onclick="clearSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="prod-sort">
+          <label style="font-size:.72rem;opacity:.6;white-space:nowrap;">Sort by:</label>
+          <select id="prodSortSelect" onchange="sortProducts()">
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+            <option value="category-asc">Category (A-Z)</option>
+            <option value="stock-desc">In Stock First</option>
+          </select>
+        </div>
+        <span class="prod-count" id="prodCount">0 products</span>
+      </div>
+
+      <!-- Products Table -->
+      <div class="prod-table-wrap">
+        <table class="prod-table" id="prodTable">
+          <thead>
+            <tr>
+              <th style="width:70px;">Image</th>
+              <th class="sortable" onclick="sortByColumn('name')">Product Name</th>
+              <th class="sortable" onclick="sortByColumn('category')">Category</th>
+              <th class="sortable" onclick="sortByColumn('price')" style="width:120px;">Price</th>
+              <th class="sortable" onclick="sortByColumn('stock')" style="width:120px;">Stock Status</th>
+              <th style="width:90px;">Discount</th>
+              <th style="width:280px;text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="prodTableBody">
+            <tr><td colspan="7" class="prod-empty">Loading products…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ══ CATEGORIES ══ -->
@@ -610,6 +692,103 @@ textarea.fi{resize:vertical;min-height:80px;}
             ✨ <strong>Auto-save enabled!</strong> Changes to images save instantly. Use the button below to save text changes.
           </div>
           <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveGallery()">💾 Save Text Changes</button>
+        </div>
+
+        <!-- Promotional Banners -->
+        <div class="card">
+          <div class="card-title">🎯 Promotional Banners</div>
+          <div style="font-size:.7rem;opacity:.5;margin-bottom:20px;">
+            Vertical stacked banners displayed on homepage. Fully clickable and responsive.
+          </div>
+          
+          <!-- Banner List -->
+          <div id="promoBannersList" style="margin-bottom:20px;">
+            <!-- Dynamic list -->
+          </div>
+          
+          <!-- Add New Banner Button -->
+          <button class="btn btn-secondary" onclick="addNewPromoBanner()" style="margin-bottom:20px;">
+            ➕ Add New Banner
+          </button>
+          
+          <!-- Banner Editor -->
+          <div id="promoBannerEditor" style="display:none;">
+            <div style="background:rgba(192,100,122,.05);padding:20px;border-radius:12px;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div style="font-weight:600;font-size:.85rem;">Banner Editor</div>
+                <button class="btn-sm btn-text" onclick="closePromoBannerEditor()">✕ Close</button>
+              </div>
+              
+              <div class="form-grid">
+                <div class="fg full">
+                  <label class="fl">Banner Title</label>
+                  <input class="fi" id="pbTitle" placeholder="e.g., Summer Sale 2026"/>
+                </div>
+                
+                <div class="fg full">
+                  <label class="fl">Subtitle</label>
+                  <input class="fi" id="pbSubtitle" placeholder="e.g., Up to 50% OFF"/>
+                </div>
+                
+                <div class="fg full">
+                  <label class="fl">Description (Optional)</label>
+                  <input class="fi" id="pbDescription" placeholder="Limited time offer"/>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">CTA Button Text</label>
+                  <input class="fi" id="pbCtaText" placeholder="Shop Now"/>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">CTA Link/URL</label>
+                  <input class="fi" id="pbCtaLink" placeholder="products.html?cat=sale"/>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">Background Color</label>
+                  <input class="fi" type="color" id="pbBgColor" value="#f9e4e9"/>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">Text Color</label>
+                  <input class="fi" type="color" id="pbTextColor" value="#ffffff"/>
+                </div>
+                
+                <div class="fg full">
+                  <label class="fl">Desktop Image</label>
+                  <input type="file" accept="image/*" class="fi" onchange="uploadPromoBannerImage(this, 'desktop')"/>
+                  <div id="pbImagePreview" style="margin-top:8px;"></div>
+                </div>
+                
+                <div class="fg full">
+                  <label class="fl">Mobile Image (Optional)</label>
+                  <input type="file" accept="image/*" class="fi" onchange="uploadPromoBannerImage(this, 'mobile')"/>
+                  <div id="pbImageMobilePreview" style="margin-top:8px;"></div>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">Status</label>
+                  <select class="fi" id="pbActive">
+                    <option value="true">✅ Active (Published)</option>
+                    <option value="false">❌ Inactive (Hidden)</option>
+                  </select>
+                </div>
+                
+                <div class="fg">
+                  <label class="fl">Display Order</label>
+                  <input class="fi" type="number" id="pbOrder" value="1" min="1"/>
+                </div>
+              </div>
+              
+              <div style="display:flex;gap:12px;margin-top:16px;">
+                <button class="btn btn-primary" onclick="savePromoBanner()">💾 Save Banner</button>
+                <button class="btn btn-secondary" onclick="closePromoBannerEditor()">Cancel</button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="pbSaveStatus" style="font-size:.72rem;text-align:center;margin-top:12px;min-height:18px;"></div>
         </div>
 
       </div>
@@ -1044,9 +1223,16 @@ textarea.fi{resize:vertical;min-height:80px;}
 
 <!-- EmailJS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init('YOUR_EMAILJS_PUBLIC_KEY');</script>
+<script type="module">
+emailjs.init('YOUR_EMAILJS_PUBLIC_KEY');
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+// ---------------------------------------------
+
+
+
+// ---------------------------------------------
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore, collection, query, orderBy, onSnapshot, where,
@@ -1216,6 +1402,7 @@ function init() {
   setupCatModal();
   setupEmojiPicker();
   populateMonthSelector();
+  loadPromoBannersAdmin();
 }
 
 // ── LISTENERS ──
@@ -1818,33 +2005,232 @@ window.sendCustomerEmail = async function() {
 };
 
 // ── PRODUCTS ──
+let _filteredProds = []; // for search/filter
+let _currentSort = { column: 'name', direction: 'asc' };
+let _searchTimeout = null; // debounce timer for search
+
 function renderProducts() {
-  const grid = document.getElementById('prodGrid');
-  if (!_prods.length) { grid.innerHTML = '<div style="opacity:.4;padding:40px;text-align:center;grid-column:1/-1">No products yet — add one!</div>'; return; }
-  grid.innerHTML = _prods.map(p => {
-    const imgH = (p.images&&p.images[0]) ? `<img src="${p.images[0]}" alt="${p.name||''}"/>` : (p.emoji||'🎁');
-    const disc = p.discount ? ` <span style="font-size:.7rem;color:#2d7a4f;font-weight:600">${p.discount}% OFF</span>` : '';
+  _filteredProds = [..._prods]; // copy for filtering
+  applyCurrentFilters(); // apply any active filter and sort
+}
+
+function filterProducts() {
+  // Update search input styling and clear button visibility
+  const searchInput = document.getElementById('prodSearchInput');
+  const clearBtn = document.getElementById('prodSearchClear');
+  const hasValue = searchInput?.value?.trim().length > 0;
+  
+  if (searchInput) {
+    if (hasValue) {
+      searchInput.classList.add('has-value');
+    } else {
+      searchInput.classList.remove('has-value');
+    }
+  }
+  
+  if (clearBtn) {
+    if (hasValue) {
+      clearBtn.classList.add('show');
+    } else {
+      clearBtn.classList.remove('show');
+    }
+  }
+  
+  // Clear previous timeout to debounce search
+  if (_searchTimeout) {
+    clearTimeout(_searchTimeout);
+  }
+  
+  // Debounce search for performance (wait 150ms after user stops typing)
+  _searchTimeout = setTimeout(() => {
+    applyCurrentFilters();
+  }, 150);
+}
+
+function clearSearch() {
+  const searchInput = document.getElementById('prodSearchInput');
+  const clearBtn = document.getElementById('prodSearchClear');
+  
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.classList.remove('has-value');
+    searchInput.focus(); // Keep focus on input after clearing
+  }
+  
+  if (clearBtn) {
+    clearBtn.classList.remove('show');
+  }
+  
+  // Immediately apply filters (no debounce for clear)
+  applyCurrentFilters();
+}
+
+function applyCurrentFilters() {
+  const searchInput = document.getElementById('prodSearchInput');
+  const search = (searchInput?.value || '').toLowerCase().trim();
+  
+  // Filter products based on search
+  if (!search) {
+    _filteredProds = [..._prods];
+  } else {
+    _filteredProds = _prods.filter(p => {
+      const name = (p.name || '').toLowerCase();
+      const category = (p.category || '').toLowerCase();
+      const price = String(p.price || '');
+      const id = (p.id || '').toLowerCase();
+      
+      // Search in name, category, price, and ID
+      return name.includes(search) || 
+             category.includes(search) || 
+             price.includes(search) ||
+             id.includes(search);
+    });
+  }
+  
+  // Re-apply current sort to filtered results
+  sortProducts(true); // Pass true to skip re-filtering
+}
+
+function sortProducts(skipFilter = false) {
+  // If not skipping filter, apply filters first
+  if (!skipFilter) {
+    applyCurrentFilters();
+    return; // applyCurrentFilters will call sortProducts(true)
+  }
+  
+  const sortSelect = document.getElementById('prodSortSelect');
+  const sortValue = sortSelect?.value || 'name-asc';
+  const [column, direction] = sortValue.split('-');
+  _currentSort = { column, direction };
+  
+  // Sort the filtered products
+  _filteredProds.sort((a, b) => {
+    let valA, valB;
+    
+    if (column === 'name') {
+      valA = (a.name || '').toLowerCase();
+      valB = (b.name || '').toLowerCase();
+    } else if (column === 'category') {
+      valA = (a.category || '').toLowerCase();
+      valB = (b.category || '').toLowerCase();
+    } else if (column === 'price') {
+      valA = Number(a.price || 0);
+      valB = Number(b.price || 0);
+    } else if (column === 'stock') {
+      valA = a.inStock !== false ? 1 : 0;
+      valB = b.inStock !== false ? 1 : 0;
+    }
+    
+    if (valA < valB) return direction === 'asc' ? -1 : 1;
+    if (valA > valB) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+  
+  renderProductTable();
+}
+
+function sortByColumn(column) {
+  // Toggle direction if clicking same column
+  if (_currentSort.column === column) {
+    _currentSort.direction = _currentSort.direction === 'asc' ? 'desc' : 'asc';
+  } else {
+    _currentSort.column = column;
+    _currentSort.direction = 'asc';
+  }
+  
+  // Update select to match
+  const selectValue = `${column}-${_currentSort.direction}`;
+  const selectEl = document.getElementById('prodSortSelect');
+  if (selectEl) {
+    // Find matching option or use custom sort
+    const hasOption = Array.from(selectEl.options).some(opt => opt.value === selectValue);
+    if (hasOption) selectEl.value = selectValue;
+  }
+  
+  sortProducts(true); // Skip re-filtering, just re-sort
+}
+
+function renderProductTable() {
+  const tbody = document.getElementById('prodTableBody');
+  const countEl = document.getElementById('prodCount');
+  const searchInput = document.getElementById('prodSearchInput');
+  const searchTerm = searchInput?.value?.trim() || '';
+  
+  // Update product count
+  if (countEl) {
+    const totalCount = _prods.length;
+    const filteredCount = _filteredProds.length;
+    
+    if (searchTerm && filteredCount < totalCount) {
+      countEl.textContent = `${filteredCount} of ${totalCount} products`;
+    } else {
+      countEl.textContent = `${filteredCount} product${filteredCount !== 1 ? 's' : ''}`;
+    }
+  }
+  
+  // Handle empty state
+  if (!_filteredProds.length) {
+    let emptyMessage = '';
+    let emptyIcon = '';
+    
+    if (searchTerm) {
+      emptyIcon = '🔍';
+      emptyMessage = `No products found matching "<strong>${searchTerm}</strong>"`;
+    } else {
+      emptyIcon = '📦';
+      emptyMessage = 'No products yet — add one to get started!';
+    }
+    
+    tbody.innerHTML = `<tr><td colspan="7" class="prod-empty">
+      <div class="prod-empty-icon">${emptyIcon}</div>
+      <div>${emptyMessage}</div>
+      ${searchTerm ? '<div style="margin-top:12px;font-size:.75rem;opacity:.6;">Try a different search term or <button onclick="clearSearch()" style="color:var(--deep-rose);text-decoration:underline;border:none;background:none;cursor:pointer;font:inherit;">clear search</button></div>' : ''}
+    </td></tr>`;
+    return;
+  }
+  
+  // Render table rows
+  tbody.innerHTML = _filteredProds.map(p => {
+    const imgH = (p.images && p.images[0]) 
+      ? `<img src="${p.images[0]}" alt="${p.name || ''}" />` 
+      : (p.emoji || '🎁');
     const isInStock = p.inStock !== false;
+    const discount = p.discount ? `<span class="prod-discount-badge">${p.discount}% OFF</span>` : '';
+    const stockBadgeClass = isInStock ? 'in-stock' : 'out-stock';
+    const stockBadgeText = isInStock ? '✅ In Stock' : '❌ Out of Stock';
     const stockBtnText = isInStock ? '❌ Mark Out of Stock' : '✅ Mark In Stock';
     const stockBtnClass = isInStock ? 'btn-del' : 'btn-green';
+    const rowClass = !isInStock ? 'out-of-stock' : '';
     
-    return `<div class="prod-card" style="${!isInStock ? 'opacity:0.7;' : ''}">
-      <div class="prod-img">
-        <span class="stock-tag ${isInStock?'in-stock':'out-stock'}">${isInStock?'✅ In Stock':'❌ Out of Stock'}</span>
-        ${imgH}
-        ${!isInStock ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;"><span style="background:rgba(224,80,80,0.95);color:white;padding:6px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Unavailable</span></div>' : ''}
-      </div>
-      <div class="prod-body">
-        <div class="prod-cat">${p.category||''}</div>
-        <div class="prod-name">${p.name||''}</div>
-        <div class="prod-price">₹${Number(p.price||0).toLocaleString('en-IN')}${disc}</div>
+    return `<tr class="${rowClass}">
+      <td>
+        <div class="prod-thumb">${imgH}</div>
+      </td>
+      <td class="prod-name-cell">
+        <div class="prod-name-text" title="${p.name || ''}">${p.name || 'Untitled'}</div>
+        <div class="prod-id-text">#${p.id}</div>
+      </td>
+      <td>
+        <span class="prod-cat-badge">${p.category || 'Uncategorized'}</span>
+      </td>
+      <td class="prod-price-cell">
+        ₹${Number(p.price || 0).toLocaleString('en-IN')}
+        ${discount}
+      </td>
+      <td>
+        <span class="stock-badge ${stockBadgeClass}">${stockBadgeText}</span>
+      </td>
+      <td style="text-align:center;color:${p.discount ? '#2d7a4f' : '#999'};font-weight:${p.discount ? '600' : '400'};">
+        ${p.discount ? p.discount + '%' : '—'}
+      </td>
+      <td>
         <div class="prod-actions">
-          <button class="btn btn-edit btn-sm" onclick="openEditProd('${p.id}')">✏️ Edit</button>
-          <button class="btn btn-del btn-sm" onclick="delProduct('${p.id}')">🗑️</button>
-          <button class="btn ${stockBtnClass} btn-sm" style="white-space:nowrap;" onclick="toggleStock('${p.id}',${isInStock})" title="Toggle stock availability">${stockBtnText}</button>
+          <button class="btn btn-edit btn-sm" onclick="openEditProd('${p.id}')" title="Edit product">✏️ Edit</button>
+          <button class="btn ${stockBtnClass} btn-sm" onclick="toggleStock('${p.id}', ${isInStock})" title="Toggle stock status">${stockBtnText}</button>
+          <button class="btn btn-del btn-sm" onclick="delProduct('${p.id}')" title="Delete product">🗑️</button>
         </div>
-      </div>
-    </div>`;
+      </td>
+    </tr>`;
   }).join('');
 }
 
@@ -2256,6 +2642,260 @@ window.uploadBannerImg = async function(input) {
     document.getElementById('bImgPreview').style.display='block';
     st.textContent='✅ Uploaded!';
   } catch{st.textContent='❌ Upload failed. Try again.';}
+};
+
+// ═══════════════════════════════════════════════
+// PROMOTIONAL BANNERS MANAGEMENT
+// ═══════════════════════════════════════════════
+
+let promoBannersAdmin = [];
+let currentEditingBannerIndex = -1;
+let pbImageUrl = '';
+let pbImageMobileUrl = '';
+
+// Load promotional banners in admin
+async function loadPromoBannersAdmin() {
+  try {
+    const configDoc = await getDoc(doc(db, 'siteSettings', 'config'));
+    
+    if (configDoc.exists()) {
+      const data = configDoc.data();
+      promoBannersAdmin = data.promoBanners || [];
+      renderPromoBannersListAdmin();
+    }
+  } catch (error) {
+    console.error('Error loading promo banners:', error);
+  }
+}
+
+// Render banners list in admin
+function renderPromoBannersListAdmin() {
+  const container = document.getElementById('promoBannersList');
+  
+  if (!promoBannersAdmin.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:24px;opacity:.5;">
+        No banners yet. Click "Add New Banner" to create one.
+      </div>
+    `;
+    return;
+  }
+  
+  const html = promoBannersAdmin.map((banner, index) => `
+    <div style="background:white;border:1px solid rgba(192,100,122,.12);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;">
+      ${banner.image ? `
+        <img src="${banner.image}" style="width:80px;height:50px;object-fit:cover;border-radius:6px;"/>
+      ` : `
+        <div style="width:80px;height:50px;background:${banner.bgColor || '#f9e4e9'};border-radius:6px;"></div>
+      `}
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:.82rem;margin-bottom:4px;">${banner.title || 'Untitled'}</div>
+        <div style="font-size:.7rem;opacity:.6;">${banner.subtitle || 'No subtitle'}</div>
+        <div style="font-size:.65rem;opacity:.5;margin-top:4px;">
+          Order: ${banner.order || index + 1} | 
+          Status: ${banner.active !== false ? '✅ Active' : '❌ Inactive'}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sm btn-secondary" onclick="editPromoBanner(${index})" title="Edit">✏️</button>
+        <button class="btn-sm btn-secondary" onclick="movePromoBanner(${index}, -1)" title="Move Up" ${index === 0 ? 'disabled' : ''}>▲</button>
+        <button class="btn-sm btn-secondary" onclick="movePromoBanner(${index}, 1)" title="Move Down" ${index === promoBannersAdmin.length - 1 ? 'disabled' : ''}>▼</button>
+        <button class="btn-sm" style="background:#e05050;color:white;" onclick="deletePromoBanner(${index})" title="Delete">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+  
+  container.innerHTML = html;
+}
+
+// Add new banner
+window.addNewPromoBanner = function() {
+  currentEditingBannerIndex = -1;
+  pbImageUrl = '';
+  pbImageMobileUrl = '';
+  
+  // Clear form
+  document.getElementById('pbTitle').value = '';
+  document.getElementById('pbSubtitle').value = '';
+  document.getElementById('pbDescription').value = '';
+  document.getElementById('pbCtaText').value = 'Shop Now';
+  document.getElementById('pbCtaLink').value = 'products.html';
+  document.getElementById('pbBgColor').value = '#f9e4e9';
+  document.getElementById('pbTextColor').value = '#ffffff';
+  document.getElementById('pbActive').value = 'true';
+  document.getElementById('pbOrder').value = promoBannersAdmin.length + 1;
+  document.getElementById('pbImagePreview').innerHTML = '';
+  document.getElementById('pbImageMobilePreview').innerHTML = '';
+  
+  document.getElementById('promoBannerEditor').style.display = 'block';
+};
+
+// Edit existing banner
+window.editPromoBanner = function(index) {
+  const banner = promoBannersAdmin[index];
+  currentEditingBannerIndex = index;
+  pbImageUrl = banner.image || '';
+  pbImageMobileUrl = banner.imageMobile || '';
+  
+  document.getElementById('pbTitle').value = banner.title || '';
+  document.getElementById('pbSubtitle').value = banner.subtitle || '';
+  document.getElementById('pbDescription').value = banner.description || '';
+  document.getElementById('pbCtaText').value = banner.ctaText || 'Shop Now';
+  document.getElementById('pbCtaLink').value = banner.ctaLink || 'products.html';
+  document.getElementById('pbBgColor').value = banner.bgColor || '#f9e4e9';
+  document.getElementById('pbTextColor').value = banner.textColor || '#ffffff';
+  document.getElementById('pbActive').value = String(banner.active !== false);
+  document.getElementById('pbOrder').value = banner.order || index + 1;
+  
+  if (pbImageUrl) {
+    document.getElementById('pbImagePreview').innerHTML = `
+      <img src="${pbImageUrl}" style="width:100%;max-width:300px;border-radius:8px;"/>
+    `;
+  }
+  
+  if (pbImageMobileUrl) {
+    document.getElementById('pbImageMobilePreview').innerHTML = `
+      <img src="${pbImageMobileUrl}" style="width:100%;max-width:200px;border-radius:8px;"/>
+    `;
+  }
+  
+  document.getElementById('promoBannerEditor').style.display = 'block';
+};
+
+// Close editor
+window.closePromoBannerEditor = function() {
+  document.getElementById('promoBannerEditor').style.display = 'none';
+  currentEditingBannerIndex = -1;
+};
+
+// Upload banner image
+window.uploadPromoBannerImage = async function(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const previewDiv = type === 'desktop' 
+    ? document.getElementById('pbImagePreview')
+    : document.getElementById('pbImageMobilePreview');
+  
+  previewDiv.innerHTML = '<div style="padding:12px;opacity:.6;">📸 Uploading...</div>';
+  
+  try {
+    const url = await uploadToImgbb(file);
+    
+    if (type === 'desktop') {
+      pbImageUrl = url;
+    } else {
+      pbImageMobileUrl = url;
+    }
+    
+    previewDiv.innerHTML = `
+      <img src="${url}" style="width:100%;max-width:${type === 'desktop' ? '300px' : '200px'};border-radius:8px;"/>
+    `;
+    
+    toast('✅ Image uploaded successfully!');
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    previewDiv.innerHTML = '<div style="color:#e05050;font-size:.75rem;">Upload failed. Try again.</div>';
+    toast('❌ Image upload failed', 'err');
+  }
+};
+
+// Save banner
+window.savePromoBanner = async function() {
+  const banner = {
+    title: document.getElementById('pbTitle').value.trim(),
+    subtitle: document.getElementById('pbSubtitle').value.trim(),
+    description: document.getElementById('pbDescription').value.trim(),
+    ctaText: document.getElementById('pbCtaText').value.trim(),
+    ctaLink: document.getElementById('pbCtaLink').value.trim(),
+    image: pbImageUrl,
+    imageMobile: pbImageMobileUrl,
+    bgColor: document.getElementById('pbBgColor').value,
+    textColor: document.getElementById('pbTextColor').value,
+    active: document.getElementById('pbActive').value === 'true',
+    order: parseInt(document.getElementById('pbOrder').value) || 1
+  };
+  
+  if (!banner.title) {
+    toast('⚠️ Please enter a banner title', 'err');
+    return;
+  }
+  
+  try {
+    if (currentEditingBannerIndex >= 0) {
+      // Update existing
+      promoBannersAdmin[currentEditingBannerIndex] = {
+        ...promoBannersAdmin[currentEditingBannerIndex],
+        ...banner
+      };
+    } else {
+      // Add new
+      banner.id = 'pb_' + Date.now();
+      promoBannersAdmin.push(banner);
+    }
+    
+    // Save to Firestore
+    await setDoc(doc(db, 'siteSettings', 'config'), {
+      promoBanners: promoBannersAdmin
+    }, { merge: true });
+    
+    toast('✅ Banner saved successfully!');
+    closePromoBannerEditor();
+    renderPromoBannersListAdmin();
+    
+  } catch (error) {
+    console.error('Error saving banner:', error);
+    toast('❌ Error saving banner', 'err');
+  }
+};
+
+// Delete banner
+window.deletePromoBanner = async function(index) {
+  if (!confirm('Delete this banner? This cannot be undone.')) return;
+  
+  try {
+    promoBannersAdmin.splice(index, 1);
+    
+    await setDoc(doc(db, 'siteSettings', 'config'), {
+      promoBanners: promoBannersAdmin
+    }, { merge: true });
+    
+    toast('✅ Banner deleted');
+    renderPromoBannersListAdmin();
+    
+  } catch (error) {
+    console.error('Error deleting banner:', error);
+    toast('❌ Error deleting banner', 'err');
+  }
+};
+
+// Move banner up/down
+window.movePromoBanner = async function(index, direction) {
+  const newIndex = index + direction;
+  
+  if (newIndex < 0 || newIndex >= promoBannersAdmin.length) return;
+  
+  // Swap
+  [promoBannersAdmin[index], promoBannersAdmin[newIndex]] = 
+  [promoBannersAdmin[newIndex], promoBannersAdmin[index]];
+  
+  // Update order values
+  promoBannersAdmin.forEach((b, i) => {
+    b.order = i + 1;
+  });
+  
+  try {
+    await setDoc(doc(db, 'siteSettings', 'config'), {
+      promoBanners: promoBannersAdmin
+    }, { merge: true });
+    
+    renderPromoBannersListAdmin();
+    toast('✅ Banner reordered');
+    
+  } catch (error) {
+    console.error('Error moving banner:', error);
+    toast('❌ Error reordering banner', 'err');
+  }
 };
 
 // ── SETTINGS ──
@@ -3032,6 +3672,10 @@ window.toggleSubCatVis = async function(id, cur) {
 };
 
 
+
+
 </script>
+
 </body>
 </html>
+
