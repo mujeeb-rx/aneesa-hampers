@@ -131,18 +131,7 @@
 
     /* NAV */
     nav.topnav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 60px;
-      background: rgba(253, 246, 240, .97);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(192, 100, 122, .1);
-      box-shadow: 0 2px 12px rgba(59, 13, 26, .04);
+      display: none !important; /* Hide top nav completely */
     }
 
     .nav-logo {
@@ -230,7 +219,7 @@
 
     /* BREADCRUMB */
     .breadcrumb {
-      padding: 90px 60px 16px;
+      padding: 20px 60px 16px; /* Reduced from 90px */
       font-size: .75rem;
       opacity: .5;
       display: flex;
@@ -2095,7 +2084,7 @@
       }
 
       .breadcrumb {
-        padding: 78px 20px 12px;
+        padding: 18px 20px 12px; /* Reduced from 78px */
       }
 
       .product-wrap {
@@ -2137,7 +2126,7 @@
     /* ── Large phone 480–599px ── */
     @media(max-width:600px) {
       .breadcrumb {
-        padding: 72px 16px 10px;
+        padding: 16px 16px 10px; /* Reduced from 72px */
       }
 
       .product-wrap {
@@ -2252,7 +2241,7 @@
       }
 
       .breadcrumb {
-        padding: 68px 12px 8px;
+        padding: 14px 12px 8px; /* Reduced from 68px */
       }
     }
 
@@ -2708,6 +2697,67 @@
     .esb-logout-btn:hover {
       background: rgba(200, 60, 60, .07);
     }
+
+    /* ── BOTTOM NAV (Mobile) ──────────────────────────────────── */
+    #bottomNav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: white;
+      border-top: 1px solid rgba(192,100,122,.12);
+      box-shadow: 0 -4px 20px rgba(59,13,26,.08);
+      z-index: 990;
+      justify-content: space-around;
+      align-items: stretch;
+    }
+    .bn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      flex: 1;
+      text-decoration: none;
+      color: rgba(59,13,26,.4);
+      font-size: .48rem;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      font-weight: 500;
+      position: relative;
+      transition: color .18s;
+      padding: 6px 2px 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bn-item:active { background: rgba(192,100,122,.06); }
+    .bn-item.active { color: var(--deep-rose); }
+    .bn-icon { font-size: 1.25rem; line-height: 1; }
+    .bn-label { font-size: .48rem; white-space: nowrap; margin-top: 1px; }
+    .bn-badge {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      margin-left: 2px;
+      background: var(--deep-rose);
+      color: white;
+      font-size: .5rem;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 10px;
+      padding: 0 4px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    @media (max-width: 900px) {
+      #bottomNav { display: flex; }
+      body { padding-bottom: 62px; }
+    }
   </style>
 </head>
 
@@ -2732,7 +2782,7 @@
         alt="Aneesa Hampers" id="navLogoImg" onerror="this.style.display='none'" />
       <div class="nav-logo-text"><span>Aneesa</span> Hampers</div>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" style="display: none !important;">
       <li><a href="index.html">Home</a></li>
       <li><a href="products.html">Collections</a></li>
       <li><a href="orders.html">My Orders</a></li>
@@ -2740,7 +2790,7 @@
       <li><a href="cart.html">Cart</a></li>
       <li><a href="login.html" id="navAccountLink">Account</a></li>
     </ul>
-    <div class="nav-right">
+    <div class="nav-right" style="display: none !important;">
       <span class="nav-user" id="navUserGreet"></span>
       <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
       <button id="navLogoutBtn" onclick="doLogout()"
