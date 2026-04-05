@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Website Integrity Test - Aneesa Hampers</title>
+<style>
+body{font-family:Arial,sans-serif;padding:40px;background:#f5f5f5;max-width:1000px;margin:0 auto;}
+h1{color:#3b0d1a;}
+.test{background:white;padding:20px;margin:15px 0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.pass{border-left:4px solid #4CAF50;}
+.fail{border-left:4px solid #f44336;}
+.warn{border-left:4px solid #ff9800;}
+.status{font-weight:bold;font-size:1.1em;margin-bottom:10px;}
+.pass .status{color:#4CAF50;}
+.fail .status{color:#f44336;}
+.warn .status{color:#ff9800;}
+pre{background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto;font-size:0.85em;}
+</style>
+</head>
+<body>
+<h1>🔍 Website Integrity Test</h1>
+<p>Testing all critical components of Aneesa Hampers website...</p>
+
+<div id="tests"></div>
+
+<script type="module">
+const results = [];
+
+function addTest(name, status, message, details = '') {
+  results.push({name, status, message, details});
+  render();
+}
+
+function render() {
+  const html = results.map(r => `
+    <div class="test ${r.status}">
+      <div class="status">${r.status === 'pass' ? '✅' : r.status === 'fail' ? '❌' : '⚠️'} ${r.name}</div>
+      <div>${r.message}</div>
+      ${r.details ? `<pre>${r.details}</pre>` : ''}
+    </div>
+  `).join('');
+  document.getElementById('tests').innerHTML = html;
+}
+
+// Test 1: Firebase Import
+try {
+  const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+  const { getFirestore, collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+  addTest('Firebase Imports', 'pass', 'Firebase SDK loaded successfully (v10.12.0)');
+  
+  // Test 2: Firebase Initialization
+  try {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
+      authDomain: "aneesa-hampers.firebaseapp.com",
+      projectId: "aneesa-hampers",
+      storageBucket: "aneesa-hampers.firebasestorage.app",
+      messagingSenderId: "909653560410",
+      appId: "1:909653560410:web:397db4fec2d9f042609c63"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    addTest('Firebase Initialization', 'pass', 'Firebase app initialized successfully');
+    
+    // Test 3: Categories Collection
+    try {
+      const catSnap = await getDocs(collection(db, 'categories'));
+      if (catSnap.empty) {
+        addTest('Categories Collection', 'warn', 'Categories collection is EMPTY - no categories found', 
+          'This is why categories are not showing on your website.\nYou need to add categories in the admin panel.');
+      } else {
+        const cats = [];
+        catSnap.forEach(doc => cats.push(doc.id));
+        addTest('Categories Collection', 'pass', `Found ${catSnap.size} categories`, cats.join(', '));
+      }
+    } catch (e) {
+      addTest('Categories Collection', 'fail', 'Cannot read categories: ' + e.message, e.stack);
+    }
+    
+    // Test 4: Products Collection
+    try {
+      const prodSnap = await getDocs(collection(db, 'products'));
+      if (prodSnap.empty) {
+        addTest('Products Collection', 'warn', 'Products collection is EMPTY - no products found', 
+          'This is why products are not showing on your website.\nYou need to add products in the admin panel.');
+      } else {
+        const prods = [];
+        prodSnap.forEach(doc => prods.push(doc.data().name || doc.id));
+        addTest('Products Collection', 'pass', `Found ${prodSnap.size} products`, prods.slice(0, 10).join(', ') + (prodSnap.size > 10 ? '...' : ''));
+      }
+    } catch (e) {
+      addTest('Products Collection', 'fail', 'Cannot read products: ' + e.message, e.stack);
+    }
+    
+  } catch (e) {
+    addTest('Firebase Initialization', 'fail', 'Failed to initialize Firebase: ' + e.message, e.stack);
+  }
+  
+} catch (e) {
+  addTest('Firebase Imports', 'fail', 'Failed to load Firebase SDK: ' + e.message, e.stack);
+}
+
+// Test 5: Check JavaScript Files
+const jsFiles = [
+  'firebase.js',
+  'lang-currency.js',
+  'mobilenav.js',
+  'bottomnav.js',
+  'discount-badge-manager.js'
+];
+
+for (const file of jsFiles) {
+  try {
+    const response = await fetch(file);
+    if (response.ok) {
+      addTest(`File: ${file}`, 'pass', `File exists and is accessible`);
+    } else {
+      addTest(`File: ${file}`, 'fail', `HTTP ${response.status}: ${response.statusText}`);
+    }
+  } catch (e) {
+    addTest(`File: ${file}`, 'fail', `Cannot load: ${e.message}`);
+  }
+}
+
+// Test 6: Check HTML Pages
+const htmlPages = ['index.html', 'products.html', 'cart.html', 'admin.html'];
+
+for (const page of htmlPages) {
+  try {
+    const response = await fetch(page);
+    if (response.ok) {
+      addTest(`Page: ${page}`, 'pass', `Page exists and is accessible`);
+    } else {
+      addTest(`Page: ${page}`, 'fail', `HTTP ${response.status}: ${response.statusText}`);
+    }
+  } catch (e) {
+    addTest(`Page: ${page}`, 'fail', `Cannot load: ${e.message}`);
+  }
+}
+
+// Final Summary
+setTimeout(() => {
+  const passCount = results.filter(r => r.status === 'pass').length;
+  const failCount = results.filter(r => r.status === 'fail').length;
+  const warnCount = results.filter(r => r.status === 'warn').length;
+  
+  const summary = document.createElement('div');
+  summary.style.cssText = 'background:#3b0d1a;color:white;padding:20px;border-radius:8px;margin-top:30px;text-align:center;';
+  summary.innerHTML = `
+    <h2 style="margin:0 0 15px;">Test Summary</h2>
+    <div style="font-size:1.2em;">
+      ✅ Passed: ${passCount} | ❌ Failed: ${failCount} | ⚠️ Warnings: ${warnCount}
+    </div>
+    ${failCount > 0 ? '<p style="margin-top:15px;color:#ff9800;">⚠️ Critical issues found - website may not work correctly</p>' : ''}
+    ${warnCount > 0 && failCount === 0 ? '<p style="margin-top:15px;color:#4CAF50;">✓ No errors, but check warnings above</p>' : ''}
+    ${failCount === 0 && warnCount === 0 ? '<p style="margin-top:15px;color:#4CAF50;">🎉 All tests passed! Website is healthy.</p>' : ''}
+  `;
+  document.body.appendChild(summary);
+}, 2000);
+
+</script>
+</body>
+</html>

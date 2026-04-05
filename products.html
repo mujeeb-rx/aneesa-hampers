@@ -42,6 +42,8 @@
       overflow-x: hidden;
     }
 
+    /* Mobile bottom nav padding - handled by bottomnav.js */
+
     img {
       max-width: 100%;
       display: block;
@@ -267,42 +269,49 @@
 
     /* FILTERS */
     .filters-bar {
-      padding: 18px 60px;
+      padding: 16px 60px;
       background: var(--white);
       border-bottom: 1px solid rgba(192, 100, 122, .1);
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 14px;
+      flex-wrap: nowrap;
       position: sticky;
       top: 68px;
       z-index: 100;
       box-shadow: 0 2px 12px rgba(59, 13, 26, .05);
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
+      min-height: 72px;
     }
 
     .filters-bar::-webkit-scrollbar {
-      height: 4px;
+      height: 8px;
     }
 
     .filters-bar::-webkit-scrollbar-track {
-      background: rgba(192, 100, 122, .05);
+      background: rgba(192, 100, 122, .08);
     }
 
     .filters-bar::-webkit-scrollbar-thumb {
       background: var(--deep-rose);
       border-radius: 4px;
     }
+    
+    .filters-bar::-webkit-scrollbar-thumb:hover {
+      background: var(--burgundy);
+    }
 
     .filter-pill {
-      padding: 10px 24px;
+      padding: 11px 26px;
       border-radius: 30px;
       border: 1.5px solid rgba(192, 100, 122, .2);
       background: transparent;
       font-family: 'Jost', sans-serif;
-      font-size: .72rem;
+      font-size: .73rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--burgundy);
@@ -313,6 +322,10 @@
       font-weight: 500;
       position: relative;
       overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
     }
 
     .filter-pill::before {
@@ -348,6 +361,63 @@
       opacity: 1;
     }
 
+    .filter-pill.active::after {
+      content: '✓';
+      margin-left: 8px;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    /* Clear All Button */
+    .clear-filters-btn {
+      padding: 10px 22px;
+      border-radius: 30px;
+      border: 1.5px solid rgba(192, 100, 122, .3);
+      background: rgba(192, 100, 122, .08);
+      font-family: 'Jost', sans-serif;
+      font-size: .7rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--deep-rose);
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      min-height: 42px;
+    }
+
+    .clear-filters-btn:hover {
+      background: var(--deep-rose);
+      color: white;
+      border-color: var(--deep-rose);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(192, 100, 122, .3);
+    }
+
+    .clear-filters-btn.show {
+      display: inline-flex;
+    }
+
+    /* Filter Count Badge */
+    .filter-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 10px;
+      background: white;
+      color: var(--deep-rose);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
     .filter-pill:active {
       transform: translateY(0);
       box-shadow: 0 2px 8px rgba(59, 13, 26, .15);
@@ -358,6 +428,47 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* ── RESPONSIVE: Desktop optimization ── */
+    @media (min-width: 1200px) {
+      .filters-bar {
+        padding: 18px 80px;
+        gap: 16px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      
+      .filter-pill {
+        padding: 12px 28px;
+        font-size: .74rem;
+        flex-shrink: 0;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .filters-bar {
+        padding: 18px 100px;
+        gap: 18px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .filters-bar {
+        padding: 14px 20px;
+        gap: 10px;
+        overflow-x: scroll;
+        flex-wrap: nowrap;
+      }
+      
+      .filter-pill {
+        padding: 9px 20px;
+        font-size: .68rem;
+      }
     }
 
     /* ── SUBCAT PILLS ── */
@@ -401,6 +512,9 @@
       cursor: pointer;
       outline: none;
       transition: border-color .25s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 160px;
     }
 
     .sort-select:focus {
@@ -885,6 +999,11 @@
         flex-shrink: 0;
       }
 
+      .clear-filters-btn {
+        font-size: .66rem;
+        padding: 9px 18px;
+      }
+
       .products-section {
         padding: 24px 20px 110px;
       }
@@ -956,6 +1075,11 @@
         font-size: .64rem;
       }
 
+      .clear-filters-btn {
+        font-size: .62rem;
+        padding: 7px 14px;
+      }
+
       .products-section {
         padding: 14px 12px 110px;
       }
@@ -1017,6 +1141,11 @@
       .filter-pill {
         padding: 6px 12px;
         font-size: .62rem;
+      }
+
+      .clear-filters-btn {
+        font-size: .6rem;
+        padding: 6px 12px;
       }
 
       .products-section {
@@ -1576,65 +1705,8 @@
       white-space: nowrap;
     }
 
-    /* ── BOTTOM NAV (Mobile) ──────────────────────────────────── */
-    #bottomNav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 62px;
-      background: white;
-      border-top: 1px solid rgba(192,100,122,.12);
-      box-shadow: 0 -4px 20px rgba(59,13,26,.08);
-      z-index: 990;
-      justify-content: space-around;
-      align-items: stretch;
-    }
-    .bn-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      flex: 1;
-      text-decoration: none;
-      color: rgba(59,13,26,.4);
-      font-size: .48rem;
-      letter-spacing: .3px;
-      text-transform: uppercase;
-      font-weight: 500;
-      position: relative;
-      transition: color .18s;
-      padding: 6px 2px 4px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .bn-item:active { background: rgba(192,100,122,.06); }
-    .bn-item.active { color: var(--deep-rose); }
-    .bn-icon { font-size: 1.25rem; line-height: 1; }
-    .bn-label { font-size: .48rem; white-space: nowrap; margin-top: 1px; }
-    .bn-badge {
-      position: absolute;
-      top: 4px;
-      left: 50%;
-      margin-left: 2px;
-      background: var(--deep-rose);
-      color: white;
-      font-size: .5rem;
-      font-weight: 700;
-      min-width: 16px;
-      height: 16px;
-      border-radius: 10px;
-      padding: 0 4px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid white;
-    }
-    @media (max-width: 900px) { 
-      #bottomNav { display: flex; }
-      body { padding-bottom: 62px; }
-    }
+    /* ── BOTTOM NAV (Mobile) — Handled by bottomnav.js ─────────── */
+    /* Bottom nav styles are injected by bottomnav.js for consistency across all pages */
   </style>
 </head>
 
@@ -1656,7 +1728,10 @@
       <li><a href="login.html">Account</a></li>
     </ul>
     <div class="nav-right" style="display: none !important;">
-      <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+      <a href="cart.html" class="nav-cart" aria-label="Shopping cart">
+        🛒
+        <span class="cart-count">0</span>
+      </a>
       <a href="login.html" id="navAccLink"
         style="font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;text-decoration:none;transition:opacity .2s">Account</a>
       <button id="navLogoutBtn" onclick="doLogout()"
@@ -1677,33 +1752,66 @@
       <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
     </div>
     <div class="esb-scroll">
+      <!-- MAIN MENU -->
       <div class="esb-section-lbl">Menu</div>
       <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
-      <a href="products.html" class="esb-link active"><span class="esb-link-icon">&#127873;</span>Collections</a>
+
       <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
-        <span class="esb-link-icon">&#128195;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+        <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
       </button>
       <div class="esb-sub" id="esb-cat-sub">
-        <div style="opacity:.4;font-size:.75rem;padding:8px 14px;">Loading categories…</div>
+        <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+        <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+        <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+        <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+        <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+        <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
       </div>
-      <a href="products.html?filter=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span
-          class="esb-link-badge">New</span></a>
-      <a href="products.html?filter=bestseller" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best
-        Sellers</a>
-      <a href="products.html?filter=offers" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp;
-        Deals</a>
+
+      <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+      <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+      <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
       <div class="esb-divider"></div>
+
+      <!-- CUSTOMER SERVICES -->
       <div class="esb-section-lbl">My Account</div>
       <a href="orders.html" class="esb-link"><span class="esb-link-icon">&#128230;</span>My Orders</a>
-      <a href="wishlist.html" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
-      <a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
-      <a href="cart.html" class="esb-link"><span class="esb-link-icon">&#128722;</span>My Cart</a>
+      <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
       <div class="esb-divider"></div>
+
+      <!-- SUPPORT -->
       <div class="esb-section-lbl">Support</div>
-      <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span
-          class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
-      <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span
-          class="esb-link-icon">&#128222;</span>Contact Us</a>
+      <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+      <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+      <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+        <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+      </button>
+      <div class="esb-sub" id="esb-faq-sub">
+        <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+        <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+        <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+      </div>
+
+      <div class="esb-divider"></div>
+
+      <!-- SETTINGS -->
+      <div class="esb-section-lbl">Settings</div>
+      <div class="esb-link" style="cursor:default;justify-content:space-between;">
+        <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+        <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+      </div>
+      <div class="esb-link" style="cursor:default;justify-content:space-between;">
+        <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+        <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+      </div>
+      <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+        <span class="esb-link-icon">&#128205;</span>Delivery Location
+        <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+      </div>
       <div class="esb-divider"></div>
     </div>
     <div class="esb-footer">
@@ -1726,6 +1834,9 @@
   <div class="filters-bar" id="filtersBar">
     <button class="filter-pill active" data-cat="all" onclick="setCat('all',this)">✨ All</button>
     <!-- dynamic category pills injected here by Firebase -->
+    <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">
+      <span>✕</span> Clear All
+    </button>
     <div class="filter-right">
       <select class="sort-select" id="sortSelect">
         <option value="newest">Newest First</option>
@@ -1926,14 +2037,18 @@
     let allProducts = [];
     let allCategories = [];
     let allSubcategories = [];
-    let currentCat = 'all';
+    let selectedCategories = []; // Multi-select: array of selected category IDs
     let currentSubcat = 'all';
     let currentSearch = '';
     const urlCat = new URLSearchParams(location.search).get('cat');
     const urlSub = new URLSearchParams(location.search).get('sub');
     const urlSearch = new URLSearchParams(location.search).get('search');
     const urlFilter = new URLSearchParams(location.search).get('filter'); // new | bestseller | offers
-    if (urlCat) { currentCat = urlCat; }
+    
+    // Parse URL categories (supports comma-separated values for multi-select)
+    if (urlCat && urlCat !== 'all') {
+      selectedCategories = urlCat.split(',').map(c => c.trim()).filter(Boolean);
+    }
     if (urlSub) { currentSubcat = urlSub; }
     if (urlSearch) {
       currentSearch = urlSearch.trim().toLowerCase();
@@ -1949,7 +2064,16 @@
     // RENDER
     function renderProducts() {
       const sort = document.getElementById('sortSelect').value;
-      let list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === currentCat);
+      
+      // Multi-select category filter: show products from ANY selected category
+      let list;
+      if (selectedCategories.length === 0) {
+        // No categories selected = show all
+        list = [...allProducts];
+      } else {
+        // Show products that match ANY of the selected categories (OR logic)
+        list = allProducts.filter(p => selectedCategories.includes(p.category));
+      }
       
       // Filter out out-of-stock products
       list = list.filter(p => p.inStock !== false);
@@ -2008,7 +2132,7 @@
           countEl.innerHTML = `<span style="color:var(--deep-rose);font-weight:600;">${list.length} result${list.length !== 1 ? 's' : ''}</span> for "<strong>${currentSearch}</strong>"`;
         } else if (currentSearch && !list.length) {
           countEl.innerHTML = `No results for "<strong>${currentSearch}</strong>" — showing all products`;
-          list = currentCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === currentCat);
+          list = selectedCategories.length === 0 ? [...allProducts] : allProducts.filter(p => selectedCategories.includes(p.category));
           if (currentSubcat !== 'all') { list = list.filter(p => p.subcategory === currentSubcat || p.subcat === currentSubcat); }
         } else {
           countEl.textContent = list.length ? `${list.length} item${list.length !== 1 ? 's' : ''} found` : '';
@@ -2101,14 +2225,40 @@
         grid.style.transform = 'translateY(10px)';
       }
 
-      // Update active state
-      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      // Update filters
-      currentCat = cat;
-      currentSubcat = 'all';
-      updateSubcatBar(cat);
+      // Handle "All" button - clear all selections
+      if (cat === 'all') {
+        selectedCategories = [];
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSubcat = 'all';
+        updateSubcatBar('all');
+        updateClearButton();
+      } else {
+        // Toggle category selection (multi-select)
+        const index = selectedCategories.indexOf(cat);
+        
+        if (index > -1) {
+          // Category already selected - deselect it
+          selectedCategories.splice(index, 1);
+          btn.classList.remove('active');
+          
+          // If no categories selected, activate "All"
+          if (selectedCategories.length === 0) {
+            document.querySelector('.filter-pill[data-cat="all"]').classList.add('active');
+          }
+        } else {
+          // Category not selected - add it
+          selectedCategories.push(cat);
+          btn.classList.add('active');
+          
+          // Deactivate "All" button when categories are selected
+          document.querySelector('.filter-pill[data-cat="all"]').classList.remove('active');
+        }
+        
+        // Update subcategory bar to show subcats from all selected categories
+        updateSubcatBar(selectedCategories.length > 0 ? selectedCategories : 'all');
+        updateClearButton();
+      }
       
       // Smooth scroll to top of products (optional, for better UX)
       const productsSection = document.querySelector('.products-section');
@@ -2128,32 +2278,95 @@
       }, 150);
       
       // Update URL without reload
-      const url = new URL(window.location.href);
-      if (cat === 'all') { url.searchParams.delete('cat'); } else { url.searchParams.set('cat', cat); }
-      url.searchParams.delete('sub');
-      window.history.replaceState({}, '', url);
+      updateURL();
     };
+
+    // Clear all filters
+    window.clearAllFilters = function() {
+      selectedCategories = [];
+      currentSubcat = 'all';
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      document.querySelector('.filter-pill[data-cat="all"]').classList.add('active');
+      updateSubcatBar('all');
+      updateClearButton();
+      renderProducts();
+      updateURL();
+    };
+
+    // Update clear button visibility
+    function updateClearButton() {
+      const clearBtn = document.getElementById('clearFiltersBtn');
+      if (clearBtn) {
+        if (selectedCategories.length >= 2) {
+          clearBtn.classList.add('show');
+        } else {
+          clearBtn.classList.remove('show');
+        }
+      }
+    }
+
+    // Update URL with current filter state
+    function updateURL() {
+      const url = new URL(window.location.href);
+      
+      if (selectedCategories.length === 0) {
+        url.searchParams.delete('cat');
+      } else {
+        // Comma-separated categories for multi-select
+        url.searchParams.set('cat', selectedCategories.join(','));
+      }
+      
+      if (currentSubcat === 'all') {
+        url.searchParams.delete('sub');
+      } else {
+        url.searchParams.set('sub', currentSubcat);
+      }
+      
+      window.history.replaceState({}, '', url);
+    }
 
     window.setSubCat = function(subSlug, btn) {
       document.querySelectorAll('.subcat-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentSubcat = subSlug;
       renderProducts();
-      // Update URL
-      const url = new URL(window.location.href);
-      if (subSlug === 'all') { url.searchParams.delete('sub'); } else { url.searchParams.set('sub', subSlug); }
-      window.history.replaceState({}, '', url);
+      updateURL();
     };
 
     function updateSubcatBar(cat) {
       const bar = document.getElementById('subcatBar');
       const wrap = document.getElementById('subcatPillsWrap');
       if (!bar || !wrap) return;
-      if (cat === 'all') { bar.style.display = 'none'; return; }
-      const subs = allSubcategories.filter(s => s.parentCat === cat && s.visible !== false);
-      if (!subs.length) { bar.style.display = 'none'; return; }
+      
+      // Hide if no categories selected or "all" selected
+      if (cat === 'all' || (Array.isArray(cat) && cat.length === 0)) {
+        bar.style.display = 'none';
+        return;
+      }
+      
+      // Get subcategories for all selected categories
+      let catsToShow = Array.isArray(cat) ? cat : [cat];
+      let subs = allSubcategories.filter(s => 
+        catsToShow.includes(s.parentCat) && s.visible !== false
+      );
+      
+      if (!subs.length) {
+        bar.style.display = 'none';
+        return;
+      }
+      
       bar.style.display = 'block';
-      wrap.innerHTML = `<button class="subcat-pill active" onclick="setSubCat('all',this)">All ${allCategories.find(c=>(c.slug||c.id)===cat)?.name||''}</button>` +
+      
+      // Build label for "All" button
+      let allLabel = 'All';
+      if (catsToShow.length === 1) {
+        const catName = allCategories.find(c => (c.slug || c.id) === catsToShow[0])?.name;
+        if (catName) allLabel = `All ${catName}`;
+      } else if (catsToShow.length > 1) {
+        allLabel = 'All Selected';
+      }
+      
+      wrap.innerHTML = `<button class="subcat-pill active" onclick="setSubCat('all',this)">${allLabel}</button>` +
         subs.map(s => `<button class="subcat-pill${currentSubcat===s.slug||currentSubcat===s.id?' active':''}" data-sub="${s.slug||s.id}" onclick="setSubCat('${s.slug||s.id}',this)">${s.emoji||''} ${s.name}</button>`).join('');
     }
     document.getElementById('sortSelect').addEventListener('change', renderProducts);
@@ -2190,6 +2403,16 @@
       renderProducts();
       setTimeout(function () { if (window.AH_reapplyCurrency) window.AH_reapplyCurrency(); }, 200);
       setTimeout(() => startAutoSlide(allProducts), 600);
+    }, error => {
+      // Error handler - try loading without orderBy if index is missing
+      console.error('Products query failed, trying without orderBy:', error);
+      const fallbackQuery = query(collection(db, 'products'));
+      onSnapshot(fallbackQuery, snap => {
+        allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderProducts();
+        setTimeout(function () { if (window.AH_reapplyCurrency) window.AH_reapplyCurrency(); }, 200);
+        setTimeout(() => startAutoSlide(allProducts), 600);
+      });
     });
 
     // ── Dynamic categories + subcategories from Firestore (real-time) ──
@@ -2209,9 +2432,16 @@
         bar.insertBefore(btn, rightDiv);
       });
 
-      // Activate pill from URL
-      if (urlCat) {
-        document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.cat === urlCat));
+      // Activate pills from URL (supports multi-select)
+      if (selectedCategories.length > 0) {
+        document.querySelectorAll('.filter-pill').forEach(p => {
+          if (p.dataset.cat === 'all') {
+            p.classList.remove('active');
+          } else if (selectedCategories.includes(p.dataset.cat)) {
+            p.classList.add('active');
+          }
+        });
+        updateClearButton();
       }
 
       // Populate sidebar with dynamic categories
@@ -2222,8 +2452,47 @@
         ).join('') || '<div style="opacity:.4;font-size:.75rem;padding:8px 14px;">No categories yet</div>';
       }
 
-      // Show subcat bar if URL has cat
-      if (urlCat && urlCat !== 'all') updateSubcatBar(urlCat);
+      // Show subcat bar if URL has categories
+      if (selectedCategories.length > 0) {
+        updateSubcatBar(selectedCategories);
+      }
+    }, error => {
+      // Error handler for categories - try without orderBy
+      console.error('Categories query failed, trying without orderBy:', error);
+      const fallbackCatQuery = query(collection(db, 'categories'));
+      onSnapshot(fallbackCatQuery, catSnap => {
+        allCategories = catSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(c => c.visible !== false);
+        const bar = document.getElementById('filtersBar');
+        bar.querySelectorAll('.filter-pill[data-cat]:not([data-cat="all"])').forEach(b => b.remove());
+        const rightDiv = bar.querySelector('.filter-right');
+        allCategories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-pill';
+          btn.dataset.cat = cat.slug || cat.id;
+          btn.textContent = (cat.emoji || '') + ' ' + cat.name;
+          btn.onclick = function () { setCat(cat.slug || cat.id, btn); };
+          bar.insertBefore(btn, rightDiv);
+        });
+        if (selectedCategories.length > 0) {
+          document.querySelectorAll('.filter-pill').forEach(p => {
+            if (p.dataset.cat === 'all') {
+              p.classList.remove('active');
+            } else if (selectedCategories.includes(p.dataset.cat)) {
+              p.classList.add('active');
+            }
+          });
+          updateClearButton();
+        }
+        const sidebarCatSub = document.getElementById('esb-cat-sub');
+        if (sidebarCatSub) {
+          sidebarCatSub.innerHTML = allCategories.map(c =>
+            `<a href="products.html?cat=${c.slug||c.id}" class="esb-sub-link">${c.emoji||''} ${c.name}</a>`
+          ).join('') || '<div style="opacity:.4;font-size:.75rem;padding:8px 14px;">No categories yet</div>';
+        }
+        if (selectedCategories.length > 0) {
+          updateSubcatBar(selectedCategories);
+        }
+      });
     });
 
     // ── Subcategories real-time ──
@@ -2238,6 +2507,20 @@
           if (btn) { setSubCat(urlSub, btn); }
         }, 100);
       }
+    }, error => {
+      // Error handler for subcategories - try without orderBy
+      console.error('Subcategories query failed, trying without orderBy:', error);
+      const fallbackSubQuery = query(collection(db, 'subcategories'));
+      onSnapshot(fallbackSubQuery, subSnap => {
+        allSubcategories = subSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.visible !== false);
+        if (currentCat !== 'all') updateSubcatBar(currentCat);
+        if (urlSub && currentCat !== 'all') {
+          setTimeout(() => {
+            const btn = document.querySelector(`.subcat-pill[data-sub="${urlSub}"]`);
+            if (btn) { setSubCat(urlSub, btn); }
+          }, 100);
+        }
+      });
     });
   
 
@@ -2263,6 +2546,9 @@
         ov.style.display = 'block';
         setTimeout(function () { ov.classList.add('show'); }, 10);
         document.body.style.overflow = 'hidden';
+        // Hide hamburger button when sidebar opens
+        var hamBtn = document.querySelector('.ham-btn');
+        if(hamBtn) hamBtn.style.display='none';
       };
       window.enhSbClose = function () {
         document.getElementById('enh-sidebar').classList.remove('open');
@@ -2270,6 +2556,9 @@
         ov.classList.remove('show');
         setTimeout(function () { ov.style.display = 'none'; }, 300);
         document.body.style.overflow = '';
+        // Show hamburger button when sidebar closes
+        var hamBtn = document.querySelector('.ham-btn');
+        if(hamBtn) hamBtn.style.display='flex';
       };
       window.enhToggle = function (id, btn) {
         var sub = document.getElementById(id);

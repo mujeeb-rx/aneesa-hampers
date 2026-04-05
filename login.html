@@ -9,6 +9,8 @@
 :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--white:#fff;--green:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);min-height:100vh;display:flex;}
+/* Mobile bottom nav padding - handled by bottomnav.js */
+@media(max-width:900px){body{flex-direction:column;}}
 @media(pointer:fine){body{cursor:none;}.cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:30px;height:30px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.4;}}
 @media(pointer:coarse){.cursor,.cursor-ring{display:none;}button,a,[onclick]{cursor:pointer;}}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:#fff;padding:10px 22px;border-radius:30px;font-size:.77rem;z-index:9999;display:none;white-space:nowrap;}
@@ -294,7 +296,20 @@ window.gLogin = async function(){
     await setDoc(doc(db,'users',r.user.uid),{name:r.user.displayName,email:r.user.email,updatedAt:serverTimestamp()},{merge:true});
     if(fromCart||fromAccount) window.location.href=fromCart?'cart.html':'account.html';
     else showSuccess(r.user.displayName||r.user.email.split('@')[0]);
-  }catch(e){if(e.code!=='auth/popup-closed-by-user') toast('Google sign-in failed.');}
+  }catch(e){
+    console.error('Google sign-in error:', e);
+    console.error('Error code:', e.code);
+    console.error('Error message:', e.message);
+    if(e.code!=='auth/popup-closed-by-user'){
+      if(e.code==='auth/unauthorized-domain'){
+        toast('⚠️ Domain not authorized. Add this domain in Firebase Console.');
+      }else if(e.code==='auth/operation-not-allowed'){
+        toast('⚠️ Google sign-in not enabled in Firebase.');
+      }else{
+        toast('Google sign-in failed: ' + (e.message || e.code));
+      }
+    }
+  }
 };
 
 // STRENGTH

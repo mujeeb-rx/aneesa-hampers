@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ✅ Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email == "phatanmujeebkhan64@gmail.com";
+    }
+
+    // ✅ PRODUCTS — PUBLIC READ, ADMIN WRITE
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ✅ CATEGORIES — PUBLIC READ, ADMIN WRITE
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ✅ SUBCATEGORIES — PUBLIC READ, ADMIN WRITE
+    match /subcategories/{subId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users — readable by owner, writable by auth + functions
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+    }
+
+    // Orders — readable/writable by the order owner + ADMIN
+    match /orders/{orderId} {
+      // Allow queries where uid or customerUID matches the authenticated user
+      allow read: if request.auth != null &&
+        (request.auth.uid == resource.data.uid ||
+         request.auth.uid == resource.data.customerUID);
+      // Allow create if the order belongs to the authenticated user
+      allow create: if request.auth != null &&
+        (request.auth.uid == request.resource.data.uid ||
+         request.auth.uid == request.resource.data.customerUID);
+      // Allow update/delete only for own orders
+      allow update, delete: if request.auth != null &&
+        (request.auth.uid == resource.data.uid ||
+         request.auth.uid == resource.data.customerUID);
+      // ✅ ADMIN CAN READ/WRITE ALL ORDERS
+      allow read, write: if isAdmin();
+    }
+
+    // Offers — public read, admin-only write
+    match /offers/{offerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Site settings — public read, admin write
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Reviews — anyone can read; anyone can create (auto-approved); admin can delete/update
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // siteSettings (used as config doc)
+    match /siteSettings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+  }
+}

@@ -10,6 +10,7 @@
     :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);min-height:100vh;overflow-x:hidden;}
+    /* Mobile bottom nav padding - handled by bottomnav.js */
     @media(pointer:fine){body{cursor:none;}.cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:30px;height:30px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.4;}}
     @media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,[onclick],input{cursor:pointer;}}
     /* NAV */

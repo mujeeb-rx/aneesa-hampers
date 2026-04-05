@@ -36,7 +36,8 @@
     LKR: 3.72,
     NPR: 1.60,
     NZD: 0.020,
-    ZAR: 0.22
+    ZAR: 0.22,
+    IDR: 189.5
   };
 
   /* ── Currency symbols ─────────────────────────────────────────── */
@@ -45,7 +46,7 @@
     QAR: '﷼', KWD: 'KD', BHD: 'BD', OMR: 'R.O.', CAD: 'CA$',
     AUD: 'A$', SGD: 'S$', MYR: 'RM', EUR: '€', JPY: '¥',
     CNY: '¥', KRW: '₩', PKR: '₨', BDT: '৳', LKR: 'Rs',
-    NPR: 'Rs', NZD: 'NZ$', ZAR: 'R'
+    NPR: 'Rs', NZD: 'NZ$', ZAR: 'R', IDR: 'Rp'
   };
 
   /* ── Apply currency conversion ───────────────────────────────── */

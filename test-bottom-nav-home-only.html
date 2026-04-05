@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bottom Nav Test - Home Only</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Jost', sans-serif;
+      padding: 20px;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #c0647a;
+      margin-bottom: 20px;
+    }
+    .test-section {
+      background: #f5f5f5;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #3b0d1a;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .status.pass {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    .page-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .page-links a {
+      padding: 10px 15px;
+      background: #c0647a;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+    .page-links a:hover {
+      background: #a05464;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🧪 Bottom Navigation Test - Home Page Only</h1>
+    
+    <div class="test-section">
+      <h2>Current Page</h2>
+      <div id="currentPage" class="status info"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>Bottom Nav Status</h2>
+      <div id="navStatus" class="status"></div>
+    </div>
+    
+    <div class="test-section">
+      <h2>Expected Behavior</h2>
+      <ul style="padding-left: 20px; line-height: 1.8;">
+        <li>✅ Bottom nav appears ONLY on <strong>index.html</strong> (Home page)</li>
+        <li>✅ Bottom nav visible on mobile devices (width ≤ 900px)</li>
+        <li>❌ Bottom nav hidden on all other pages (Shop, Cart, Orders, Account)</li>
+        <li>✅ No empty space or layout gaps on pages without bottom nav</li>
+      </ul>
+    </div>
+    
+    <div class="test-section">
+      <h2>Test Navigation</h2>
+      <p style="margin-bottom: 10px;">Visit each page to verify bottom nav visibility:</p>
+      <div class="page-links">
+        <a href="index.html">🏠 Home</a>
+        <a href="products.html">🎁 Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="account.html">👤 Account</a>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h2>Instructions</h2>
+      <ol style="padding-left: 20px; line-height: 1.8;">
+        <li>Resize your browser to mobile width (≤ 900px) or use mobile device</li>
+        <li>Navigate to <strong>index.html</strong> - bottom nav should appear</li>
+        <li>Navigate to other pages - bottom nav should NOT appear</li>
+        <li>Check that no empty gap remains at bottom of pages without nav</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="bottomnav.js"></script>
+  <script>
+    // Display current page
+    const currentPath = window.location.pathname;
+    const currentFile = currentPath.split('/').pop() || 'index.html';
+    document.getElementById('currentPage').textContent = 
+      `Current File: ${currentFile}`;
+    
+    // Check bottom nav status
+    function checkNavStatus() {
+      const nav = document.getElementById('bottomNav');
+      const isHome = currentFile === 'index.html' || currentFile === '';
+      const isMobile = window.innerWidth <= 900;
+      const statusEl = document.getElementById('navStatus');
+      
+      if (nav) {
+        const isVisible = window.getComputedStyle(nav).display !== 'none';
+        
+        if (isHome && isMobile && isVisible) {
+          statusEl.className = 'status pass';
+          statusEl.innerHTML = '✅ <strong>PASS:</strong> Bottom nav is visible (Home page + Mobile width)';
+        } else if (isHome && !isMobile) {
+          statusEl.className = 'status info';
+          statusEl.innerHTML = 'ℹ️ <strong>INFO:</strong> Bottom nav hidden (Desktop width - expected)';
+        } else if (!isHome && !isVisible) {
+          statusEl.className = 'status pass';
+          statusEl.innerHTML = '✅ <strong>PASS:</strong> Bottom nav is hidden (Not on Home page - expected)';
+        } else {
+          statusEl.className = 'status fail';
+          statusEl.style.background = '#f8d7da';
+          statusEl.style.color = '#721c24';
+          statusEl.style.border = '1px solid #f5c6cb';
+          statusEl.innerHTML = '❌ <strong>FAIL:</strong> Unexpected nav state';
+        }
+      } else {
+        if (!isHome) {
+          statusEl.className = 'status pass';
+          statusEl.innerHTML = '✅ <strong>PASS:</strong> No bottom nav element (Not on Home page - expected)';
+        } else {
+          statusEl.className = 'status fail';
+          statusEl.style.background = '#f8d7da';
+          statusEl.style.color = '#721c24';
+          statusEl.style.border = '1px solid #f5c6cb';
+          statusEl.innerHTML = '❌ <strong>FAIL:</strong> Bottom nav missing on Home page';
+        }
+      }
+      
+      // Add body padding info
+      const bodyPadding = window.getComputedStyle(document.body).paddingBottom;
+      statusEl.innerHTML += `<br><small>Body bottom padding: ${bodyPadding}</small>`;
+    }
+    
+    // Check on load and resize
+    setTimeout(checkNavStatus, 100);
+    window.addEventListener('resize', checkNavStatus);
+  </script>
+</body>
+</html>

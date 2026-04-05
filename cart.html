@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 /* ── BUY NOW PRE-HIDE — applied inline before CSS load to prevent flash ── */
-html.buynow-mode-pre nav,
+html.buynow-mode-pre nav.main-nav,
 html.buynow-mode-pre .steps-bar,
 html.buynow-mode-pre #cartMain,
 html.buynow-mode-pre #floatWA{visibility:hidden;}
@@ -16,22 +16,54 @@ html.buynow-mode-pre #floatWA{visibility:hidden;}
 :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+/* Mobile bottom nav padding - handled by bottomnav.js */
 .cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
 .cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}
 #ah-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.76rem;z-index:9999;display:none;white-space:nowrap;box-shadow:0 6px 24px rgba(59,13,26,.3);}
 
 /* NAV */
-nav{display:none !important;} /* Hide top nav completely */
+nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT affect #bottomNav */
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
 .nav-logo span{color:var(--deep-rose);}
 .nav-links{display:flex;gap:34px;list-style:none;}
 .nav-links a{text-decoration:none;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.5;transition:opacity .2s,color .2s;}
 .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
 .nav-right{display:flex;align-items:center;gap:10px;}
-.nav-cart{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--burgundy);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;cursor:none;padding:8px 12px;border-radius:8px;}
+.nav-cart{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:var(--burgundy);
+  font-size:1.1rem;
+  padding:10px 16px;
+  border-radius:24px;
+  border:1.5px solid rgba(192,100,122,.18);
+  background:var(--cream);
+  transition:all .2s;
+  text-decoration:none;
+  min-width:56px;
+}
 @media(max-width:900px){nav{padding:0 16px 0 68px;}.nav-links{display:none;}.nav-right{display:none;}}
-.nav-cart:hover{background:var(--blush);}
-.cart-count{background:var(--deep-rose);color:white;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.6rem;padding:0 5px;font-weight:600;}
+.nav-cart:hover{background:var(--blush);border-color:rgba(192,100,122,.3);}
+.cart-count{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  background:var(--deep-rose);
+  color:white;
+  min-width:20px;
+  height:20px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.62rem;
+  font-weight:700;
+  padding:0 5px;
+  border:2px solid var(--cream);
+  box-shadow:0 2px 8px rgba(192,100,122,.3);
+}
 .nav-wa{background:var(--green);color:white;border-radius:8px;padding:9px 18px;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;text-decoration:none;cursor:none;}
 
 /* LOGIN GATE */
@@ -192,7 +224,7 @@ nav{display:none !important;} /* Hide top nav completely */
 }
 #buyNowOverlay.open{display:flex;}
 /* When in buynow-mode, hide all cart chrome */
-body.buynow-mode nav,
+body.buynow-mode nav.main-nav,
 body.buynow-mode .steps-bar,
 body.buynow-mode #cartMain,
 body.buynow-mode #floatWA,
@@ -811,66 +843,16 @@ body.buynow-mode footer{display:none!important;}
   color: var(--cream);
 }
 
-/* ── BOTTOM NAV (Mobile) ──────────────────────────────────── */
-#bottomNav {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 62px;
-  background: white;
-  border-top: 1px solid rgba(192,100,122,.12);
-  box-shadow: 0 -4px 20px rgba(59,13,26,.08);
-  z-index: 990;
-  justify-content: space-around;
-  align-items: stretch;
-}
-.bn-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  flex: 1;
-  text-decoration: none;
-  color: rgba(59,13,26,.4);
-  font-size: .48rem;
-  letter-spacing: .3px;
-  text-transform: uppercase;
-  font-weight: 500;
-  position: relative;
-  transition: color .18s;
-  padding: 6px 2px 4px;
-  -webkit-tap-highlight-color: transparent;
-}
-.bn-item:active { background: rgba(192,100,122,.06); }
-.bn-item.active { color: var(--deep-rose); }
-.bn-icon { font-size: 1.25rem; line-height: 1; }
-.bn-label { font-size: .48rem; white-space: nowrap; margin-top: 1px; }
-.bn-badge {
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  margin-left: 2px;
-  background: var(--deep-rose);
-  color: white;
-  font-size: .5rem;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 10px;
-  padding: 0 4px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-}
+/* ── BOTTOM NAV (Mobile) — Handled by bottomnav.js ─────────── */
+/* Bottom nav styles are injected by bottomnav.js for consistency across all pages */
+/* Ensure icons are visible on cart page */
+#bottomNav .bn-icon{display:flex!important;visibility:visible!important;opacity:1!important;width:24px!important;height:24px!important;}
+#bottomNav .bn-icon svg{display:block!important;visibility:visible!important;opacity:1!important;width:22px!important;height:22px!important;stroke:currentColor!important;}
+#bottomNav .bn-item{display:flex!important;flex-direction:column!important;align-items:center!important;}
 
 @media (max-width: 900px) {
-  .ham-btn { display: flex; }
-  #bottomNav { display: flex; }
-  body { padding-bottom: 62px; }
+  .ham-btn { display: none !important; }
+  #enh-sidebar { display: none !important; }
 }
 </style>
 </head>
@@ -945,21 +927,110 @@ body.buynow-mode footer{display:none!important;}
 <!-- ============================================================ -->
 <!-- MAIN CART PAGE -->
 <!-- ============================================================ -->
-<nav>
-  <button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu"><span></span><span></span><span></span></button>
+<!-- HAMBURGER — hidden on this page, navigation via bottom nav only -->
+<button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu" style="display:none!important;"><span></span><span></span><span></span></button>
+
+<nav class="main-nav">
   <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
   <ul class="nav-links" style="display: none !important;">
     <li><a href="index.html">Home</a></li>
     <li><a href="products.html">Collections</a></li>
     <li><a href="orders.html">My Orders</a></li>
-    
     <li><a href="cart.html" class="active">Cart</a></li>
     <li><a href="login.html" id="navAccountLink">Account</a></li>
   </ul>
   <div class="nav-right" style="display: none !important;">
-    <a href="cart.html" class="nav-cart">&#128717; <span class="cart-count" id="cartBadgeNav">0</span></a>
+    <a href="cart.html" class="nav-cart" aria-label="Shopping cart">
+      🛒
+      <span class="cart-count" id="cartBadgeNav">0</span>
+    </a>
     <button id="navLogoutBtn" onclick="doLogout()" style="display:none;align-items:center;gap:5px;padding:7px 14px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:20px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500">&#128274; Logout</button>
     <a class="nav-wa" href="#" id="navWA">&#128172; Order Now</a>
+  </div>
+</nav>
+
+<!-- ENHANCED SIDEBAR — hidden on this page -->
+<div id="enh-overlay" onclick="enhSbClose()" style="display:none!important;"></div>
+<nav id="enh-sidebar" aria-label="Site navigation" style="display:none!important;">
+  <div class="esb-user-area">
+    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
+    <div class="esb-avatar" id="esb-av">&#128100;</div>
+    <div class="esb-greeting">Hello,</div>
+    <div class="esb-name" id="esb-nm">Guest Visitor</div>
+    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
+  </div>
+  <div class="esb-scroll">
+    <!-- MAIN MENU -->
+    <div class="esb-section-lbl">Menu</div>
+    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
+      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-cat-sub">
+      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+    </div>
+
+    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- CUSTOMER SERVICES -->
+    <div class="esb-section-lbl">My Account</div>
+    <a href="orders.html" class="esb-link"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- SUPPORT -->
+    <div class="esb-section-lbl">Support</div>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-faq-sub">
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+    </div>
+
+    <div class="esb-divider"></div>
+
+    <!-- SETTINGS -->
+    <div class="esb-section-lbl">Settings</div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+    </div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+    </div>
+    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+      <span class="esb-link-icon">&#128205;</span>Delivery Location
+      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+    </div>
+    <div class="esb-divider"></div>
+  </div>
+  <div class="esb-footer">
+    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper"
+      target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
+    <div class="esb-settings-row">
+      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
+        Top</button>
+      <button class="esb-settings-btn discount-badge-btn" data-discount-badge onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+    </div>
+    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
   </div>
 </nav>
 
@@ -989,6 +1060,9 @@ body.buynow-mode footer{display:none!important;}
     <!-- STEP 2: CHECKOUT — same as Buy Now (saved address + promo + pay) -->
     <div class="cart-section" id="detailsStep" style="display:none">
       <div class="form-title">Checkout <span style="font-style:italic;color:var(--deep-rose)">Details</span></div>
+      
+      <!-- Reward Banner for Checkout -->
+      <div id="checkoutRewardBanner" style="display:none;padding:12px 16px;background:rgba(192,100,122,.08);border-radius:12px;margin-bottom:16px;"></div>
 
       <!-- ── SAVED ADDRESS CARD (shown when address saved) ── -->
       <div id="cartSavedAddrSection" style="display:none;margin-bottom:16px;">
@@ -1457,6 +1531,54 @@ body.buynow-mode footer{display:none!important;}
 
 <script src="lang-currency.js"></script>
 <script src="mobilenav.js"></script>
+<script>
+// Enhanced Sidebar Functions
+(function() {
+  window.enhSbOpen = function () {
+    document.getElementById('enh-sidebar').classList.add('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.style.display = 'block';
+    setTimeout(function () { ov.classList.add('show'); }, 10);
+    document.body.style.overflow = 'hidden';
+    // Hide hamburger button when sidebar opens
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='none';
+  };
+  window.enhSbClose = function () {
+    document.getElementById('enh-sidebar').classList.remove('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.classList.remove('show');
+    setTimeout(function () { ov.style.display = 'none'; }, 300);
+    document.body.style.overflow = '';
+    // Show hamburger button when sidebar closes
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='flex';
+  };
+  window.enhToggle = function (id, btn) {
+    var sub = document.getElementById(id);
+    if (!sub) return;
+    sub.classList.toggle('open');
+    if (btn) btn.classList.toggle('open');
+  };
+  window.enhLogout = function () {
+    if (!confirm('Log out?')) return;
+    localStorage.removeItem('ah_user');
+    window.location.href = 'login.html';
+  };
+  // Touch gestures for sidebar
+  var _tx = null;
+  document.addEventListener('touchstart', function (e) { _tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (_tx === null) return;
+    var dx = e.changedTouches[0].clientX - _tx;
+    _tx = null;
+    var isOpen = document.getElementById('enh-sidebar').classList.contains('open');
+    if (!isOpen && dx > 60 && e.changedTouches[0].clientX < 44) enhSbOpen();
+    if (isOpen && dx < -60) enhSbClose();
+  }, { passive: true });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
+})();
+</script>
 <script src="bottomnav.js"></script>
 <script type="module">
 if(location.search.indexOf('buynow=1')!==-1){document.documentElement.classList.add('buynow-mode-pre')}

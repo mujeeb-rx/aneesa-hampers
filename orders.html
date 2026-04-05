@@ -11,20 +11,52 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
     body{font-family:'Jost',sans-serif;background:#f5eeee;color:var(--burgundy);min-height:100vh;overflow-x:hidden;}
+    /* Mobile bottom nav padding - handled by bottomnav.js */
     @media(pointer:fine){body{cursor:none;}.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:26px;height:26px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
     @media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,[onclick]{cursor:pointer;}}
 
     /* NAV */
-    nav{display:none !important;} /* Hide top nav completely */
+    nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT affect #bottomNav */
     .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
     .nav-logo span{color:var(--deep-rose);}
     .nav-links{display:flex;gap:32px;list-style:none;}
     .nav-links a{text-decoration:none;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.45;transition:all .2s;}
     .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
     .nav-right{display:flex;align-items:center;gap:10px;}
-    .nav-cart{display:flex;align-items:center;gap:6px;text-decoration:none;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);opacity:.6;transition:opacity .2s;}
-    .nav-cart:hover{opacity:1;}
-    .cart-count{background:var(--deep-rose);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:600;}
+    .nav-cart{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      color:var(--burgundy);
+      font-size:1.1rem;
+      padding:10px 16px;
+      border-radius:24px;
+      border:1.5px solid rgba(192,100,122,.18);
+      background:var(--cream);
+      transition:all .2s;
+      text-decoration:none;
+      min-width:56px;
+    }
+    .nav-cart:hover{background:var(--blush);border-color:rgba(192,100,122,.3);}
+    .cart-count{
+      position:absolute;
+      top:-4px;
+      right:-4px;
+      background:var(--deep-rose);
+      color:white;
+      min-width:20px;
+      height:20px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.62rem;
+      font-weight:700;
+      padding:0 5px;
+      border:2px solid var(--cream);
+      box-shadow:0 2px 8px rgba(192,100,122,.3);
+    }
     .logout-btn{padding:7px 14px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:20px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;display:none;align-items:center;gap:5px;}
     .logout-btn:hover{background:var(--deep-rose);color:white;}
     @media(max-width:768px){.nav-links{display:none;}nav{padding:0 18px 0 68px;}}
@@ -466,66 +498,12 @@
       color: var(--cream);
     }
 
-    /* ── BOTTOM NAV (Mobile) ──────────────────────────────────── */
-    #bottomNav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 62px;
-      background: white;
-      border-top: 1px solid rgba(192,100,122,.12);
-      box-shadow: 0 -4px 20px rgba(59,13,26,.08);
-      z-index: 990;
-      justify-content: space-around;
-      align-items: stretch;
-    }
-    .bn-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      flex: 1;
-      text-decoration: none;
-      color: rgba(59,13,26,.4);
-      font-size: .48rem;
-      letter-spacing: .3px;
-      text-transform: uppercase;
-      font-weight: 500;
-      position: relative;
-      transition: color .18s;
-      padding: 6px 2px 4px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .bn-item:active { background: rgba(192,100,122,.06); }
-    .bn-item.active { color: var(--deep-rose); }
-    .bn-icon { font-size: 1.25rem; line-height: 1; }
-    .bn-label { font-size: .48rem; white-space: nowrap; margin-top: 1px; }
-    .bn-badge {
-      position: absolute;
-      top: 4px;
-      left: 50%;
-      margin-left: 2px;
-      background: var(--deep-rose);
-      color: white;
-      font-size: .5rem;
-      font-weight: 700;
-      min-width: 16px;
-      height: 16px;
-      border-radius: 10px;
-      padding: 0 4px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid white;
-    }
+    /* ── BOTTOM NAV (Mobile) — Handled by bottomnav.js ─────────── */
+    /* Bottom nav styles are injected by bottomnav.js for consistency across all pages */
 
     @media (max-width: 900px) {
-      .ham-btn { display: flex; }
-      #bottomNav { display: flex; }
-      body { padding-bottom: 62px; }
+      .ham-btn { display: none !important; }
+      #enh-sidebar { display: none !important; }
     }
   </style>
 </head>
@@ -534,20 +512,109 @@
 <div class="cursor-ring" id="cursorRing"></div>
 <div id="toast"></div>
 
+<!-- HAMBURGER — outside nav so it stays visible when nav.main-nav is hidden -->
+<button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu" style="display:none!important;"><span></span><span></span><span></span></button>
+
 <!-- NAV -->
-<nav>
-  <button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu"><span></span><span></span><span></span></button>
+<nav class="main-nav">
   <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
   <ul class="nav-links" style="display: none !important;">
     <li><a href="index.html">Home</a></li>
     <li><a href="products.html">Collections</a></li>
     <li><a href="orders.html" class="active">My Orders</a></li>
-    
     <li><a href="cart.html">Cart</a></li>
   </ul>
   <div class="nav-right" style="display: none !important;">
-    <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+    <a href="cart.html" class="nav-cart" aria-label="Shopping cart">
+      🛒
+      <span class="cart-count">0</span>
+    </a>
     <button class="logout-btn" id="navLogoutBtn" onclick="doLogout()">🔒 Logout</button>
+  </div>
+</nav>
+
+<!-- ENHANCED SIDEBAR -->
+<div id="enh-overlay" onclick="enhSbClose()" style="display:none!important;"></div>
+<nav id="enh-sidebar" aria-label="Site navigation" style="display:none!important;">
+  <div class="esb-user-area">
+    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
+    <div class="esb-avatar" id="esb-av">&#128100;</div>
+    <div class="esb-greeting">Hello,</div>
+    <div class="esb-name" id="esb-nm">Guest Visitor</div>
+    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
+  </div>
+  <div class="esb-scroll">
+    <!-- MAIN MENU -->
+    <div class="esb-section-lbl">Menu</div>
+    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
+      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-cat-sub">
+      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+    </div>
+
+    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- CUSTOMER SERVICES -->
+    <div class="esb-section-lbl">My Account</div>
+    <a href="orders.html" class="esb-link active"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- SUPPORT -->
+    <div class="esb-section-lbl">Support</div>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-faq-sub">
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+    </div>
+
+    <div class="esb-divider"></div>
+
+    <!-- SETTINGS -->
+    <div class="esb-section-lbl">Settings</div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+    </div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+    </div>
+    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+      <span class="esb-link-icon">&#128205;</span>Delivery Location
+      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+    </div>
+    <div class="esb-divider"></div>
+  </div>
+  <div class="esb-footer">
+    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper"
+      target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
+    <div class="esb-settings-row">
+      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
+        Top</button>
+      <button class="esb-settings-btn discount-badge-btn" data-discount-badge onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+    </div>
+    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
   </div>
 </nav>
 
@@ -681,14 +748,64 @@
 
 
 <script src="mobilenav.js"></script>
+<script>
+// Enhanced Sidebar Functions
+(function() {
+  window.enhSbOpen = function () {
+    document.getElementById('enh-sidebar').classList.add('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.style.display = 'block';
+    setTimeout(function () { ov.classList.add('show'); }, 10);
+    document.body.style.overflow = 'hidden';
+    // Hide hamburger button when sidebar opens
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='none';
+  };
+  window.enhSbClose = function () {
+    document.getElementById('enh-sidebar').classList.remove('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.classList.remove('show');
+    setTimeout(function () { ov.style.display = 'none'; }, 300);
+    document.body.style.overflow = '';
+    // Show hamburger button when sidebar closes
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='flex';
+  };
+  window.enhToggle = function (id, btn) {
+    var sub = document.getElementById(id);
+    if (!sub) return;
+    sub.classList.toggle('open');
+    if (btn) btn.classList.toggle('open');
+  };
+  window.enhLogout = function () {
+    if (!confirm('Log out?')) return;
+    localStorage.removeItem('ah_user');
+    window.location.href = 'login.html';
+  };
+  // Touch gestures for sidebar
+  var _tx = null;
+  document.addEventListener('touchstart', function (e) { _tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (_tx === null) return;
+    var dx = e.changedTouches[0].clientX - _tx;
+    _tx = null;
+    var isOpen = document.getElementById('enh-sidebar').classList.contains('open');
+    if (!isOpen && dx > 60 && e.changedTouches[0].clientX < 44) enhSbOpen();
+    if (isOpen && dx < -60) enhSbClose();
+  }, { passive: true });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
+})();
+</script>
 <script src="bottomnav.js"></script>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, query, where, orderBy, onSnapshot }
+import { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const app = initializeApp({
   apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
@@ -768,9 +885,8 @@ var _currentFilter = "all";
 // AUTH STATE
 // ====================================================
 onAuthStateChanged(auth, user => {
-  document.getElementById("loadingState").style.display = "none";
-
   if (!user) {
+    document.getElementById("loadingState").style.display = "none";
     document.getElementById("loginWall").style.display = "block";
     return;
   }
@@ -783,7 +899,7 @@ onAuthStateChanged(auth, user => {
   document.getElementById("heroSub").textContent =
     "Welcome back, " + (user.displayName || user.email.split("@")[0]).split(" ")[0] + "! Here are all your orders.";
 
-  // Load this user's orders live
+  // Load this user's orders live (loading state hidden after orders load)
   loadOrders(user.uid);
 });
 
@@ -795,8 +911,19 @@ function loadOrders(uid) {
   let _loaded1 = false, _loaded2 = false;
   let _orders1 = [], _orders2 = [];
 
+  // Timeout to handle cases where Firestore is slow or fails silently
+  const timeout = setTimeout(() => {
+    if (!_loaded1 || !_loaded2) {
+      console.warn("Orders loading timeout - forcing display");
+      _loaded1 = true;
+      _loaded2 = true;
+      merge();
+    }
+  }, 10000); // 10 second timeout
+
   function merge() {
     if (!_loaded1 || !_loaded2) return;
+    clearTimeout(timeout);
     // Merge, deduplicate by id, sort by date
     const map = {};
     [..._orders1, ..._orders2].forEach(o => map[o.id] = o);
@@ -815,7 +942,16 @@ function loadOrders(uid) {
     _orders1 = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     _loaded1 = true;
     merge();
-  }, () => { _loaded1 = true; merge(); });
+  }, (err) => { 
+    console.error("Error loading orders (uid):", err);
+    console.error("Error code:", err.code);
+    console.error("Error message:", err.message);
+    if (err.code === 'permission-denied') {
+      toast("⚠️ Permission denied. Please update Firestore rules and reload.");
+    }
+    _loaded1 = true; 
+    merge(); 
+  });
 
   // Query 2: customerUID field (legacy)
   const q2 = query(collection(db, "orders"), where("customerUID", "==", uid));
@@ -823,7 +959,16 @@ function loadOrders(uid) {
     _orders2 = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     _loaded2 = true;
     merge();
-  }, () => { _loaded2 = true; merge(); });
+  }, (err) => { 
+    console.error("Error loading orders (customerUID):", err);
+    console.error("Error code:", err.code);
+    console.error("Error message:", err.message);
+    if (err.code === 'permission-denied') {
+      toast("⚠️ Permission denied. Please update Firestore rules and reload.");
+    }
+    _loaded2 = true; 
+    merge(); 
+  });
 }
 
 // ====================================================
@@ -1055,16 +1200,11 @@ window.reorder = function(orderId) {
 
 
 // ── ORDER PAGE REVIEW WITH PHOTO UPLOAD ─────────────────────────────────
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, addDoc, collection, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+// Re-use existing Firebase imports from above (no need to re-import)
 
-const _app2 = getApps().length ? getApps()[0]
-  : initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
-const _rvDb  = getFirestore(_app2);
-const _rvStg = getStorage(_app2);
+const _app2 = app;  // Use the existing app initialized above
+const _rvDb  = db;  // Use the existing db
+const _rvStg = getStorage(app);  // Storage wasn't initialized above, so get it
 
 let _ordRvStar = 5;
 let _ordPhotoFile = null;

@@ -6,7 +6,7 @@
  */
 
 import { db } from './firebase.js';
-import { doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
+import { doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 // Global state for discount
 let discountState = {

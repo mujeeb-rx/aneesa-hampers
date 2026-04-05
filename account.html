@@ -10,20 +10,52 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);min-height:100vh;}
+/* Mobile bottom nav padding - handled by bottomnav.js */
 @media(pointer:fine){body{cursor:none;}.cursor{width:9px;height:9px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
 @media(pointer:coarse){.cursor,.cursor-ring{display:none;}button,a,[onclick]{cursor:pointer;}}
 
 /* NAV */
-nav{display:none !important;} /* Hide top nav completely */
+nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT affect #bottomNav */
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
 .nav-logo span{color:var(--deep-rose);}
 .nav-links{display:flex;gap:30px;list-style:none;}
 .nav-links a{text-decoration:none;font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
 .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
 .nav-right{display:flex;align-items:center;gap:10px;}
-.nav-cart{display:flex;align-items:center;gap:6px;color:var(--burgundy);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;padding:8px 13px;border-radius:9px;border:1.5px solid rgba(192,100,122,.2);transition:all .2s;text-decoration:none;}
-.nav-cart:hover{background:var(--blush);}
-.cart-count{background:var(--deep-rose);color:white;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;padding:0 4px;}
+.nav-cart{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:var(--burgundy);
+  font-size:1.1rem;
+  padding:10px 16px;
+  border-radius:24px;
+  border:1.5px solid rgba(192,100,122,.18);
+  background:var(--cream);
+  transition:all .2s;
+  text-decoration:none;
+  min-width:56px;
+}
+.nav-cart:hover{background:var(--blush);border-color:rgba(192,100,122,.3);}
+.cart-count{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  background:var(--deep-rose);
+  color:white;
+  min-width:20px;
+  height:20px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.62rem;
+  font-weight:700;
+  padding:0 5px;
+  border:2px solid var(--cream);
+  box-shadow:0 2px 8px rgba(192,100,122,.3);
+}
 .nav-logout{padding:8px 16px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.22);border-radius:8px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;}
 .nav-logout:hover{background:var(--rose);color:white;}
 
@@ -139,12 +171,7 @@ nav{display:none !important;} /* Hide top nav completely */
 .wish-view-btn:hover{background:rgba(192,100,122,.2);}
 @media(max-width:480px){.wish-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.wish-card-img{height:120px;}}
 
-/* BOTTOM NAV */
-#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:white;border-top:1px solid rgba(192,100,122,.12);box-shadow:0 -4px 20px rgba(59,13,26,.08);z-index:400;justify-content:space-around;align-items:stretch;}
-.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;color:rgba(59,13,26,.4);font-size:.47rem;text-transform:uppercase;font-weight:500;-webkit-tap-highlight-color:transparent;text-decoration:none;padding:5px 2px;transition:color .18s;}
-.bn-item.active{color:var(--deep-rose);}
-.bn-icon{font-size:1.2rem;line-height:1;}
-.bn-badge{position:absolute;top:4px;margin-left:2px;background:var(--deep-rose);color:white;font-size:.48rem;font-weight:700;min-width:15px;height:15px;border-radius:10px;padding:0 3px;display:none;align-items:center;justify-content:center;border:2px solid white;}
+/* BOTTOM NAV — Completely handled by bottomnav.js */
 
 /* RESPONSIVE */
 @media(max-width:900px){nav{padding:0 16px 0 68px;}.nav-links{display:none;}}
@@ -152,8 +179,7 @@ nav{display:none !important;} /* Hide top nav completely */
   .acc-wrap{grid-template-columns:1fr;padding:84px 14px 80px;}
   .acc-side{position:static;}
   .field-row{grid-template-columns:1fr;}
-  #bottomNav{display:flex;}
-  body{padding-bottom:60px;}
+  /* Bottom nav handled by bottomnav.js */
 }
 
 /* ── HAMBURGER MENU ─────────────────────────────────────── */
@@ -448,66 +474,12 @@ nav{display:none !important;} /* Hide top nav completely */
   color: var(--cream);
 }
 
-/* ── BOTTOM NAV (Mobile) ──────────────────────────────────── */
-#bottomNav {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 62px;
-  background: white;
-  border-top: 1px solid rgba(192,100,122,.12);
-  box-shadow: 0 -4px 20px rgba(59,13,26,.08);
-  z-index: 990;
-  justify-content: space-around;
-  align-items: stretch;
-}
-.bn-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  flex: 1;
-  text-decoration: none;
-  color: rgba(59,13,26,.4);
-  font-size: .48rem;
-  letter-spacing: .3px;
-  text-transform: uppercase;
-  font-weight: 500;
-  position: relative;
-  transition: color .18s;
-  padding: 6px 2px 4px;
-  -webkit-tap-highlight-color: transparent;
-}
-.bn-item:active { background: rgba(192,100,122,.06); }
-.bn-item.active { color: var(--deep-rose); }
-.bn-icon { font-size: 1.25rem; line-height: 1; }
-.bn-label { font-size: .48rem; white-space: nowrap; margin-top: 1px; }
-.bn-badge {
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  margin-left: 2px;
-  background: var(--deep-rose);
-  color: white;
-  font-size: .5rem;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 10px;
-  padding: 0 4px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-}
+/* ── BOTTOM NAV (Mobile) — Handled by bottomnav.js ─────────── */
+/* Bottom nav styles are injected by bottomnav.js for consistency across all pages */
 
 @media (max-width: 900px) {
-  .ham-btn { display: flex; }
-  #bottomNav { display: flex; }
-  body { padding-bottom: 62px; }
+  .ham-btn { display: none !important; }
+  #enh-sidebar { display: none !important; }
 }
 </style>
 </head>
@@ -527,9 +499,11 @@ nav{display:none !important;} /* Hide top nav completely */
   </div>
 </div>
 
+<!-- HAMBURGER — outside nav so it stays visible when nav.main-nav is hidden -->
+<button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu" style="display:none!important;"><span></span><span></span><span></span></button>
+
 <!-- NAV -->
-<nav>
-  <button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu"><span></span><span></span><span></span></button>
+<nav class="main-nav">
   <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
   <ul class="nav-links" style="display: none !important;">
     <li><a href="index.html">Home</a></li>
@@ -538,8 +512,96 @@ nav{display:none !important;} /* Hide top nav completely */
     <li><a href="cart.html">Cart</a></li>
   </ul>
   <div class="nav-right" style="display: none !important;">
-    <a href="cart.html" class="nav-cart">🛒 <span class="cart-count" id="navCartCount">0</span></a>
+    <a href="cart.html" class="nav-cart" aria-label="Shopping cart">
+      🛒
+      <span class="cart-count" id="navCartCount">0</span>
+    </a>
     <button class="nav-logout" onclick="doLogout()">🔒 Logout</button>
+  </div>
+</nav>
+
+<!-- ENHANCED SIDEBAR -->
+<div id="enh-overlay" onclick="enhSbClose()" style="display:none!important;"></div>
+<nav id="enh-sidebar" aria-label="Site navigation" style="display:none!important;">
+  <div class="esb-user-area">
+    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
+    <div class="esb-avatar" id="esb-av">&#128100;</div>
+    <div class="esb-greeting">Hello,</div>
+    <div class="esb-name" id="esb-nm">Guest Visitor</div>
+    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
+  </div>
+  <div class="esb-scroll">
+    <!-- MAIN MENU -->
+    <div class="esb-section-lbl">Menu</div>
+    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
+      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-cat-sub">
+      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+    </div>
+
+    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- CUSTOMER SERVICES -->
+    <div class="esb-section-lbl">My Account</div>
+    <a href="orders.html" class="esb-link"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link active"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- SUPPORT -->
+    <div class="esb-section-lbl">Support</div>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-faq-sub">
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+    </div>
+
+    <div class="esb-divider"></div>
+
+    <!-- SETTINGS -->
+    <div class="esb-section-lbl">Settings</div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+    </div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+    </div>
+    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+      <span class="esb-link-icon">&#128205;</span>Delivery Location
+      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+    </div>
+    <div class="esb-divider"></div>
+  </div>
+  <div class="esb-footer">
+    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper"
+      target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
+    <div class="esb-settings-row">
+      <button class="esb-settings-btn" onclick="document.querySelector('#enh-sidebar .esb-scroll').scrollTop=0">&#8593;
+        Top</button>
+      <button class="esb-settings-btn discount-badge-btn" data-discount-badge onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+    </div>
+    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
   </div>
 </nav>
 
@@ -755,19 +817,60 @@ nav{display:none !important;} /* Hide top nav completely */
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav id="bottomNav">
-  <a href="index.html" class="bn-item"><span class="bn-icon">🏠</span><span>Home</span></a>
-  <a href="products.html" class="bn-item"><span class="bn-icon">🎁</span><span>Shop</span></a>
-  <a href="cart.html" class="bn-item" style="position:relative"><span class="bn-icon">🛒</span><span>Cart</span><span class="bn-badge" id="bnCartBadge">0</span></a>
-  <a href="orders.html" class="bn-item"><span class="bn-icon">📦</span><span>Orders</span></a>
-  <a href="account.html" class="bn-item active"><span class="bn-icon">👤</span><span>Account</span></a>
-</nav>
-
+<!-- BOTTOM NAV — structure must match bottomnav.js injected version -->
+<!-- Bottom nav injected by bottomnav.js -->
 
 <script src="lang-currency.js"></script>
-<script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
+<script src="mobilenav.js"></script>
+<script>
+// Enhanced Sidebar Functions
+(function() {
+  window.enhSbOpen = function () {
+    document.getElementById('enh-sidebar').classList.add('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.style.display = 'block';
+    setTimeout(function () { ov.classList.add('show'); }, 10);
+    document.body.style.overflow = 'hidden';
+    // Hide hamburger button when sidebar opens
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='none';
+  };
+  window.enhSbClose = function () {
+    document.getElementById('enh-sidebar').classList.remove('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.classList.remove('show');
+    setTimeout(function () { ov.style.display = 'none'; }, 300);
+    document.body.style.overflow = '';
+    // Show hamburger button when sidebar closes
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='flex';
+  };
+  window.enhToggle = function (id, btn) {
+    var sub = document.getElementById(id);
+    if (!sub) return;
+    sub.classList.toggle('open');
+    if (btn) btn.classList.toggle('open');
+  };
+  window.enhLogout = function () {
+    if (!confirm('Log out?')) return;
+    localStorage.removeItem('ah_user');
+    window.location.href = 'login.html';
+  };
+  // Touch gestures for sidebar
+  var _tx = null;
+  document.addEventListener('touchstart', function (e) { _tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (_tx === null) return;
+    var dx = e.changedTouches[0].clientX - _tx;
+    _tx = null;
+    var isOpen = document.getElementById('enh-sidebar').classList.contains('open');
+    if (!isOpen && dx > 60 && e.changedTouches[0].clientX < 44) enhSbOpen();
+    if (isOpen && dx < -60) enhSbClose();
+  }, { passive: true });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') enhSbClose(); });
+})();
+</script>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";

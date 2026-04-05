@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Select Category Filter Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fdf6f0;
+      padding: 40px 20px;
+      color: #3b0d1a;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #3b0d1a, #c0647a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .demo-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 24px rgba(59, 13, 26, .11);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #3b0d1a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .emoji {
+      font-size: 1.8rem;
+    }
+
+    /* Filter Pills Demo */
+    .filters-bar {
+      padding: 16px;
+      background: #fff;
+      border: 2px dashed #c0647a;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .filter-pill {
+      padding: 11px 26px;
+      border-radius: 30px;
+      border: 1.5px solid rgba(192, 100, 122, .2);
+      background: transparent;
+      font-family: inherit;
+      font-size: .73rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #3b0d1a;
+      cursor: pointer;
+      transition: all .3s;
+      white-space: nowrap;
+      font-weight: 500;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-pill:hover {
+      border-color: #c0647a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 13, 26, .15);
+    }
+
+    .filter-pill.active {
+      background: linear-gradient(135deg, #3b0d1a, #c0647a);
+      color: white;
+      border-color: #3b0d1a;
+      box-shadow: 0 6px 18px rgba(59, 13, 26, .25);
+      font-weight: 600;
+    }
+
+    .filter-pill.active::after {
+      content: '✓';
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .clear-filters-btn {
+      padding: 10px 22px;
+      border-radius: 30px;
+      border: 1.5px solid rgba(192, 100, 122, .3);
+      background: rgba(192, 100, 122, .08);
+      font-family: inherit;
+      font-size: .7rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #c0647a;
+      cursor: pointer;
+      transition: all .3s;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clear-filters-btn:hover {
+      background: #c0647a;
+      color: white;
+      border-color: #c0647a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(192, 100, 122, .3);
+    }
+
+    .clear-filters-btn.show {
+      display: inline-flex;
+    }
+
+    /* Comparison Boxes */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .compare-box {
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid;
+    }
+
+    .compare-box.old {
+      background: #fff3f3;
+      border-color: #ff6b6b;
+    }
+
+    .compare-box.new {
+      background: #f0fff4;
+      border-color: #51cf66;
+    }
+
+    .compare-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .compare-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .compare-box li {
+      padding: 6px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .compare-box li::before {
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .compare-box.old li::before {
+      content: '✕';
+      color: #ff6b6b;
+    }
+
+    .compare-box.new li::before {
+      content: '✓';
+      color: #51cf66;
+    }
+
+    /* Status Message */
+    .status {
+      padding: 15px 20px;
+      border-radius: 10px;
+      background: #e7f5ff;
+      border-left: 4px solid #339af0;
+      margin: 20px 0;
+      font-size: .95rem;
+    }
+
+    .status.success {
+      background: #d3f9d8;
+      border-color: #51cf66;
+    }
+
+    .products-count {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #c0647a;
+      margin: 20px 0;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(192,100,122,.1), rgba(59,13,26,.1));
+      border-radius: 10px;
+    }
+
+    .url-display {
+      background: #2b2b2b;
+      color: #51cf66;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: .9rem;
+      word-break: break-all;
+      margin: 15px 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .feature-card {
+      padding: 15px;
+      background: linear-gradient(135deg, #f9e4e9, #fdf6f0);
+      border-radius: 10px;
+      border: 1px solid rgba(192,100,122,.2);
+    }
+
+    .feature-card h4 {
+      margin-bottom: 8px;
+      color: #3b0d1a;
+    }
+
+    .feature-card p {
+      font-size: .9rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Multi-Select Category Filter</h1>
+    <p class="subtitle">Interactive Demo & Feature Overview</p>
+
+    <!-- Live Demo Section -->
+    <div class="demo-section">
+      <h2 class="section-title"><span class="emoji">🎨</span> Live Interactive Demo</h2>
+      <p style="margin-bottom: 20px; color: #666;">Click the category pills below to select multiple categories. Watch the UI update in real-time!</p>
+      
+      <div class="filters-bar">
+        <button class="filter-pill active" data-cat="all" onclick="toggleCategory('all', this)">✨ All</button>
+        <button class="filter-pill" data-cat="hijabs" onclick="toggleCategory('hijabs', this)">🧕 Hijabs</button>
+        <button class="filter-pill" data-cat="abayas" onclick="toggleCategory('abayas', this)">👗 Abayas</button>
+        <button class="filter-pill" data-cat="perfumes" onclick="toggleCategory('perfumes', this)">🌺 Perfumes</button>
+        <button class="filter-pill" data-cat="jewelry" onclick="toggleCategory('jewelry', this)">💍 Jewelry</button>
+        <button class="filter-pill" data-cat="accessories" onclick="toggleCategory('accessories', this)">👜 Accessories</button>
+        <button class="clear-filters-btn" id="clearBtn" onclick="clearAll()">
+          <span>✕</span> Clear All
+        </button>
+      </div>
+
+      <div class="status success" id="status">
+        <strong>Selected:</strong> <span id="selectedList">All categories</span>
+      </div>
+
+      <div class="products-count" id="productCount">
+        Showing: All Products (0 categories selected)
+      </div>
+
+      <div class="url-display" id="urlDisplay">
+        URL: products.html
+      </div>
+    </div>
+
+    <!-- Before vs After Comparison -->
+    <div class="demo-section">
+      <h2 class="section-title"><span class="emoji">📊</span> Before vs After Comparison</h2>
+      <div class="comparison">
+        <div class="compare-box old">
+          <div class="compare-title">❌ Old (Single-Select)</div>
+          <ul>
+            <li>Only 1 category at a time</li>
+            <li>Clicking replaces selection</li>
+            <li>No visual indicators</li>
+            <li>Limited flexibility</li>
+            <li>Single URL parameter</li>
+          </ul>
+        </div>
+        <div class="compare-box new">
+          <div class="compare-title">✅ New (Multi-Select)</div>
+          <ul>
+            <li>Unlimited categories at once</li>
+            <li>Toggle selection on/off</li>
+            <li>Checkmarks on active pills</li>
+            <li>Maximum flexibility</li>
+            <li>Comma-separated URLs</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Features -->
+    <div class="demo-section">
+      <h2 class="section-title"><span class="emoji">✨</span> Key Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>🎯 Multi-Select</h4>
+          <p>Select unlimited categories simultaneously. Products from ALL selected categories are shown.</p>
+        </div>
+        <div class="feature-card">
+          <h4>✓ Visual Feedback</h4>
+          <p>Active categories display checkmarks and gradient backgrounds for clear visual indication.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔄 Toggle Functionality</h4>
+          <p>Click once to select, click again to deselect. Intuitive toggle behavior.</p>
+        </div>
+        <div class="feature-card">
+          <h4>✕ Clear All Button</h4>
+          <p>Appears when 2+ categories selected. Quick reset with one click.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔗 Shareable URLs</h4>
+          <p>Multi-select state saved in URL. Share filtered views with customers.</p>
+        </div>
+        <div class="feature-card">
+          <h4>📱 Mobile-Friendly</h4>
+          <p>Touch-optimized, responsive design. Works perfectly on all devices.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Examples -->
+    <div class="demo-section">
+      <h2 class="section-title"><span class="emoji">💡</span> Usage Examples</h2>
+      <div class="status">
+        <strong>Example 1:</strong> Select "Hijabs" + "Accessories" → See all hijabs and accessories together
+      </div>
+      <div class="status">
+        <strong>Example 2:</strong> Select "Perfumes" + "Jewelry" + "Gift Sets" → Browse all gift-suitable items
+      </div>
+      <div class="status">
+        <strong>Example 3:</strong> Click "Clear All" → Instantly return to viewing all products
+      </div>
+      <div class="status">
+        <strong>Example 4:</strong> Share URL <code>?cat=hijabs,abayas,perfumes</code> → Recipients see same filters
+      </div>
+    </div>
+
+    <!-- Technical Implementation -->
+    <div class="demo-section">
+      <h2 class="section-title"><span class="emoji">⚙️</span> Technical Implementation</h2>
+      <p style="margin-bottom: 15px;"><strong>State Variable:</strong></p>
+      <div class="url-display">let selectedCategories = []; // Array of category IDs</div>
+      
+      <p style="margin: 15px 0;"><strong>Filter Logic:</strong></p>
+      <div class="url-display">
+// Show products matching ANY selected category (OR logic)<br>
+list = allProducts.filter(p => selectedCategories.includes(p.category));
+      </div>
+
+      <p style="margin: 15px 0;"><strong>URL Format:</strong></p>
+      <div class="url-display">?cat=hijabs,abayas,perfumes</div>
+    </div>
+  </div>
+
+  <script>
+    let selectedCategories = [];
+    const allBtn = document.querySelector('[data-cat="all"]');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusEl = document.getElementById('status');
+    const selectedListEl = document.getElementById('selectedList');
+    const productCountEl = document.getElementById('productCount');
+    const urlDisplayEl = document.getElementById('urlDisplay');
+
+    function toggleCategory(cat, btn) {
+      if (cat === 'all') {
+        selectedCategories = [];
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      } else {
+        const index = selectedCategories.indexOf(cat);
+        
+        if (index > -1) {
+          selectedCategories.splice(index, 1);
+          btn.classList.remove('active');
+          
+          if (selectedCategories.length === 0) {
+            allBtn.classList.add('active');
+          }
+        } else {
+          selectedCategories.push(cat);
+          btn.classList.add('active');
+          allBtn.classList.remove('active');
+        }
+      }
+      
+      updateUI();
+    }
+
+    function clearAll() {
+      selectedCategories = [];
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      allBtn.classList.add('active');
+      updateUI();
+    }
+
+    function updateUI() {
+      // Update clear button
+      if (selectedCategories.length >= 2) {
+        clearBtn.classList.add('show');
+      } else {
+        clearBtn.classList.remove('show');
+      }
+
+      // Update status
+      if (selectedCategories.length === 0) {
+        selectedListEl.textContent = 'All categories';
+      } else {
+        selectedListEl.textContent = selectedCategories.map(c => 
+          c.charAt(0).toUpperCase() + c.slice(1)
+        ).join(', ');
+      }
+
+      // Update product count
+      const count = selectedCategories.length;
+      if (count === 0) {
+        productCountEl.textContent = 'Showing: All Products (0 categories selected)';
+      } else {
+        productCountEl.textContent = `Showing: Products from ${count} categor${count === 1 ? 'y' : 'ies'} selected`;
+      }
+
+      // Update URL display
+      if (selectedCategories.length === 0) {
+        urlDisplayEl.textContent = 'URL: products.html';
+      } else {
+        urlDisplayEl.textContent = `URL: products.html?cat=${selectedCategories.join(',')}`;
+      }
+    }
+
+    // Initialize
+    updateUI();
+  </script>
+</body>
+</html>

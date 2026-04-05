@@ -276,15 +276,47 @@ a{text-decoration:none;}
 /* NAV */
 .topnav{position:fixed;top:40px;width:100%;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:68px;background:rgba(253,246,240,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(192,100,122,.1);box-shadow:0 2px 12px rgba(59,13,26,.04);}
 .topnav .ham-btn{margin-right:12px;display:flex;}
+.topnav .nav-right{margin-left:auto;}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.58rem;font-style:italic;color:var(--burgundy);}
 .nav-logo span{color:var(--deep-rose);}
 .nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
 .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
 .nav-right{display:flex;align-items:center;gap:10px;}
-.nav-cart-btn{display:flex;align-items:center;gap:6px;color:var(--burgundy);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;padding:8px 13px;border-radius:9px;border:1.5px solid rgba(192,100,122,.2);transition:all .2s;}
-.nav-cart-btn:hover{background:var(--blush);}
-.cart-count{background:var(--deep-rose);color:white;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;padding:0 4px;}
+.nav-cart-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  color:var(--burgundy);
+  font-size:1.1rem;
+  padding:10px 16px;
+  border-radius:24px;
+  border:1.5px solid rgba(192,100,122,.18);
+  background:var(--cream);
+  transition:all .2s;
+  text-decoration:none;
+  min-width:56px;
+}
+.nav-cart-btn:hover{background:var(--blush);border-color:rgba(192,100,122,.3);}
+.cart-count{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  background:var(--deep-rose);
+  color:white;
+  min-width:20px;
+  height:20px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.62rem;
+  font-weight:700;
+  padding:0 5px;
+  border:2px solid var(--cream);
+  box-shadow:0 2px 8px rgba(192,100,122,.3);
+}
 .nav-wa{background:var(--green);color:white;border-radius:9px;padding:9px 17px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
 .nav-wa:hover{opacity:.88;}
 .nav-acc{padding:8px 14px;border-radius:9px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);transition:background .2s;}
@@ -1314,13 +1346,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   }
 }
 
-/* BOTTOM NAV */
-#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:white;border-top:1px solid rgba(192,100,122,.12);box-shadow:0 -4px 20px rgba(59,13,26,.08);z-index:980;justify-content:space-around;align-items:stretch;}
-.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;color:rgba(59,13,26,.4);font-size:.47rem;letter-spacing:.3px;text-transform:uppercase;font-weight:500;position:relative;transition:color .18s;padding:5px 2px;-webkit-tap-highlight-color:transparent;}
-.bn-item.active{color:var(--deep-rose);}
-.bn-icon{font-size:1.22rem;line-height:1;}
-.bn-label{font-size:.47rem;white-space:nowrap;margin-top:1px;}
-.bn-badge{position:absolute;top:4px;margin-left:2px;background:var(--deep-rose);color:white;font-size:.48rem;font-weight:700;min-width:15px;height:15px;border-radius:10px;padding:0 3px;display:none;align-items:center;justify-content:center;border:2px solid white;}
+/* BOTTOM NAV — Handled by bottomnav.js for consistency across all pages */
 
 /* ═══════════════════════════════════════
    FULLY RESPONSIVE — ALL DEVICES
@@ -1368,7 +1394,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 
 /* Large mobile — iPhone 14 Pro Max 430px, iPhone Plus */
 @media(max-width:600px){
-  body{padding-top:56px!important;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
+  body{padding-top:56px!important;}
   .topnav{height:56px;top:0!important;}
   .hero{padding:32px 16px 40px;text-align:center;}
   .hero-btns{justify-content:center;}
@@ -1848,7 +1874,10 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
         <input type="text" id="searchInput" placeholder="Search hampers, cakes…" autocomplete="off"/>
       </div>
     </div>
-    <a href="cart.html" class="nav-cart-btn">🛒 <span class="cart-count" id="navCart">0</span></a>
+    <a href="cart.html" class="nav-cart-btn" aria-label="Shopping cart">
+      🛒
+      <span class="cart-count" id="navCart">0</span>
+    </a>
     <a href="account.html" class="nav-acc" id="navAccBtn">👤 Account</a>
     <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="nav-wa">💬 Order Now</a>
   </div>
@@ -3634,6 +3663,9 @@ setTimeout(function(){
     ov.style.display='block';
     setTimeout(function(){ ov.classList.add('show'); },10);
     document.body.style.overflow='hidden';
+    // Hide hamburger button when sidebar opens
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='none';
   };
   window.enhSbClose = function(){
     document.getElementById('enh-sidebar').classList.remove('open');
@@ -3641,6 +3673,9 @@ setTimeout(function(){
     ov.classList.remove('show');
     setTimeout(function(){ ov.style.display='none'; },300);
     document.body.style.overflow='';
+    // Show hamburger button when sidebar closes
+    var hamBtn = document.querySelector('.ham-btn');
+    if(hamBtn) hamBtn.style.display='flex';
   };
   window.enhToggle = function(id, btn){
     var sub = document.getElementById(id);
