@@ -32,22 +32,22 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
-    // Orders — readable/writable by the order owner + ADMIN
+    // Orders — readable/writable by the order owner OR admin
     match /orders/{orderId} {
-      // Allow queries where uid or customerUID matches the authenticated user
+      // Admin can read/write ALL orders (must be first for collection queries to work)
+      allow read, write: if isAdmin();
+      // Users can read their own orders
       allow read: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
-      // Allow create if the order belongs to the authenticated user
+      // Users can create orders for themselves
       allow create: if request.auth != null &&
         (request.auth.uid == request.resource.data.uid ||
          request.auth.uid == request.resource.data.customerUID);
-      // Allow update/delete only for own orders
+      // Users can update/delete only their own orders
       allow update, delete: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
-      // ✅ ADMIN CAN READ/WRITE ALL ORDERS
-      allow read, write: if isAdmin();
     }
 
     // Offers — public read, admin-only write

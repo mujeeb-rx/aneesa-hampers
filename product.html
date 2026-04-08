@@ -4,7 +4,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover" />
-  <title>Product – Aneesa Hampers</title>
+  <title id="pageTitle">Product – Aneesa Hampers</title>
+  <meta name="description" id="pageDesc" content="Premium handcrafted gift hampers from Aneesa Hampers, Kadapa."/>
+  <meta name="robots" content="index, follow"/>
+  
+  <!-- Open Graph / Facebook (will be updated dynamically) -->
+  <meta property="og:type" content="product"/>
+  <meta property="og:url" id="ogUrl" content="https://aneesa-hampers.web.app/product.html"/>
+  <meta property="og:title" id="ogTitle" content="Product – Aneesa Hampers"/>
+  <meta property="og:description" id="ogDesc" content="Premium handcrafted gift hampers"/>
+  <meta property="og:image" id="ogImage" content="https://aneesa-hampers.web.app/assets/og-image.jpg"/>
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" id="twitterTitle" content="Product – Aneesa Hampers"/>
+  
+  <link rel="canonical" id="canonical" href="https://aneesa-hampers.web.app/product.html"/>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap"
     rel="stylesheet" />
@@ -50,6 +65,11 @@
     a {
       text-decoration: none;
     }
+
+    /* ACCESSIBILITY - Focus styles */
+    *:focus { outline: 2px solid var(--deep-rose); outline-offset: 2px; }
+    *:focus:not(:focus-visible) { outline: none; }
+    *:focus-visible { outline: 2px solid var(--deep-rose); outline-offset: 2px; box-shadow: 0 0 0 4px rgba(192, 100, 122, 0.25); }
 
     /* CURSOR */
     @media(pointer:fine) {
@@ -258,7 +278,7 @@
       transform: scale(1.1);
     }
 
-    .cart-count {
+    .cart-count, .wish-count {
       position: absolute;
       top: -2px;
       right: -2px;
@@ -274,6 +294,10 @@
       font-weight: 700;
       padding: 0 5px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+    }
+
+    .wish-count:empty, .wish-count[data-count="0"] {
+      display: none;
     }
 
     /* Legacy nav styles hidden */
@@ -478,6 +502,56 @@
       position: absolute;
       top: 14px;
       right: 14px;
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, .95);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(192, 100, 122, .15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+      transition: all .3s ease;
+    }
+
+    .img-wishlist-btn:hover {
+      transform: scale(1.15);
+      background: white;
+      border-color: var(--rose);
+      box-shadow: 0 6px 20px rgba(192, 100, 122, .3);
+    }
+
+    .img-wishlist-btn.wished {
+      background: linear-gradient(135deg, #ff6b9d, #c0647a);
+      border-color: var(--rose);
+      box-shadow: 0 6px 20px rgba(192, 100, 122, .4);
+    }
+    
+    .img-wishlist-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--deep-rose);
+      fill: none;
+      transition: all .3s ease;
+    }
+    
+    .img-wishlist-btn.wished svg {
+      fill: white;
+      stroke: white;
+    }
+    
+    .img-wishlist-btn:hover svg {
+      stroke: var(--rose);
+    }
+
+    .img-share-btn {
+      position: absolute;
+      top: 66px;
+      right: 14px;
       width: 42px;
       height: 42px;
       background: rgba(255, 255, 255, .9);
@@ -487,20 +561,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
       cursor: pointer;
       z-index: 10;
       box-shadow: var(--shadow-sm);
       transition: transform .2s, background .2s;
     }
 
-    .img-wishlist-btn:hover {
+    .img-share-btn:hover {
       transform: scale(1.12);
       background: white;
     }
 
-    .img-wishlist-btn.wished {
-      background: var(--blush);
+    .img-share-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--maroon);
     }
 
     .thumb-row {
@@ -693,8 +768,9 @@
       border-color: var(--rose);
     }
     .share-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
 
     /* SHARE MODAL */
@@ -2995,14 +3071,17 @@
 <body>
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
-  <div id="ah-toast"></div>
+  <div id="ah-toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- Skip to content link for keyboard users -->
+  <a href="#main-content" class="skip-to-content" style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:12px 24px;border-radius:0 0 8px 8px;z-index:100000;font-size:.85rem;font-weight:500;text-decoration:none;transition:top .2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Skip to main content</a>
 
   <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <button class="lightbox-prev" onclick="lightboxNav(-1)">‹</button>
-    <img id="lightboxImg" src="" alt="" />
-    <button class="lightbox-next" onclick="lightboxNav(1)">›</button>
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Image lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close lightbox">✕</button>
+    <button class="lightbox-prev" onclick="lightboxNav(-1)" aria-label="Previous image">‹</button>
+    <img id="lightboxImg" src="" alt="Product image enlarged" />
+    <button class="lightbox-next" onclick="lightboxNav(1)" aria-label="Next image">›</button>
   </div>
 
   <nav class="topnav">
@@ -3023,8 +3102,9 @@
 
     <!-- Right Section -->
     <div class="nav-right">
-      <button class="nav-icon-btn" onclick="toggleWishlist()" aria-label="Wishlist" title="Wishlist">
-        ❤️
+      <button class="nav-icon-btn" id="navWishBtn" onclick="toggleWishlist()" aria-label="Wishlist" title="Wishlist">
+        💗
+        <span class="wish-count" id="wishCount"></span>
       </button>
       <a href="cart.html" class="nav-icon-btn" aria-label="Shopping cart" title="Cart">
         🛒
@@ -3123,6 +3203,7 @@
     <span id="bcName">Loading…</span>
   </div>
 
+  <main id="main-content">
   <div class="loading" id="loadingState">
     <div class="spin"></div>
     <p>Loading product…</p>
@@ -3133,12 +3214,22 @@
     <div class="img-col">
       <div class="slider-wrap" id="sliderWrap">
         <div class="slider-track" id="sliderTrack"></div>
-        <button class="slide-arrow slide-prev" onclick="slideNav(-1)">‹</button>
-        <button class="slide-arrow slide-next" onclick="slideNav(1)">›</button>
+        <button class="slide-arrow slide-prev" onclick="slideNav(-1)" aria-label="Previous image">‹</button>
+        <button class="slide-arrow slide-next" onclick="slideNav(1)" aria-label="Next image">›</button>
         <div class="slide-dots" id="slideDots"></div>
         <div class="img-badge-wrap" id="imgBadgeWrap"></div>
         <button class="img-wishlist-btn" id="detWishBtn" onclick="toggleDetailWish()"
-          title="Add to Wishlist">🤍</button>
+          title="Add to Wishlist" aria-label="Add to Wishlist">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+        <button class="img-share-btn" onclick="shareProduct()" title="Share Product" aria-label="Share Product">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2L11 13"></path>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+          </svg>
+        </button>
       </div>
       <div class="thumb-row" id="thumbRow"></div>
     </div>
@@ -3154,12 +3245,10 @@
         <div class="rating-num" id="detRatingNum">0.0</div>
         <div class="rating-count" id="detRatingCount">(0 reviews)</div>
         <button class="share-btn" onclick="openShareModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
           </svg>
           Share
         </button>
@@ -3216,20 +3305,20 @@
           </div>
         </div>
 
-        <!-- Offer 3: First Order Discount -->
-        <div class="offer-card">
+        <!-- Offer 3: First Order Discount (Dynamic) -->
+        <div class="offer-card" id="firstOrderOfferCard" style="display:none;">
           <div class="offer-header">
             <div class="offer-icon">🏷️</div>
             <div class="offer-content">
               <div class="offer-title">First Order Discount</div>
-              <div class="offer-desc">Get 10% off on your first purchase with us</div>
+              <div class="offer-desc" id="fodOfferDesc">Get 10% off on your first purchase with us</div>
             </div>
           </div>
-          <div class="offer-conditions">
+          <div class="offer-conditions" id="fodOfferConditions">
             Minimum order value: ₹499 • Valid for new customers only • Code: WELCOME10
           </div>
           <div class="offer-footer">
-            <span class="offer-terms">Limited time offer</span>
+            <span class="offer-terms" id="fodOfferTerms">Limited time offer</span>
             <button class="offer-action secondary" onclick="copyFirstOrderCode()">Copy Code</button>
           </div>
         </div>
@@ -3428,6 +3517,7 @@
     </div>
     <div class="related-scroll" id="similarGrid"></div>
   </div>
+  </main>
 
   <a href="#" id="floatWA">💬 Order via WhatsApp</a>
 
@@ -3436,6 +3526,7 @@
   <script src="lang-currency.js"></script>
   <script src="mobilenav.js"></script>
   <script src="bottomnav.js"></script>
+  <script src="cookies.js"></script>
   
 
   <!-- REVIEW PHOTO LIGHTBOX -->
@@ -3531,10 +3622,64 @@
     // 10s timeout
     const _tout = setTimeout(() => _showError('Timed out. Please check your internet connection.'), 10000);
 
+    // Check if user is logged in
+    function _isUserLoggedIn(){
+      try {
+        const user = JSON.parse(localStorage.getItem('ah_user') || 'null');
+        return user && user.uid;
+      } catch(e) {
+        return false;
+      }
+    }
+
     // Wishlist
     function _getWL() { try { return JSON.parse(localStorage.getItem('ah_wish') || '[]'); } catch { return []; } }
-    function _saveWL(w) { localStorage.setItem('ah_wish', JSON.stringify(w)); }
+    function _saveWL(w) { localStorage.setItem('ah_wish', JSON.stringify(w)); _updateWishCount(); }
+    
+    // Update header wishlist count badge
+    function _updateWishCount() {
+      const wl = _getWL();
+      const count = wl.length;
+      document.querySelectorAll('.wish-count, #wishCount').forEach(el => {
+        el.textContent = count > 0 ? count : '';
+        el.setAttribute('data-count', count);
+      });
+    }
+    _updateWishCount(); // Initialize on page load
+    
+    // Toggle wishlist panel (opens account page wishlist section)
+    window.toggleWishlist = () => {
+      // Check if user is logged in
+      if(!_isUserLoggedIn()){
+        toast('⚠️ Please login to view your wishlist', 'err');
+        setTimeout(() => {
+          if(confirm('You need to login to access your wishlist. Go to login page?')){
+            window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+          }
+        }, 100);
+        return;
+      }
+      
+      const wl = _getWL();
+      if (wl.length === 0) {
+        toast('💔 Your wishlist is empty');
+        return;
+      }
+      window.location.href = 'account.html#wishlist';
+    };
+    
     window.toggleDetailWish = () => {
+      // Check if user is logged in
+      if(!_isUserLoggedIn()){
+        toast('⚠️ Please login to add items to wishlist', 'err');
+        setTimeout(() => {
+          if(confirm('You need to login to use the wishlist. Go to login page?')){
+            window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+          }
+        }, 100);
+        return;
+      }
+      
       let w = _getWL();
       if (_wished) { w = w.filter(x => x !== _pid); _wished = false; toast('Removed from wishlist'); }
       else { w.push(_pid); _wished = true; toast('❤️ Saved to wishlist!'); }
@@ -3544,6 +3689,7 @@
       const fb = $('detWishBtn'), lb = $('detWishlistBtn');
       if (fb) { fb.textContent = _wished ? '❤️' : '🤍'; fb.classList.toggle('wished', _wished); }
       if (lb) { lb.textContent = _wished ? '❤️ Wishlisted' : '🤍 Add to Wishlist'; lb.classList.toggle('wished', _wished); }
+      _updateWishCount(); // Also update header badge
     }
 
     // ══════════════════════════════════════════
@@ -3569,6 +3715,16 @@
         _showProduct();
         _loadRelated(_prod.category, _pid);
         _loadReviews(_pid);
+        
+        // Track recently viewed product (using cookies.js)
+        if (window.AHCookies && _prod) {
+          window.AHCookies.addViewed({
+            id: _prod.id,
+            name: _prod.name || '',
+            image: (Array.isArray(_prod.images) && _prod.images[0]) || '',
+            price: Number(_prod.price) || 0
+          });
+        }
       } catch (e) {
         clearTimeout(_tout);
         console.error('Product load error:', e);
@@ -3576,17 +3732,118 @@
       }
     }
     _loadProduct();
+    
+    // ══════════════════════════════════════════
+    //  LOAD FIRST ORDER DISCOUNT SETTINGS
+    // ══════════════════════════════════════════
+    let _fodSettings = null;
+    async function _loadFirstOrderDiscount() {
+      try {
+        const url = `${_FB_BASE}/siteSettings/config?key=${_FB_KEY}`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.fields) return;
+        const cfg = _parseDoc(json.fields);
+        if (!cfg.firstOrderDiscount) return;
+        
+        const fod = cfg.firstOrderDiscount;
+        _fodSettings = fod;
+        
+        // Update the UI if active
+        if (fod.active !== false) {
+          const card = $('firstOrderOfferCard');
+          const desc = $('fodOfferDesc');
+          const cond = $('fodOfferConditions');
+          const terms = $('fodOfferTerms');
+          
+          if (card) card.style.display = '';
+          if (desc) desc.textContent = fod.description || `Get ${fod.discount||10}% off on your first purchase with us`;
+          if (cond) {
+            const minText = fod.minOrder > 0 ? `Minimum order value: ₹${fod.minOrder}` : 'No minimum order';
+            cond.textContent = `${minText} • Valid for new customers only • Code: ${fod.code || 'WELCOME10'}`;
+          }
+          if (terms) terms.textContent = fod.terms || 'Limited time offer';
+        }
+      } catch (e) {
+        console.error('First order discount load error:', e);
+      }
+    }
+    _loadFirstOrderDiscount();
 
     // ── Render ──
     function _renderProduct(p) {
+      // Update page title
       document.title = (p.name || 'Product') + ' – Aneesa Hampers';
+      
+      // Update meta tags for SEO and social sharing
+      const productUrl = `https://aneesa-hampers.web.app/product.html?id=${p.id}`;
+      const productDesc = (p.description || 'Premium handcrafted gift hamper').substring(0, 155);
+      const productImage = (p.images && p.images[0]) || 'https://aneesa-hampers.web.app/assets/og-image.jpg';
+      
+      // Update meta tags
+      const updateMeta = (id, attr, value) => {
+        const el = document.getElementById(id) || document.querySelector(`meta[${attr}="${id}"]`);
+        if (el) el.setAttribute('content', value);
+      };
+      
+      updateMeta('pageDesc', 'name', productDesc);
+      updateMeta('ogUrl', 'property', productUrl);
+      updateMeta('ogTitle', 'property', `${p.name} – Aneesa Hampers`);
+      updateMeta('ogDesc', 'property', productDesc);
+      updateMeta('ogImage', 'property', productImage);
+      updateMeta('twitterTitle', 'name', `${p.name} – Aneesa Hampers`);
+      
+      // Update canonical URL
+      const canonical = document.getElementById('canonical');
+      if (canonical) canonical.href = productUrl;
+      
+      // Add structured data for Google Shopping
+      const existingSchema = document.getElementById('productSchema');
+      if (existingSchema) existingSchema.remove();
+      
+      const price = Number(p.price) || 0;
+      const disc = Number(p.discount) || 0;
+      const effectivePrice = disc > 0 ? Math.round(price * (1 - disc / 100)) : price;
+      
+      const schema = document.createElement('script');
+      schema.id = 'productSchema';
+      schema.type = 'application/ld+json';
+      schema.textContent = JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": p.name || "Gift Hamper",
+        "image": productImage,
+        "description": p.description || "Premium handcrafted gift hamper",
+        "brand": {
+          "@type": "Brand",
+          "name": "Aneesa Hampers"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": productUrl,
+          "priceCurrency": "INR",
+          "price": effectivePrice,
+          "priceValidUntil": new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+          "availability": p.inStock === false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Aneesa Hampers"
+          }
+        },
+        "aggregateRating": p.rating ? {
+          "@type": "AggregateRating",
+          "ratingValue": p.rating,
+          "reviewCount": p.reviewCount || 1
+        } : undefined
+      });
+      document.head.appendChild(schema);
+      
       const bcn = $('bcName'); if (bcn) bcn.textContent = p.name || '';
       const dc = $('detCat'); if (dc) dc.textContent = (p.category || 'Premium Gift').toUpperCase();
       const dn = $('detName'); if (dn) dn.textContent = p.name || '';
 
-      const price = Number(p.price) || 0;
-      const disc = Number(p.discount) || 0;
-      const eff = disc > 0 ? Math.round(price * (1 - disc / 100)) : price;
+      const eff = effectivePrice;
 
       const dp = $('detPrice'); if (dp) dp.textContent = `₹${eff.toLocaleString('en-IN')}`;
       if (disc > 0) {
@@ -3711,12 +3968,13 @@
     };
     
     window.copyFirstOrderCode = () => {
+      const code = (_fodSettings && _fodSettings.code) ? _fodSettings.code : 'WELCOME10';
       if (navigator.clipboard) {
-        navigator.clipboard.writeText('WELCOME10').then(() => {
-          toast('✅ Coupon code WELCOME10 copied!');
+        navigator.clipboard.writeText(code).then(() => {
+          toast(`✅ Coupon code ${code} copied!`);
         });
       } else {
-        toast('✅ Use code: WELCOME10 at checkout');
+        toast(`✅ Use code: ${code} at checkout`);
       }
     };
 
@@ -4100,13 +4358,37 @@
 </div>
 
 <script>
-// Share functionality
+// Share functionality - using DOM elements directly
 function getShareData() {
-  const name = _prod ? _prod.name : 'Product';
-  const price = _prod ? '₹' + _effPrice() : '';
+  const nameEl = document.getElementById('detName');
+  const priceEl = document.getElementById('detPrice');
+  const imgEl = document.querySelector('.slider-track img');
+  
+  const name = nameEl ? nameEl.textContent.trim() : 'Product';
+  const price = priceEl ? priceEl.textContent.trim() : '';
   const url = window.location.href;
-  const img = _prod && _prod.images && _prod.images[0] ? _prod.images[0] : '';
+  const img = imgEl ? imgEl.src : '';
   return { name, price, url, img };
+}
+
+// Real-time share function using native share API
+function shareProduct() {
+  const data = getShareData();
+  const shareText = `Check out ${data.name} at ${data.price} on Aneesa Hampers! 🎁`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: data.name,
+      text: shareText,
+      url: data.url
+    }).catch(() => {
+      // If user cancels or error, fallback to modal
+      openShareModal();
+    });
+  } else {
+    // Fallback for browsers without native share
+    openShareModal();
+  }
 }
 
 function openShareModal() {

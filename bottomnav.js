@@ -247,6 +247,24 @@
   }
 
   /* ─────────────────────────────────────────────────────────────
+     5b. WISHLIST BADGE UPDATE — updates wishlist count in header
+  ───────────────────────────────────────────────────────────── */
+  function wishlistCount() {
+    try {
+      var items = JSON.parse(localStorage.getItem('ah_wish') || '[]');
+      return items.length;
+    } catch (e) { return 0; }
+  }
+
+  function updateWishlistBadge() {
+    var count = wishlistCount();
+    document.querySelectorAll('.wish-count, #wishCount').forEach(function (el) {
+      el.textContent = count > 0 ? count : '';
+      el.setAttribute('data-count', count);
+    });
+  }
+
+  /* ─────────────────────────────────────────────────────────────
      6. SHOW / HIDE on resize — JS enforces at ≤900px
         (CSS media query also fires, but JS override is needed
          for pages that set inline display:none on the element)
@@ -271,14 +289,18 @@
     injectBottomNav();
     syncActiveState();
     updateCartBadge();
+    updateWishlistBadge();
     showOnMobile();
 
     window.addEventListener('resize', showOnMobile);
 
-    /* Re-sync badge on storage events (cross-tab cart updates) */
+    /* Re-sync badge on storage events (cross-tab cart/wishlist updates) */
     window.addEventListener('storage', function (e) {
       if (e.key && e.key.startsWith('ah_cart')) {
         updateCartBadge();
+      }
+      if (e.key && e.key === 'ah_wish') {
+        updateWishlistBadge();
       }
     });
   }
@@ -291,5 +313,6 @@
 
   /* Expose globally for other scripts to trigger a badge refresh */
   window._updateCartBadge = updateCartBadge;
+  window._updateWishlistBadge = updateWishlistBadge;
   window._showBottomNav   = showOnMobile;
 })();

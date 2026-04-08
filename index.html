@@ -5,8 +5,38 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover"/>
 <title>Aneesa Hampers — Premium Gift Hampers | Kadapa</title>
 <meta name="description" content="Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh."/>
+<meta name="keywords" content="gift hampers, premium hampers, birthday gifts, wedding gifts, Kadapa gifts, handcrafted hampers, custom hampers, flower bouquet, hijabs, Islamic gifts"/>
+<meta name="author" content="Aneesa Hampers"/>
+<meta name="theme-color" content="#c0647a"/>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://aneesa-hampers.web.app/"/>
+<meta property="og:title" content="Aneesa Hampers — Premium Gift Hampers | Kadapa"/>
+<meta property="og:description" content="Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh."/>
+<meta property="og:image" content="https://aneesa-hampers.web.app/assets/og-image.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:locale" content="en_IN"/>
+<meta property="og:site_name" content="Aneesa Hampers"/>
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:url" content="https://aneesa-hampers.web.app/"/>
+<meta name="twitter:title" content="Aneesa Hampers — Premium Gift Hampers"/>
+<meta name="twitter:description" content="Handcrafted premium gift hampers for every occasion."/>
+<meta name="twitter:image" content="https://aneesa-hampers.web.app/assets/og-image.jpg"/>
+
+<!-- Additional SEO -->
+<meta name="robots" content="index, follow"/>
+<meta name="googlebot" content="index, follow"/>
+<link rel="canonical" href="https://aneesa-hampers.web.app/"/>
+
+<!-- Preconnect for performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://www.gstatic.com"/>
+<link rel="preconnect" href="https://firebasestorage.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -29,6 +59,12 @@ body{
 }
 img{max-width:100%;display:block;}
 a{text-decoration:none;}
+
+/* ACCESSIBILITY - Focus styles */
+*:focus{outline:2px solid var(--deep-rose);outline-offset:2px;}
+*:focus:not(:focus-visible){outline:none;}
+*:focus-visible{outline:2px solid var(--deep-rose);outline-offset:2px;box-shadow:0 0 0 4px rgba(192,100,122,.25);}
+.skip-to-content:focus{top:0!important;}
 
 /* CURSOR */
 @media(pointer:fine){body{cursor:none;}.cursor{width:9px;height:9px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}.cursor-ring{width:30px;height:30px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
@@ -277,7 +313,7 @@ a{text-decoration:none;}
 .topnav{position:fixed;top:40px;width:100%;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:68px;background:rgba(253,246,240,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(192,100,122,.1);box-shadow:0 2px 12px rgba(59,13,26,.04);}
 .topnav .ham-btn{margin-right:12px;display:flex;}
 .topnav .nav-right{margin-left:auto;}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.58rem;font-style:italic;color:var(--burgundy);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.58rem;font-style:italic;color:var(--burgundy);margin-right:32px;}
 .nav-logo span{color:var(--deep-rose);}
 .nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
@@ -299,7 +335,7 @@ a{text-decoration:none;}
   min-width:56px;
 }
 .nav-cart-btn:hover{background:var(--blush);border-color:rgba(192,100,122,.3);}
-.cart-count{
+.cart-count, .wish-count{
   position:absolute;
   top:-4px;
   right:-4px;
@@ -317,6 +353,7 @@ a{text-decoration:none;}
   border:2px solid var(--cream);
   box-shadow:0 2px 8px rgba(192,100,122,.3);
 }
+.wish-count:empty, .wish-count[data-count="0"]{display:none;}
 .nav-wa{background:var(--green);color:white;border-radius:9px;padding:9px 17px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
 .nav-wa:hover{opacity:.88;}
 .nav-acc{padding:8px 14px;border-radius:9px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);transition:background .2s;}
@@ -540,17 +577,30 @@ a{text-decoration:none;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,2.8vw,2.8rem);font-weight:300;margin-bottom:12px;line-height:1.2;}
 .sec-title em{font-style:italic;color:var(--deep-rose);}
 .sec-sub{font-size:.86rem;opacity:.55;font-weight:300;line-height:1.8;max-width:500px;margin:0 auto;}
-/* ── CATEGORY GRID ── */
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+/* ── CATEGORY GRID — Horizontal Scroll ── */
+.cat-grid{
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding:10px 4px 20px;
+  scrollbar-width:none;
+}
+.cat-grid::-webkit-scrollbar{display:none;}
 
 /* ── RECTANGLE card (default) ── */
 .cat-card{border-radius:20px;overflow:hidden;background:white;display:block;
   transition:transform .35s,box-shadow .35s;position:relative;text-decoration:none;
-  box-shadow:0 4px 18px rgba(59,13,26,.07);}
+  box-shadow:0 4px 18px rgba(59,13,26,.07);
+  flex:0 0 auto;
+  width:180px;
+  scroll-snap-align:start;}
 .cat-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(192,100,122,.22);}
-.cat-card.span2{grid-column:span 2;}
+.cat-card.span2{width:220px;}
 .cat-img{height:200px;position:relative;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
-.cat-card.span2 .cat-img{height:240px;}
+.cat-card.span2 .cat-img{height:200px;}
 /* Gradient overlay on image cards */
 .cat-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(59,13,26,.72) 0%,rgba(59,13,26,.1) 55%,transparent 100%);z-index:1;}
 /* Name on image */
@@ -1372,7 +1422,9 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .sec-wrap{padding:60px 28px;}
   .prod-grid{grid-template-columns:repeat(2,1fr);gap:16px;}
   .prod-thumb{height:180px;}
-  .cat-grid{grid-template-columns:repeat(2,1fr);}
+  .cat-grid{gap:12px;padding:10px 2px 16px;}
+  .cat-card{width:150px;}
+  .cat-card.span2{width:180px;}
   .bslide-overlay{padding:0 20px;}
   .bslide{
     aspect-ratio:16/6;
@@ -1404,8 +1456,10 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .prod-thumb{height:165px;}
   .prod-info{padding:10px 10px 12px;}
   .prod-name{font-size:.88rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;}
-  .cat-grid{grid-template-columns:1fr 1fr;}
-  .cat-card.span2{grid-column:span 2;}
+  .cat-grid{gap:10px;padding:8px 0 14px;}
+  .cat-card{width:140px;}
+  .cat-card.span2{width:160px;}
+  .cat-img{height:160px;}
   .promo-strip{grid-template-columns:1fr;padding:24px 16px;}
   .promo-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:13px 0;}
   .promo-item:last-child{border-bottom:none;}
@@ -1474,9 +1528,11 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   .topnav .nav-logo{
     position:absolute;left:50%;transform:translateX(-50%);
     font-size:1.3rem;
+    max-width:140px;
+    text-align:center;
   }
   .topnav .nav-right .nav-acc{display:none;}
-  .topnav .nav-right .nav-search-wrap .nav-search-box{display:none;}
+  .topnav .nav-right .desktop-only{display:none!important;}
   .topnav .nav-right{gap:6px;}
 }
 
@@ -1724,7 +1780,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <!-- PIN POPUP MODAL — centred, always visible -->
 <div class="pin-popup-backdrop" id="pin-backdrop" onclick="closePinPopup()"></div>
 <div class="pin-popup" id="pin-popup" onclick="event.stopPropagation()">
-  <button class="pin-popup-close" onclick="closePinPopup()">✕</button>
+  <button class="pin-popup-close" onclick="closePinPopup()" aria-label="Close pincode popup">✕</button>
   <div class="pin-popup-title">📍 Check Delivery</div>
   <div class="pin-popup-sub">Enter your pincode to see estimated delivery date</div>
   <input type="text" id="pin-input" placeholder="e.g. 516001" maxlength="6"
@@ -1855,7 +1911,10 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 </div>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-<div id="ah-toast"></div>
+<div id="ah-toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<!-- Skip to content link for keyboard users -->
+<a href="#main-content" class="skip-to-content" style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:12px 24px;border-radius:0 0 8px 8px;z-index:100000;font-size:.85rem;font-weight:500;text-decoration:none;transition:top .2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Skip to main content</a>
 
 <!-- NAV -->
 <nav class="topnav">
@@ -1868,14 +1927,30 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
     <li><a href="cart.html">Cart</a></li>
   </ul>
   <div class="nav-right">
-    <div class="nav-search-wrap" id="searchWrap">
+    <div class="nav-search-wrap desktop-only" id="searchWrap">
       <button class="nav-search-btn" id="searchToggle" aria-label="Search">🔍</button>
       <div class="nav-search-box" id="searchBox">
         <input type="text" id="searchInput" placeholder="Search hampers, cakes…" autocomplete="off"/>
       </div>
     </div>
+    <button class="nav-wish-btn" id="navWishBtn" onclick="toggleWishlist()" aria-label="Wishlist" title="Wishlist" style="background:none;border:none;cursor:pointer;font-size:1.1rem;position:relative;padding:6px;">
+      💗
+      <span class="wish-count" id="wishCount"></span>
+    </button>
     <a href="cart.html" class="nav-cart-btn" aria-label="Shopping cart">
-      🛒
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+        <!-- Gift box body with gradient -->
+        <path d="M20 7H4c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V8c0-.55-.45-1-1-1z" fill="#f9e4e9" stroke="#c0647a"></path>
+        <!-- Vertical ribbon -->
+        <path d="M12 20V7" stroke="#e8a0b0" stroke-width="2.5"></path>
+        <!-- Bow on top -->
+        <path d="M3 8l9-6 9 6" fill="#ff6b9d" stroke="#c0647a"></path>
+        <!-- Decorative dots -->
+        <circle cx="8" cy="13" r="1" fill="#e8a0b0"></circle>
+        <circle cx="16" cy="13" r="1" fill="#e8a0b0"></circle>
+        <!-- Horizontal ribbon -->
+        <path d="M8 16h8" stroke="#e8a0b0" stroke-width="2"></path>
+      </svg>
       <span class="cart-count" id="navCart">0</span>
     </a>
     <a href="account.html" class="nav-acc" id="navAccBtn">👤 Account</a>
@@ -1891,14 +1966,14 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
       placeholder="Search hampers, cakes, decors…"
       onkeydown="if(event.key==='Enter'&&this.value.trim())location.href='products.html?search='+encodeURIComponent(this.value.trim())"
       autocomplete="off"/>
-    <button class="msb-mic" onclick="mobileSearchGo()" title="Search">→</button>
+    <button class="msb-mic" onclick="mobileSearchGo()" title="Search" aria-label="Search">→</button>
   </div>
 </div>
 
 <!-- ANNOUNCEMENT BAR — fixed top bar -->
 <div id="annBar">
   <span id="annText">Free delivery on orders above ₹999 in Kadapa!</span>
-  <button class="ann-close" id="annClose">✕</button>
+  <button class="ann-close" id="annClose" aria-label="Close announcement">✕</button>
 </div>
 
 <!-- FLASH SALE STRIP -->
@@ -1917,6 +1992,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 </div>
 
 <!-- HERO (shown when no banners) -->
+<main id="main-content">
 <section class="hero" id="heroSec">
   <div class="hero-content">
     <div class="hero-eyebrow" id="heroEyebrow">🌸 Premium Gifting · Kadapa</div>
@@ -2091,7 +2167,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <!-- REVIEW MODAL -->
 <div id="reviewModal" style="display:none;position:fixed;inset:0;background:rgba(30,6,16,.6);backdrop-filter:blur(6px);z-index:60000;align-items:center;justify-content:center;padding:16px;">
   <div style="background:white;border-radius:22px;width:100%;max-width:480px;padding:32px 28px;position:relative;box-shadow:0 24px 70px rgba(59,13,26,.25);max-height:92vh;overflow-y:auto;">
-    <button onclick="closeReviewModal()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
+    <button onclick="closeReviewModal()" aria-label="Close review modal" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
     <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;margin-bottom:4px;">Share Your <em style="font-style:italic;color:var(--deep-rose)">Experience</em></div>
     <div style="font-size:.78rem;opacity:.45;margin-bottom:22px;">Your real review helps others make better choices 🌸</div>
     <!-- Star rating picker -->
@@ -2227,6 +2303,10 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   <p class="insta-handle" id="galleryHandle"></p>
 </section>
 
+<!-- RECENTLY VIEWED PRODUCTS (Cookie-powered) -->
+<section id="ah-recently-viewed"></section>
+</main>
+
 <!-- FOOTER -->
 <footer>
   <!-- WhatsApp CTA row -->
@@ -2303,6 +2383,7 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <script src="lang-currency.js"></script>
 <script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
+<script src="cookies.js"></script>
 
 <!-- ═══════ ENHANCED SIDEBAR ═══════ -->
 <div id="enh-overlay" onclick="enhSbClose()"></div>
@@ -2485,7 +2566,9 @@ try{
   }
 
   if(_shouldHide){
-    document.write('<style>#cin-loader{display:none!important;}</style>');
+    const style = document.createElement('style');
+    style.textContent = '#cin-loader{display:none!important;}';
+    document.head.appendChild(style);
   }
 }catch(e){}
 
@@ -2653,28 +2736,60 @@ window.buyNow = function(id, name, price, image) {
 
 
 // AUTH STATE
-onAuthStateChanged(auth, user => {
-  if(user){
-    const n=user.displayName||user.email.split('@')[0];
-    const s={uid:user.uid,email:user.email,name:n,savedAt:Date.now()};
-    localStorage.setItem('ah_user',JSON.stringify(s));
-    updateNavForUser(n);
-  } else {
-    const s=JSON.parse(localStorage.getItem('ah_user')||'null');
-    if(s) updateNavForUser(s.name||'Hi');
-  }
-});
 function updateNavForUser(name){
   const fn=name.split(' ')[0];
   document.getElementById('navAccBtn').textContent='👤 '+fn;
   const bl=document.getElementById('bnAccLbl'); if(bl) bl.textContent=fn;
 }
 
+// Immediately restore UI from localStorage (avoids flash of "Account" text)
+(function(){
+  const cached=JSON.parse(localStorage.getItem('ah_user')||'null');
+  if(cached&&cached.name) updateNavForUser(cached.name);
+})();
+
+onAuthStateChanged(auth, user => {
+  if(user){
+    const n=user.displayName||user.email.split('@')[0];
+    const s={uid:user.uid,email:user.email,name:n,savedAt:Date.now()};
+    localStorage.setItem('ah_user',JSON.stringify(s));
+    updateNavForUser(n);
+    // Save session to cookies for persistence
+    if(window.AHCookies) window.AHCookies.setSession(user);
+  } else {
+    // User logged out - clear localStorage and reset to default
+    localStorage.removeItem('ah_user');
+    document.getElementById('navAccBtn').textContent='👤 Account';
+    const bl=document.getElementById('bnAccLbl'); if(bl) bl.textContent='Account';
+    // Clear session cookie
+    if(window.AHCookies) window.AHCookies.clearSession();
+  }
+});
+
 // SITE SETTINGS
 let flashDiscount=0;
+
+// Immediately load cached site config (avoids blank UI on slow network)
+(function loadCachedConfig(){
+  try {
+    const cached = JSON.parse(localStorage.getItem('ah_siteConfig') || 'null');
+    if (cached && cached.data) {
+      applySiteConfig(cached.data, true);
+    }
+  } catch(e) {}
+})();
+
+// Live site config listener from Firebase
 onSnapshot(doc(db,'siteSettings','config'), snap => {
   if(!snap.exists()) return;
-  const cfg=snap.data();
+  const cfg = snap.data();
+  // Cache for offline/fast load
+  localStorage.setItem('ah_siteConfig', JSON.stringify({data: cfg, ts: Date.now()}));
+  applySiteConfig(cfg, false);
+});
+
+function applySiteConfig(cfg, isCache) {
+  if (!cfg) return;
 
   // ── Announcement ──
   if(cfg.announcement?.active&&cfg.announcement?.text){
@@ -2803,7 +2918,7 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
       </div>`;
     }).join('');
   }
-});
+}
 
 // BANNER CAROUSEL
 let _bi=0,_bct=0,_bT=null; const BI=4500;
@@ -2852,24 +2967,24 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
   const domShape=Object.entries(shapeCounts).sort((a,b)=>b[1]-a[1])[0][0];
 
   if(domShape==='circle') {
-    // ── CIRCLE layout — story-style horizontal row ──
-    grid.style.display='block';
-    grid.innerHTML='<div class="cat-circles-row">'+cats.map(c=>{
+    // ── CIRCLE layout — story-style horizontal scroll ──
+    grid.style.display='';
+    grid.innerHTML='<div class="cat-circles-row" style="display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:10px 0;scrollbar-width:none;">'+cats.map(c=>{
       const bg=c.color||'#f9e4e9';
       const imgInner=c.coverImage
         ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'}"/>`
         : `<span>${c.emoji||'🎁'}</span>`;
-      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-wrap reveal">
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-wrap reveal" style="flex:0 0 auto;scroll-snap-align:start;">
         <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${imgInner}</div>
         <span class="cat-circle-lbl">${c.name}</span>
       </a>`;
     }).join('')+'</div>';
 
   } else if(domShape==='square') {
-    // ── SQUARE layout — equal grid tiles ──
-    grid.style.display='grid';
-    grid.style.gridTemplateColumns='repeat(auto-fill,minmax(130px,1fr))';
-    grid.style.gap='14px';
+    // ── SQUARE layout — horizontal scroll tiles ──
+    grid.style.display='';
+    grid.style.gridTemplateColumns='';
+    grid.style.gap='';
     grid.innerHTML=cats.map(c=>{
       const bg=c.color||'#f9e4e9';
       const pos=c.coverPosition||'50% 50%';
@@ -2882,17 +2997,15 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
              <span style="font-family:'Jost',sans-serif;font-size:.76rem;font-weight:600;color:var(--burgundy);text-align:center;padding:0 8px">${c.name}</span>
            </div>`;
       return `<a href="products.html?cat=${c.slug||c.id}" class="cat-square-wrap reveal"
-        style="background:${c.coverImage?'#f5e8ec':bg}">${inner}</a>`;
+        style="flex:0 0 auto;width:130px;height:130px;scroll-snap-align:start;background:${c.coverImage?'#f5e8ec':bg}">${inner}</a>`;
     }).join('');
 
   } else {
-    // ── RECTANGLE layout (default) — rich cards with overlay text ──
-    grid.style.display='grid';
-    grid.style.gridTemplateColumns='repeat(3,1fr)';
-    grid.style.gap='18px';
-    const visible=cats.slice(0,5);
-    grid.innerHTML=visible.map((c,i)=>{
-      const span=i===0||i===4?'span2':'';
+    // ── RECTANGLE layout (default) — horizontal scroll cards ──
+    grid.style.display='';
+    grid.style.gridTemplateColumns='';
+    grid.style.gap='';
+    grid.innerHTML=cats.map((c,i)=>{
       const bg=c.color||'#f9e4e9';
       const pos=c.coverPosition||'50% 50%';
       const hasImg=!!c.coverImage;
@@ -2900,10 +3013,10 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
         ? `<img src="${c.coverImage}" alt="${c.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${pos};display:block;"/>
            <div class="cat-img-overlay"></div>
            <div class="cat-img-label"><small>${c.emoji||''}</small>${c.name}</div>`
-        : `<span style="font-size:${span?'5rem':'3.8rem'}">${c.emoji||'🎁'}</span>
+        : `<span style="font-size:3.8rem">${c.emoji||'🎁'}</span>
            <div class="cat-img-overlay" style="background:linear-gradient(to top,${bg}ee 0%,transparent 70%)"></div>
            <div class="cat-img-label"><small>${c.desc||''}</small>${c.name}</div>`;
-      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal"
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card reveal"
         style="background:${hasImg?'#f5e8ec':bg}">
         <div class="cat-img" style="background:${hasImg?'#f5e8ec':bg}">${imgContent}</div>
         <div class="cat-arrow">→</div>
@@ -3757,13 +3870,70 @@ if(searchToggle){
   });
 }
 
+// WISHLIST - Check if user is logged in
+function _isUserLoggedIn(){
+  try {
+    const user = JSON.parse(localStorage.getItem('ah_user') || 'null');
+    return user && user.uid;
+  } catch(e) {
+    return false;
+  }
+}
+
 // WISHLIST TOGGLE
 window.toggleWish=function(id,btn){
+  // Check if user is logged in
+  if(!_isUserLoggedIn()){
+    toast('⚠️ Please login to add items to wishlist', 'err');
+    setTimeout(() => {
+      if(confirm('You need to login to use the wishlist. Go to login page?')){
+        window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+      }
+    }, 100);
+    return;
+  }
+  
   let w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
   if(w.includes(id)){w=w.filter(x=>x!==id);btn.textContent='♡';btn.classList.remove('wished');}
   else{w.push(id);btn.textContent='♥';btn.classList.add('wished');}
   localStorage.setItem('ah_wish',JSON.stringify(w));
+  _updateWishCount();
 };
+
+// Update header wishlist count badge
+function _updateWishCount(){
+  try {
+    const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+    const count=w.length;
+    document.querySelectorAll('.wish-count, #wishCount').forEach(el=>{
+      el.textContent=count>0?count:'';
+      el.setAttribute('data-count',count);
+    });
+  } catch(e){}
+}
+_updateWishCount(); // Initialize on page load
+
+// Toggle wishlist (opens account page wishlist section)
+window.toggleWishlist=function(){
+  // Check if user is logged in
+  if(!_isUserLoggedIn()){
+    toast('⚠️ Please login to view your wishlist', 'err');
+    setTimeout(() => {
+      if(confirm('You need to login to access your wishlist. Go to login page?')){
+        window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+      }
+    }, 100);
+    return;
+  }
+  
+  const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+  if(w.length===0){
+    toast('💔 Your wishlist is empty');
+    return;
+  }
+  window.location.href='account.html#wishlist';
+};
+
 // Restore wishlist state
 (function(){
   const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
@@ -4437,6 +4607,58 @@ function launchConfetti(){
 })();
 
 
+</script>
+
+<!-- Structured Data for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Aneesa Hampers",
+  "image": "https://aneesa-hampers.web.app/assets/logo.png",
+  "description": "Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "13/384, Rahmatullah Street",
+    "addressLocality": "Kadapa",
+    "addressRegion": "Andhra Pradesh",
+    "postalCode": "516001",
+    "addressCountry": "IN"
+  },
+  "telephone": "+91-8639066613",
+  "url": "https://aneesa-hampers.web.app/",
+  "priceRange": "₹₹",
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "09:00",
+      "closes": "21:00"
+    }
+  ],
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "14.4673",
+    "longitude": "78.8242"
+  },
+  "sameAs": [
+    "https://wa.me/918639066613"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Aneesa Hampers",
+  "url": "https://aneesa-hampers.web.app/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://aneesa-hampers.web.app/products.html?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
 </script>
 
 </body>

@@ -7,6 +7,22 @@
   <title>Collections — Aneesa Hampers | Premium Gift Hampers</title>
   <meta name="description"
     content="Browse our full collection of premium handcrafted gift hampers — wedding, birthday, couple and more. Made with love in Kadapa." />
+  <meta name="keywords" content="gift hampers collection, premium hampers, birthday hampers, wedding hampers, flower bouquet, hijabs, Islamic hampers, customized gifts"/>
+  <meta name="robots" content="index, follow"/>
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://aneesa-hampers.web.app/products.html"/>
+  <meta property="og:title" content="Collections — Aneesa Hampers | Premium Gift Hampers"/>
+  <meta property="og:description" content="Browse our full collection of premium handcrafted gift hampers — wedding, birthday, couple and more."/>
+  <meta property="og:image" content="https://aneesa-hampers.web.app/assets/og-image.jpg"/>
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Collections — Aneesa Hampers"/>
+  <meta name="twitter:description" content="Browse our premium gift hampers collection"/>
+  
+  <link rel="canonical" href="https://aneesa-hampers.web.app/products.html"/>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap"
     rel="stylesheet" />
@@ -52,6 +68,11 @@
     a {
       text-decoration: none;
     }
+
+    /* ACCESSIBILITY - Focus styles */
+    *:focus { outline: 2px solid var(--deep-rose); outline-offset: 2px; }
+    *:focus:not(:focus-visible) { outline: none; }
+    *:focus-visible { outline: 2px solid var(--deep-rose); outline-offset: 2px; box-shadow: 0 0 0 4px rgba(192, 100, 122, 0.25); }
 
     /* CURSOR */
     @media(pointer:fine) {
@@ -198,7 +219,7 @@
       background: var(--blush);
     }
 
-    .cart-count {
+    .cart-count, .wish-count {
       background: var(--deep-rose);
       color: white;
       width: 20px;
@@ -209,6 +230,13 @@
       justify-content: center;
       font-size: .62rem;
       font-weight: 700;
+      position: absolute;
+      top: -4px;
+      right: -4px;
+    }
+    
+    .wish-count:empty, .wish-count[data-count="0"] {
+      display: none;
     }
 
     .nav-wa {
@@ -270,7 +298,7 @@
     /* FILTERS */
     .filters-bar {
       padding: 16px 60px;
-      background: var(--white);
+      background: #ffffff;
       border-bottom: 1px solid rgba(192, 100, 122, .1);
       display: flex;
       align-items: center;
@@ -279,8 +307,8 @@
       flex-wrap: nowrap;
       position: sticky;
       top: 68px;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(59, 13, 26, .05);
+      z-index: 500;
+      box-shadow: 0 2px 12px rgba(59, 13, 26, .08);
       overflow-x: auto;
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
@@ -446,6 +474,10 @@
         font-size: .74rem;
         flex-shrink: 0;
       }
+      
+      .filter-right {
+        margin-left: auto;
+      }
     }
 
     @media (min-width: 1400px) {
@@ -454,6 +486,11 @@
         gap: 18px;
         flex-wrap: nowrap;
         overflow-x: auto;
+        justify-content: flex-start;
+      }
+      
+      .filter-right {
+        margin-left: auto;
       }
     }
 
@@ -945,8 +982,6 @@
         padding: 150px 80px 70px;
       }
     }
-
-    /* ── Standard desktop / laptop 1024–1399px (default styles cover this) ── */
 
     /* ── Small laptop 900–1023px ── */
     @media(max-width:1024px) {
@@ -1713,7 +1748,10 @@
 <body>
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
-  <div id="ah-toast"></div>
+  <div id="ah-toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- Skip to content link for keyboard users -->
+  <a href="#main-content" class="skip-to-content" style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:12px 24px;border-radius:0 0 8px 8px;z-index:100000;font-size:.85rem;font-weight:500;text-decoration:none;transition:top .2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Skip to main content</a>
 
   <nav>
     <button class="ham-btn" onclick="enhSbOpen()"
@@ -1853,6 +1891,7 @@
     </div>
   </div>
 
+  <main id="main-content">
   <section class="products-section">
     <div class="products-count" id="productsCount"></div>
     <div class="prod-grid" id="prodGrid">
@@ -1862,6 +1901,7 @@
       </div>
     </div>
   </section>
+  </main>
 
   <a href="#" id="floatWA">💬 Order via WhatsApp</a>
 
@@ -1872,6 +1912,7 @@
   <script src="lang-currency.js"></script>
   <script src="mobilenav.js"></script>
   <script src="bottomnav.js"></script>
+  <script src="cookies.js"></script>
 <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1909,12 +1950,89 @@
 
     // Wishlist
     function isWished(id) { try { return JSON.parse(localStorage.getItem('ah_wish') || '[]').includes(id) } catch { return false; } }
+    function _updateWishCount(){
+      try {
+        const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+        const count=w.length;
+        document.querySelectorAll('.wish-count, #wishCount').forEach(el=>{
+          el.textContent=count>0?count:'';
+          el.setAttribute('data-count',count);
+        });
+      } catch(e){}
+    }
+    _updateWishCount(); // Initialize on page load
+    
+    // Check if user is logged in
+    function _isUserLoggedIn(){
+      try {
+        const user = JSON.parse(localStorage.getItem('ah_user') || 'null');
+        return user && user.uid;
+      } catch(e) {
+        return false;
+      }
+    }
+    
     window.toggleWish = (id, btn) => {
+      // Check if user is logged in
+      if(!_isUserLoggedIn()){
+        toast('⚠️ Please login to add items to wishlist', 'err');
+        setTimeout(() => {
+          if(confirm('You need to login to use the wishlist. Go to login page?')){
+            window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+          }
+        }, 100);
+        return;
+      }
+      
       let w = JSON.parse(localStorage.getItem('ah_wish') || '[]');
       if (w.includes(id)) { w = w.filter(x => x !== id); btn.textContent = '🤍'; btn.classList.remove('wished'); toast('Removed from wishlist'); }
       else { w.push(id); btn.textContent = '❤️'; btn.classList.add('wished'); toast('❤️ Saved to wishlist!'); }
       localStorage.setItem('ah_wish', JSON.stringify(w));
+      _updateWishCount();
     };
+    
+    // Toggle wishlist (opens account page wishlist section)
+    window.toggleWishlist=function(){
+      // Check if user is logged in
+      if(!_isUserLoggedIn()){
+        toast('⚠️ Please login to view your wishlist', 'err');
+        setTimeout(() => {
+          if(confirm('You need to login to access your wishlist. Go to login page?')){
+            window.location.href='login.html?redirect=' + encodeURIComponent(window.location.href);
+          }
+        }, 100);
+        return;
+      }
+      
+      const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+      if(w.length===0){
+        toast('💔 Your wishlist is empty');
+        return;
+      }
+      window.location.href='account.html#wishlist';
+    };
+    
+    function applyWishlistFilter() {
+      const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+      if(w.length===0) return;
+      // Filter displayed products to only show wishlisted ones
+      document.querySelectorAll('.prod-card').forEach(card => {
+        const link = card.getAttribute('onclick') || '';
+        const idMatch = link.match(/id=([^'&"]+)/);
+        const id = idMatch ? idMatch[1] : null;
+        if(id && !w.includes(id)) {
+          card.style.display = 'none';
+        } else {
+          card.style.display = '';
+        }
+      });
+      toast('💗 Showing your wishlisted items');
+    }
+    
+    // Check if wishlist filter is requested
+    if(new URLSearchParams(location.search).get('wishlist') === '1') {
+      setTimeout(applyWishlistFilter, 800); // Wait for products to load
+    }
 
     // Stars HTML
     function starsHtml(rating = 4.5) {
@@ -2254,6 +2372,9 @@
           // Deactivate "All" button when categories are selected
           document.querySelector('.filter-pill[data-cat="all"]').classList.remove('active');
         }
+        
+        // Reset subcategory filter when changing categories
+        currentSubcat = 'all';
         
         // Update subcategory bar to show subcats from all selected categories
         updateSubcatBar(selectedCategories.length > 0 ? selectedCategories : 'all');

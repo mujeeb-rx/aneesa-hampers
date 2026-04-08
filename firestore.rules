@@ -14,22 +14,22 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
-    // Orders — readable/writable by the order owner
+    // Orders — readable/writable by the order owner OR admin
     match /orders/{orderId} {
-      // Allow queries where uid or customerUID matches the authenticated user
+      // Admin can read/write ALL orders
+      allow read, write: if isAdmin();
+      // Users can read their own orders
       allow read: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
-      // Allow create if the order belongs to the authenticated user
+      // Users can create orders for themselves
       allow create: if request.auth != null &&
         (request.auth.uid == request.resource.data.uid ||
          request.auth.uid == request.resource.data.customerUID);
-      // Allow update/delete only for own orders
+      // Users can update/delete only their own orders
       allow update, delete: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
-      // Admin access
-      allow read, write: if isAdmin();
     }
 
     // Offers — public read, admin-only write
@@ -44,10 +44,21 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Reviews — anyone can read; anyone can create (auto-approved); admin can delete/update
+    // Reviews — anyone can read; authenticated users can create (with validation); admin can delete/update
     match /reviews/{reviewId} {
       allow read: if true;
-      allow create: if true;
+      // Only authenticated users can create reviews with proper validation
+      allow create: if request.auth != null &&
+        request.resource.data.keys().hasAll(['name', 'rating', 'text', 'productId', 'createdAt']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 2 &&
+        request.resource.data.name.size() <= 100 &&
+        request.resource.data.rating is number &&
+        request.resource.data.rating >= 1 &&
+        request.resource.data.rating <= 5 &&
+        request.resource.data.text is string &&
+        request.resource.data.text.size() >= 10 &&
+        request.resource.data.text.size() <= 1000;
       allow update, delete: if isAdmin();
     }
 

@@ -4,6 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cart &amp; Checkout &ndash; Aneesa Hampers</title>
+<meta name="description" content="Complete your order of premium gift hampers. Fast checkout with multiple payment options."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="canonical" href="https://aneesa-hampers.web.app/cart.html"/>
+<link rel="preconnect" href="https://checkout.razorpay.com"/>
+<link rel="dns-prefetch" href="https://checkout.razorpay.com"/>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -16,6 +21,12 @@ html.buynow-mode-pre #floatWA{visibility:hidden;}
 :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+
+/* ACCESSIBILITY - Focus styles */
+*:focus{outline:2px solid var(--deep-rose);outline-offset:2px;}
+*:focus:not(:focus-visible){outline:none;}
+*:focus-visible{outline:2px solid var(--deep-rose);outline-offset:2px;box-shadow:0 0 0 4px rgba(192,100,122,.25);}
+
 /* Mobile bottom nav padding - handled by bottomnav.js */
 .cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
 .cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}
@@ -859,7 +870,10 @@ body.buynow-mode footer{display:none!important;}
 <body>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-<div id="ah-toast"></div>
+<div id="ah-toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<!-- Skip to content link for keyboard users -->
+<a href="#main-content" class="skip-to-content" style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:12px 24px;border-radius:0 0 8px 8px;z-index:100000;font-size:.85rem;font-weight:500;text-decoration:none;transition:top .2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Skip to main content</a>
 
 <!-- ============================================================ -->
 <!-- LOGIN GATE — shown when user is NOT logged in -->
@@ -1048,6 +1062,7 @@ body.buynow-mode footer{display:none!important;}
 </div>
 
 <!-- CART MAIN GRID -->
+<main id="main-content">
 <div class="cart-main" id="cartMain">
   <div>
     <!-- STEP 1: CART ITEMS -->
@@ -1084,16 +1099,16 @@ body.buynow-mode footer{display:none!important;}
 
       <div id="cartAddrFormSection" style="display:none;margin-bottom:16px;">
         <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.4);font-weight:600;margin-bottom:8px;" id="cartAddrFormLabel">📍 Add Delivery Address</div>
-        <input class="form-input" id="fName"    placeholder="Full Name *"        autocomplete="name"    style="margin-bottom:8px;"/>
-        <input class="form-input" id="fPhone"   placeholder="Phone Number *"     type="tel"             style="margin-bottom:8px;"/>
-        <input class="form-input" id="fAddr"    placeholder="House no, Street, Area *"                  style="margin-bottom:8px;"/>
+        <input class="form-input" id="fName"    placeholder="Full Name *"        autocomplete="name"    style="margin-bottom:8px;" maxlength="100" required aria-label="Full Name" aria-required="true"/>
+        <input class="form-input" id="fPhone"   placeholder="Phone Number *"     type="tel"             style="margin-bottom:8px;" maxlength="10" pattern="[6-9][0-9]{9}" required aria-label="Phone Number" aria-required="true"/>
+        <input class="form-input" id="fAddr"    placeholder="House no, Street, Area *"                  style="margin-bottom:8px;" maxlength="200" required aria-label="Address" aria-required="true"/>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-          <input class="form-input" id="fPin"   placeholder="ZIP / PIN *" oninput="detectZip(this.value)" style="margin-bottom:0"/>
-          <input class="form-input" id="fCity"  placeholder="City *"                                    style="margin-bottom:0"/>
+          <input class="form-input" id="fPin"   placeholder="ZIP / PIN *" oninput="detectZip(this.value)" style="margin-bottom:0" maxlength="6" pattern="[0-9]{6}" aria-label="PIN Code"/>
+          <input class="form-input" id="fCity"  placeholder="City *"                                    style="margin-bottom:0" maxlength="50" required aria-label="City" aria-required="true"/>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-          <input class="form-input" id="fState"   placeholder="State / Region"   style="margin-bottom:0"/>
-          <input class="form-input" id="fCountry" placeholder="Country *"        style="margin-bottom:0" value="India"/>
+          <input class="form-input" id="fState"   placeholder="State / Region"   style="margin-bottom:0" maxlength="50" aria-label="State"/>
+          <input class="form-input" id="fCountry" placeholder="Country *"        style="margin-bottom:0" value="India" maxlength="50" aria-label="Country"/>
         </div>
         <div style="display:flex;gap:8px;">
           <button id="cartCancelEdit" onclick="cartCancelEditAddr()" style="display:none;flex:0 0 auto;padding:11px 16px;background:transparent;border:1.5px solid rgba(192,100,122,.3);color:var(--burgundy);border-radius:10px;font-family:'Jost',sans-serif;font-size:.72rem;cursor:pointer;">Cancel</button>
@@ -1339,12 +1354,12 @@ body.buynow-mode footer{display:none!important;}
   <!-- ── ADD / EDIT ADDRESS FORM ── -->
   <div class="bn-section" id="bnFormSection" style="display:none">
     <div class="bn-section-label" id="bnFormLabel">📍 Add Delivery Address</div>
-    <input class="bn-input" id="bnName"    placeholder="Full Name *"              autocomplete="name"/>
-    <input class="bn-input" id="bnPhone"   placeholder="Phone Number *"           type="tel" autocomplete="tel"/>
-    <input class="bn-input" id="bnAddr"    placeholder="House no, Street, Area *"/>
+    <input class="bn-input" id="bnName"    placeholder="Full Name *"              autocomplete="name" maxlength="100" required aria-label="Full Name" aria-required="true"/>
+    <input class="bn-input" id="bnPhone"   placeholder="Phone Number *"           type="tel" autocomplete="tel" maxlength="10" pattern="[6-9][0-9]{9}" required aria-label="Phone Number" aria-required="true"/>
+    <input class="bn-input" id="bnAddr"    placeholder="House no, Street, Area *" maxlength="200" required aria-label="Address" aria-required="true"/>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0">
-      <input class="bn-input" id="bnPin"   placeholder="PIN / ZIP *"  style="margin-bottom:0" oninput="bnDetectPin(this.value)"/>
-      <input class="bn-input" id="bnCity"  placeholder="City *"       style="margin-bottom:0"/>
+      <input class="bn-input" id="bnPin"   placeholder="PIN / ZIP *"  style="margin-bottom:0" oninput="bnDetectPin(this.value)" maxlength="6" pattern="[0-9]{6}" aria-label="PIN Code"/>
+      <input class="bn-input" id="bnCity"  placeholder="City *"       style="margin-bottom:0" maxlength="50" required aria-label="City" aria-required="true"/>
     </div>
     <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <input class="bn-input" id="bnState"   placeholder="State"    style="margin-bottom:0"/>
@@ -1471,8 +1486,9 @@ body.buynow-mode footer{display:none!important;}
     </div>
   </div>
 </div>
+</main>
 
-<a href="#" id="floatWA">&#128172; WhatsApp</a>
+<a href="#" id="floatWA" aria-label="Contact us on WhatsApp">&#128172; WhatsApp</a>
 
 <!-- ══ SCRATCH CARD REWARD OVERLAY ══ -->
 <div id="scratchCardOverlay">
@@ -1580,6 +1596,7 @@ body.buynow-mode footer{display:none!important;}
 })();
 </script>
 <script src="bottomnav.js"></script>
+<script src="cookies.js"></script>
 <script type="module">
 if(location.search.indexOf('buynow=1')!==-1){document.documentElement.classList.add('buynow-mode-pre')}
 
@@ -1827,7 +1844,13 @@ function cartKey() {
 }
 var Cart = {
   get: function(){ try{ return JSON.parse(localStorage.getItem(cartKey()) || "[]"); } catch(e){ return []; } },
-  save: function(items){ localStorage.setItem(cartKey(), JSON.stringify(items)); updateSummary(); badge(); },
+  save: function(items){ 
+    localStorage.setItem(cartKey(), JSON.stringify(items)); 
+    updateSummary(); 
+    badge(); 
+    // Sync to cookies for persistence
+    if(window.AHCookies) window.AHCookies.syncCart();
+  },
   remove: function(id){ Cart.save(Cart.get().filter(function(i){ return i.id !== id; })); renderCart(); },
   updateQty: function(id, d){ var it = Cart.get(), i = it.find(function(x){ return x.id === id; }); if(i){ i.qty = Math.max(1, (i.qty||1) + d); Cart.save(it); renderCart(); } },
   count: function(){ return Cart.get().reduce(function(s,i){ return s + (i.qty||1); }, 0); },
@@ -2548,15 +2571,63 @@ window.cartCancelEditAddr = function() { _cartRenderAddress(); };
 
 window.cartSaveAddr = function() {
   var g=function(id){ var el=document.getElementById(id); return el?el.value.trim():""; };
-  var name=g("fName"),phone=g("fPhone"),addr=g("fAddr"),city=g("fCity"),country=g("fCountry")||"India";
-  if(!name)  { toast("⚠️ Please enter your name");    return; }
-  if(!phone) { toast("⚠️ Please enter phone number");  return; }
-  if(!addr)  { toast("⚠️ Please enter your address"); return; }
-  if(!city)  { toast("⚠️ Please enter city");         return; }
-  var saved={name,phone,addr,pin:g("fPin"),city,state:g("fState"),country};
+  var name=g("fName"),phone=g("fPhone"),addr=g("fAddr"),city=g("fCity"),country=g("fCountry")||"India",pin=g("fPin");
+  
+  // ═══ ENHANCED VALIDATION ═══
+  
+  // Name validation (2-100 characters)
+  if (!name || name.length < 2) {
+    toast("⚠️ Please enter your full name (minimum 2 characters)");
+    document.getElementById("fName").focus();
+    return;
+  }
+  if (name.length > 100) {
+    toast("⚠️ Name is too long (maximum 100 characters)");
+    document.getElementById("fName").focus();
+    return;
+  }
+  
+  // Phone validation (Indian 10-digit format)
+  var phoneClean = phone.replace(/[\s\-\(\)]/g, '');
+  var phoneRegex = /^[6-9]\d{9}$/;
+  if (!phoneRegex.test(phoneClean)) {
+    toast("⚠️ Please enter a valid 10-digit phone number (e.g., 9876543210)");
+    document.getElementById("fPhone").focus();
+    return;
+  }
+  
+  // Address validation (minimum 10 characters)
+  if (!addr || addr.length < 10) {
+    toast("⚠️ Please enter a complete address (minimum 10 characters)");
+    document.getElementById("fAddr").focus();
+    return;
+  }
+  if (addr.length > 200) {
+    toast("⚠️ Address is too long (maximum 200 characters)");
+    document.getElementById("fAddr").focus();
+    return;
+  }
+  
+  // PIN code validation (6 digits)
+  var pinRegex = /^\d{6}$/;
+  if (pin && !pinRegex.test(pin)) {
+    toast("⚠️ Please enter a valid 6-digit PIN code");
+    document.getElementById("fPin").focus();
+    return;
+  }
+  
+  // City validation
+  if (!city || city.length < 2) {
+    toast("⚠️ Please enter your city name");
+    document.getElementById("fCity").focus();
+    return;
+  }
+  
+  // Save validated address
+  var saved={name, phone: phoneClean, addr, pin, city, state:g("fState"), country};
   _saveAddress(saved);
   _cartRenderAddress();
-  toast("✅ Address saved!");
+  toast("✅ Address saved successfully!");
 };
 
 window.goBack = function() {
@@ -3257,16 +3328,78 @@ window.saveBnAddress = function() {
   var pin   = g('bnPin');
   var city  = g('bnCity');
   var country = g('bnCountry') || 'India';
-  if (!name)  { toast('⚠️ Please enter your name'); return; }
-  if (!phone) { toast('⚠️ Please enter phone number'); return; }
-  if (!addr)  { toast('⚠️ Please enter your address'); return; }
-  if (!city)  { toast('⚠️ Please enter city'); return; }
-  var savedAddr = { name:name, phone:phone, addr:addr, pin:pin, city:city, state:g('bnState'), country:country };
+  
+  // ═══ ENHANCED VALIDATION ═══
+  
+  // Name validation (2-100 characters, no numbers)
+  if (!name || name.length < 2) {
+    toast('⚠️ Please enter your full name (minimum 2 characters)');
+    document.getElementById('bnName').focus();
+    return;
+  }
+  if (name.length > 100) {
+    toast('⚠️ Name is too long (maximum 100 characters)');
+    document.getElementById('bnName').focus();
+    return;
+  }
+  
+  // Phone validation (Indian 10-digit format)
+  var phoneClean = phone.replace(/[\s\-\(\)]/g, ''); // Remove spaces, dashes, parentheses
+  var phoneRegex = /^[6-9]\d{9}$/; // Indian mobile: starts with 6-9, followed by 9 digits
+  if (!phoneRegex.test(phoneClean)) {
+    toast('⚠️ Please enter a valid 10-digit phone number (e.g., 9876543210)');
+    document.getElementById('bnPhone').focus();
+    return;
+  }
+  
+  // Address validation (minimum 10 characters)
+  if (!addr || addr.length < 10) {
+    toast('⚠️ Please enter a complete address (minimum 10 characters)');
+    document.getElementById('bnAddr').focus();
+    return;
+  }
+  if (addr.length > 200) {
+    toast('⚠️ Address is too long (maximum 200 characters)');
+    document.getElementById('bnAddr').focus();
+    return;
+  }
+  
+  // PIN code validation (6 digits)
+  var pinRegex = /^\d{6}$/;
+  if (pin && !pinRegex.test(pin)) {
+    toast('⚠️ Please enter a valid 6-digit PIN code');
+    document.getElementById('bnPin').focus();
+    return;
+  }
+  
+  // City validation
+  if (!city || city.length < 2) {
+    toast('⚠️ Please enter your city name');
+    document.getElementById('bnCity').focus();
+    return;
+  }
+  if (city.length > 50) {
+    toast('⚠️ City name is too long');
+    document.getElementById('bnCity').focus();
+    return;
+  }
+  
+  // Save validated address (store cleaned phone number)
+  var savedAddr = { 
+    name: name, 
+    phone: phoneClean, // Store cleaned phone number
+    addr: addr, 
+    pin: pin, 
+    city: city, 
+    state: g('bnState'), 
+    country: country 
+  };
+  
   _saveAddress(savedAddr);
   // Recalculate delivery for new address before re-rendering
   _bnApplyDelivery(savedAddr);
   _bnRenderAddress();
-  toast('✅ Address saved!');
+  toast('✅ Address saved successfully!');
 };
 
 // ── Delivery fee for Buy Now overlay ──

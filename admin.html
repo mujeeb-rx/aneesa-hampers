@@ -302,7 +302,7 @@ textarea.fi{resize:vertical;min-height:80px;}
       </div>
     </div>
     <div class="g-err" id="gErr"></div>
-    <button class="g-btn" id="gBtn" onclick="doLogin()">Access Dashboard →</button>
+    <button class="g-btn" id="gBtn" onclick="doLogin()">Sign In</button>
 
     <div style="margin-top:22px;font-size:.62rem;opacity:.22;text-align:center;">🔒 Authorised personnel only</div>
   </div>
@@ -399,11 +399,10 @@ textarea.fi{resize:vertical;min-height:80px;}
               <option value="delivered">🎁 Delivered</option>
               <option value="cancelled">❌ Cancelled</option>
             </select>
-            <div style="display:flex;gap:8px;align-items:center;padding:8px 14px;background:rgba(192,100,122,.06);border-radius:10px;border:1.5px solid rgba(192,100,122,.15);">
-              <span style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;white-space:nowrap;">📊 Export</span>
-              <select class="fi" id="exportMonth" style="width:140px;padding:6px 10px;font-size:.75rem;"></select>
-              <button onclick="exportMonthlyOrders()" style="padding:7px 16px;background:var(--deep-rose);color:white;border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;">Download CSV</button>
-            </div>
+            <select class="fi" id="orderMonthFilter" style="width:150px;padding:8px 12px" onchange="renderOrders()">
+              <option value="all">All Months</option>
+            </select>
+            <button onclick="exportMonthlyOrders()" style="padding:8px 18px;background:var(--deep-rose);color:white;border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;">📊 Download CSV</button>
           </div>
         </div>
         <div class="tbl-wrap">
@@ -642,6 +641,22 @@ textarea.fi{resize:vertical;min-height:80px;}
           </div>
           <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:6px;" onclick="savePopupSettings()">💾 Save — Goes Live Instantly</button>
           <div id="ppSaveStatus" style="font-size:.72rem;text-align:center;margin-top:8px;min-height:16px;"></div>
+        </div>
+
+        <!-- First Order Discount -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">🏷️ First Order Discount</div>
+          <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Discount shown to new customers on product pages — they can copy the code at checkout</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Status</label><select class="fi" id="fodStatus"><option value="true">✅ Active</option><option value="false">❌ Hidden</option></select></div>
+            <div class="fg"><label class="fl">Discount %</label><input class="fi" id="fodDiscount" type="number" placeholder="10" min="1" max="90"/></div>
+            <div class="fg"><label class="fl">Promo Code</label><input class="fi" id="fodCode" placeholder="WELCOME10" maxlength="20" style="text-transform:uppercase"/></div>
+            <div class="fg"><label class="fl">Min Order (₹)</label><input class="fi" id="fodMinOrder" type="number" placeholder="499" min="0"/></div>
+            <div class="fg form-full"><label class="fl">Description</label><input class="fi" id="fodDesc" placeholder="Get 10% off on your first purchase with us"/></div>
+            <div class="fg form-full"><label class="fl">Terms Text</label><input class="fi" id="fodTerms" placeholder="Limited time offer"/></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:6px;" onclick="saveFirstOrderDiscount()">💾 Save First Order Discount</button>
+          <div id="fodSaveStatus" style="font-size:.72rem;text-align:center;margin-top:8px;min-height:16px;"></div>
         </div>
 
       </div>
@@ -1263,7 +1278,6 @@ if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove
 
 // ── AUTH ──
 let _dashInited = false;
-const ADMIN_PWD = "1Mujeebkhan123@";
 
 function showGate() {
   document.getElementById('adminGate').style.display = 'flex';
@@ -1279,8 +1293,9 @@ function showDash() {
 onAuthStateChanged(auth, user => {
   if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
     showDash();
+  } else {
+    showGate();
   }
-  // else stay on gate — don't call showGate() here to avoid flicker
 });
 
 window.doLogin = async function() {
@@ -1288,25 +1303,41 @@ window.doLogin = async function() {
   const btn = document.getElementById('gBtn');
   setErr('');
 
-  // Step 1: Check password locally — this is the real gate
   if (!p) { setErr('Please enter your password.'); return; }
-  if (p !== ADMIN_PWD) { setErr('❌ Wrong password. Try again.'); return; }
 
-  // Step 2: Password correct — show dashboard immediately
-  btn.textContent = 'Opening…'; btn.disabled = true;
-  showDash();
+  btn.textContent = 'Signing in…'; btn.disabled = true;
 
-  // Step 3: Sync Firebase in background (for session persistence)
   try {
-    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, p);
-  } catch(e1) {
-    try {
-      const r = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, p);
-      await updateProfile(r.user, { displayName: 'Admin' });
-    } catch(e2) {
-      // Firebase sync failed — dashboard is already open, ignore silently
-      console.warn('Firebase sync:', e2.message);
+    // Authenticate with Firebase (secure - password never exposed in code)
+    const result = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, p);
+    
+    // Verify it's the admin email
+    if (result.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      await signOut(auth);
+      setErr('❌ Access denied. Admin only.');
+      btn.textContent = 'Sign In'; btn.disabled = false;
+      return;
     }
+    
+    // Success - onAuthStateChanged will show dashboard
+    btn.textContent = 'Welcome!';
+    
+  } catch(e) {
+    btn.textContent = 'Sign In'; btn.disabled = false;
+    
+    // Handle specific Firebase errors
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      setErr('❌ Wrong password. Try again.');
+    } else if (e.code === 'auth/user-not-found') {
+      setErr('❌ Admin account not found. Contact support.');
+    } else if (e.code === 'auth/too-many-requests') {
+      setErr('⚠️ Too many attempts. Try again later.');
+    } else if (e.code === 'auth/network-request-failed') {
+      setErr('⚠️ Network error. Check your connection.');
+    } else {
+      setErr('❌ Login failed: ' + e.message);
+    }
+    console.error('Login error:', e);
   }
 };
 
@@ -1324,7 +1355,7 @@ window.doAdminLogout = async () => {
   try { await signOut(auth); } catch(e) {}
   showGate();
   document.getElementById('gPass').value = '';
-  document.getElementById('gBtn').textContent = 'Access Dashboard →';
+  document.getElementById('gBtn').textContent = 'Sign In';
   document.getElementById('gBtn').disabled = false;
 };
 
@@ -1397,6 +1428,8 @@ async function uploadToImgbb(file, onProg) {
 let _orders = [], _prods = [], _cats = [], _adminBanners = [], _catEditMode = false;
 
 function init() {
+  console.log('🔧 Admin init() called');
+  console.log('🔐 Auth state:', auth.currentUser ? auth.currentUser.email : 'Not signed in');
   startListeners();
   loadSettings();
   setupCatModal();
@@ -1407,19 +1440,31 @@ function init() {
 
 // ── LISTENERS ──
 function startListeners() {
+  console.log('📡 Starting Firestore listeners...');
   startSubcatListener();
   // ORDERS — real-time
+  console.log('📦 Setting up orders listener...');
   onSnapshot(query(collection(db,'orders'), orderBy('createdAt','desc')), snap => {
+    console.log('✅ Orders received:', snap.docs.length);
     _orders = snap.docs.map(d => ({id:d.id,...d.data()}));
     updateStats();
     renderRecentOrders();
     renderOrders();
+  }, err => {
+    console.error('Orders listener error:', err);
+    const tbody = document.getElementById('allOrders');
+    if (tbody) tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#e05050;padding:28px">
+      ⚠️ Error loading orders: ${err.message}<br>
+      <small style="opacity:.6">Check console for details. You may need to create a Firestore index.</small>
+    </td></tr>`;
   });
   // PRODUCTS
   onSnapshot(query(collection(db,'products'), orderBy('createdAt','desc')), snap => {
     _prods = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderProducts();
     refreshCatDropdowns();
+  }, err => {
+    console.error('Products listener error:', err);
   });
   // CATEGORIES
   onSnapshot(query(collection(db,'categories'), orderBy('order','asc')), snap => {
@@ -1429,6 +1474,8 @@ function startListeners() {
     refreshCatDropdowns();
     refreshSubcatParentDropdown();
     refreshSubcatFilterRow();
+  }, err => {
+    console.error('Categories listener error:', err);
   });
 }
 
@@ -1495,10 +1542,30 @@ function renderRecentOrders() {
 
 // ── ALL ORDERS ──
 window.renderOrders = function() {
-  const filter = document.getElementById('orderFilter').value;
-  const list = filter==='all' ? _orders : _orders.filter(o => o.status===filter);
+  const statusFilter = document.getElementById('orderFilter').value;
+  const monthFilter = document.getElementById('orderMonthFilter').value;
+  
+  // Filter by status
+  let list = statusFilter === 'all' ? _orders : _orders.filter(o => o.status === statusFilter);
+  
+  // Filter by month
+  if (monthFilter !== 'all') {
+    const [year, month] = monthFilter.split('-').map(Number);
+    list = list.filter(o => {
+      let d = null;
+      if (o.createdAt?.toDate) d = o.createdAt.toDate();
+      else if (o.createdAt?.seconds) d = new Date(o.createdAt.seconds * 1000);
+      else if (o.createdAt) d = new Date(o.createdAt);
+      if (!d || isNaN(d)) return false;
+      return d.getFullYear() === year && d.getMonth() === (month - 1);
+    });
+  }
+  
   const tbody = document.getElementById('allOrders');
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;opacity:.4;padding:28px">No orders</td></tr>'; return; }
+  if (!list.length) { 
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;opacity:.4;padding:28px">No orders found for selected filters</td></tr>'; 
+    return; 
+  }
   tbody.innerHTML = list.map(o => {
     const items = (o.items||[]).map(i=>`${i.name} ×${i.qty}`).join(', ') || (o.productName||'—');
     const addr  = [o.address, o.city, o.pincode].filter(Boolean).join(', ') || (o.customerAddress||'—');
@@ -1524,8 +1591,7 @@ window.renderOrders = function() {
 
 // ── POPULATE MONTH SELECTOR ──
 function populateMonthSelector() {
-  const selector = document.getElementById('exportMonth');
-  if (!selector) return;
+  const filterSelector = document.getElementById('orderMonthFilter');
   
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 
                   'July', 'August', 'September', 'October', 'November', 'December'];
@@ -1541,19 +1607,22 @@ function populateMonthSelector() {
     const month = monthOffset < 0 ? 12 + monthOffset : monthOffset;
     const label = `${months[month]} ${year}`;
     const value = `${year}-${String(month + 1).padStart(2, '0')}`;
-    options.push(`<option value="${value}" ${i === 0 ? 'selected' : ''}>${label}</option>`);
+    options.push(`<option value="${value}">${label}</option>`);
   }
   
-  selector.innerHTML = options.join('');
+  // Populate the filter dropdown (with "All Months" option)
+  if (filterSelector) {
+    filterSelector.innerHTML = '<option value="all">📅 All Months</option>' + options.join('');
+  }
 }
 
 // ── EXPORT MONTHLY ORDERS TO CSV ──
 window.exportMonthlyOrders = function() {
-  const selector = document.getElementById('exportMonth');
-  const selectedMonth = selector.value; // Format: "YYYY-MM"
+  const selector = document.getElementById('orderMonthFilter');
+  const selectedMonth = selector.value; // Format: "YYYY-MM" or "all"
   
-  if (!selectedMonth) {
-    alert('Please select a month to export');
+  if (!selectedMonth || selectedMonth === 'all') {
+    alert('Please select a specific month to export (not "All Months")');
     return;
   }
   
@@ -2014,7 +2083,7 @@ function renderProducts() {
   applyCurrentFilters(); // apply any active filter and sort
 }
 
-function filterProducts() {
+window.filterProducts = function() {
   // Update search input styling and clear button visibility
   const searchInput = document.getElementById('prodSearchInput');
   const clearBtn = document.getElementById('prodSearchClear');
@@ -2045,9 +2114,9 @@ function filterProducts() {
   _searchTimeout = setTimeout(() => {
     applyCurrentFilters();
   }, 150);
-}
+};
 
-function clearSearch() {
+window.clearSearch = function() {
   const searchInput = document.getElementById('prodSearchInput');
   const clearBtn = document.getElementById('prodSearchClear');
   
@@ -2063,7 +2132,7 @@ function clearSearch() {
   
   // Immediately apply filters (no debounce for clear)
   applyCurrentFilters();
-}
+};
 
 function applyCurrentFilters() {
   const searchInput = document.getElementById('prodSearchInput');
@@ -2091,7 +2160,7 @@ function applyCurrentFilters() {
   sortProducts(true); // Pass true to skip re-filtering
 }
 
-function sortProducts(skipFilter = false) {
+window.sortProducts = function(skipFilter = false) {
   // If not skipping filter, apply filters first
   if (!skipFilter) {
     applyCurrentFilters();
@@ -2127,9 +2196,9 @@ function sortProducts(skipFilter = false) {
   });
   
   renderProductTable();
-}
+};
 
-function sortByColumn(column) {
+window.sortByColumn = function(column) {
   // Toggle direction if clicking same column
   if (_currentSort.column === column) {
     _currentSort.direction = _currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -2148,7 +2217,7 @@ function sortByColumn(column) {
   }
   
   sortProducts(true); // Skip re-filtering, just re-sort
-}
+};
 
 function renderProductTable() {
   const tbody = document.getElementById('prodTableBody');
@@ -2918,6 +2987,17 @@ function loadSettings() {
       se('ppMin',     wp.minOrder||0);
       updatePopupPreview();
     }
+    // Load first order discount settings
+    if(cfg.firstOrderDiscount){
+      const fod=cfg.firstOrderDiscount;
+      const se=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+      se('fodStatus',   fod.active===false?'false':'true');
+      se('fodDiscount', fod.discount||10);
+      se('fodCode',     fod.code||'WELCOME10');
+      se('fodMinOrder', fod.minOrder||499);
+      se('fodDesc',     fod.description||'Get 10% off on your first purchase with us');
+      se('fodTerms',    fod.terms||'Limited time offer');
+    }
   });
 }
 window.saveAnn = async function() {
@@ -2999,6 +3079,60 @@ window.savePopupSettings = async function() {
     if(statusEl){statusEl.style.color='#e05050';statusEl.textContent='❌ '+e.message;}
     toast('❌ Save failed: '+e.message,'err');
     console.error('savePopupSettings:',e);
+  }
+};
+
+// ═══════════════════════════════════════════════
+// FIRST ORDER DISCOUNT — SAVE
+// ═══════════════════════════════════════════════
+window.saveFirstOrderDiscount = async function() {
+  const statusEl = document.getElementById('fodSaveStatus');
+  const active   = document.getElementById('fodStatus').value !== 'false';
+  const discount = parseInt(document.getElementById('fodDiscount').value)||0;
+  const code     = (document.getElementById('fodCode').value.trim().toUpperCase()||'WELCOME10').slice(0,20);
+  const minOrder = parseInt(document.getElementById('fodMinOrder').value)||0;
+  const description = document.getElementById('fodDesc').value.trim()||`Get ${discount}% off on your first purchase with us`;
+  const terms    = document.getElementById('fodTerms').value.trim()||'Limited time offer';
+
+  if(active && (!discount || discount<1 || discount>90)){
+    toast('⚠️ Enter valid discount % (1–90)','err');
+    return;
+  }
+  if(active && !code){
+    toast('⚠️ Enter a promo code','err');
+    return;
+  }
+
+  try {
+    if(statusEl){statusEl.style.color='#888';statusEl.textContent='Saving...';}
+
+    // Save to siteSettings/config
+    await setDoc(doc(db,'siteSettings','config'),{
+      firstOrderDiscount: {
+        active, discount, code, minOrder, description, terms,
+        updatedAt: serverTimestamp()
+      }
+    },{merge:true});
+
+    // Also save/update to promoCodes collection so it works at checkout
+    await setDoc(doc(db,'promoCodes',code),{
+      active, type:'percent', value:discount,
+      minOrder, maxUses:0, used:0,
+      isFirstOrderCode:true,
+      description, terms,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+
+    if(statusEl){
+      statusEl.style.color='#2d7a4f';
+      statusEl.textContent=`✅ Saved! Code "${code}" is ${active?'active':'inactive'}.`;
+      setTimeout(()=>{if(statusEl)statusEl.textContent='';},6000);
+    }
+    toast(active?`✅ First Order Discount live! ${discount}% OFF · Code: ${code} 🎉`:'✅ First Order Discount saved (hidden).');
+  } catch(e){
+    if(statusEl){statusEl.style.color='#e05050';statusEl.textContent='❌ '+e.message;}
+    toast('❌ Save failed: '+e.message,'err');
+    console.error('saveFirstOrderDiscount:',e);
   }
 };
 
