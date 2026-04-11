@@ -90,6 +90,14 @@
     .order-header{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(192,100,122,.08);cursor:pointer;user-select:none;}
     .order-header-left{display:flex;align-items:center;gap:14px;}
     .order-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .order-thumb{width:50px;height:50px;border-radius:12px;overflow:hidden;flex-shrink:0;background:#f5e8ec;box-shadow:0 2px 8px rgba(59,13,26,.1);transition:transform .2s,box-shadow .2s;display:block;text-decoration:none;}
+    .order-thumb:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(192,100,122,.25);}
+    .order-thumb:active{transform:scale(.96);}
+    .order-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+    .order-thumb-more{position:absolute;bottom:-2px;right:-2px;background:var(--burgundy);color:white;font-size:.55rem;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid white;box-shadow:0 2px 6px rgba(59,13,26,.2);}
+    .item-row{transition:background .2s;}
+    .item-row[onclick]:hover{background:rgba(192,100,122,.05);border-radius:10px;}
+    .item-row[onclick]{cursor:pointer;}
     .order-id{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:3px;}
     .order-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;}
     .order-header-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
@@ -149,6 +157,8 @@
     .oa-track:hover{background:var(--rose);color:white;}
     .oa-reorder{background:var(--burgundy);color:white;}
     .oa-reorder:hover{background:var(--deep-rose);}
+    .oa-invoice{background:linear-gradient(135deg,#e8f0fd,#dce5f5);color:#2c3e6b;border:1px solid rgba(44,62,107,.12);}
+    .oa-invoice:hover{background:linear-gradient(135deg,#d4e2f8,#c5d5ef);box-shadow:0 2px 8px rgba(44,62,107,.12);}
 
     /* EMPTY */
     .empty-state{text-align:center;padding:70px 20px;}
@@ -1033,13 +1043,15 @@ function buildOrderCard(o) {
 
   // Items HTML
   const itemsHtml = items.map(i => {
+    const productLink = i.id ? `product.html?id=${i.id}` : '';
+    const clickable = productLink ? `onclick="window.location.href='${productLink}'" style="cursor:pointer;"` : '';
     const img = i.image
-      ? `<div class="item-img"><img src="${i.image}" alt="${i.name}" onerror="this.parentElement.textContent='🎁'"/></div>`
+      ? `<div class="item-img">${productLink ? `<a href="${productLink}">` : ''}<img src="${i.image}" alt="${i.name}" onerror="this.parentElement.textContent='🎁'"/>${productLink ? '</a>' : ''}</div>`
       : `<div class="item-img">🎁</div>`;
-    return `<div class="item-row">
+    return `<div class="item-row" ${clickable}>
       ${img}
       <div class="item-info">
-        <div class="item-name">${i.name || "Product"}</div>
+        <div class="item-name">${productLink ? `<a href="${productLink}" style="color:inherit;text-decoration:none;">${i.name || 'Product'}</a>` : (i.name || 'Product')}</div>
         <div class="item-qty">Qty: ${i.qty || 1}</div>
       </div>
       <div class="item-price">₹${Number(i.price || 0).toLocaleString("en-IN")}</div>
@@ -1075,10 +1087,16 @@ function buildOrderCard(o) {
   return `<div class="order-card" id="card_${o.id}">
     <div class="order-header" onclick="toggleCard('${o.id}')">
       <div class="order-header-left">
-        <div class="order-icon" style="background:${sc.color}">${sc.emoji}</div>
+        ${firstItem.image
+          ? `<a href="${firstItem.id ? 'product.html?id='+firstItem.id : '#'}" class="order-thumb" style="position:relative;" onclick="event.stopPropagation();">
+              <img src="${firstItem.image}" alt="${firstItem.name || 'Product'}" onerror="this.parentElement.innerHTML='<div class=\\'order-icon\\' style=\\'background:${sc.color}\\'>${sc.emoji}</div>'" />
+              ${items.length > 1 ? `<span class="order-thumb-more">+${items.length - 1}</span>` : ''}
+            </a>`
+          : `<div class="order-icon" style="background:${sc.color}">${sc.emoji}</div>`
+        }
         <div>
           <div class="order-id">#${o.id.slice(-6).toUpperCase()} · ${date}</div>
-          <div class="order-name">${itemCount} item${itemCount!==1?"s":""} · ${firstItem.name || "Hamper"}</div>
+          <div class="order-name">${itemCount} item${itemCount!==1?"s":""} · ${firstItem.id ? `<a href="product.html?id=${firstItem.id}" onclick="event.stopPropagation();" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(59,13,26,.2);">${firstItem.name || 'Hamper'}</a>` : (firstItem.name || 'Hamper')}</div>
         </div>
       </div>
       <div class="order-header-right">
@@ -1162,6 +1180,7 @@ function buildOrderCard(o) {
         <a href="account.html#orders" class="oa-btn oa-track">📦 My Orders</a>
         <button class="oa-btn oa-reorder" onclick="reorder('${o.id}')">🔁 Reorder</button>
         ${o.status === 'delivered' ? `<button class="oa-btn" onclick="openOrdReview('${o.id}','${(firstItem.name||'Hamper').replace(/'/g,"'")}')" style="background:var(--blush);color:var(--deep-rose);">★ Write a Review</button>` : ''}
+        <button class="oa-btn oa-invoice" onclick="downloadInvoice('${o.id}')">📄 Download Invoice</button>
       </div>
     </div>
   </div>`;
@@ -1195,6 +1214,199 @@ window.reorder = function(orderId) {
   setTimeout(() => window.location.href = "cart.html", 1200);
 };
 
+// ====================================================
+// DOWNLOAD INVOICE — generates a branded PDF invoice
+// ====================================================
+window.downloadInvoice = function(orderId) {
+  const o = _allOrders.find(x => x.id === orderId);
+  if (!o) { toast('⚠️ Order not found'); return; }
+
+  const items = o.items || [];
+  const date = o.createdAt?.toDate
+    ? o.createdAt.toDate().toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'})
+    : '—';
+  const time = o.createdAt?.toDate
+    ? o.createdAt.toDate().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})
+    : '';
+  const ordNum = '#' + o.id.slice(-6).toUpperCase();
+  const trackId = o.trackingId || '—';
+  const statusLabel = {pending:'Pending',confirmed:'Confirmed',preparing:'Preparing',dispatched:'Dispatched',delivered:'Delivered',cancelled:'Cancelled'}[o.status] || 'Pending';
+  const addr = [o.address, o.city, o.state].filter(Boolean).join(', ') || '—';
+  const pin = o.zipCode || o.pin || '';
+  const phone = o.customerPhone || o.phone || '—';
+  const payment = o.paymentMethod || 'UPI';
+  const subtotal = Number(o.subtotal || 0);
+  const discount = Number(o.discount || 0);
+  const deliveryFee = Number(o.deliveryFee || 0);
+  const total = Number(o.total || 0);
+
+  const itemsRows = items.map(function(i, idx) {
+    const qty = i.qty || 1;
+    const price = Number(i.price || 0);
+    const lineTotal = price * qty;
+    return `<tr>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e4e8;font-size:13px;color:#555;">${idx + 1}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e4e8;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${i.image ? '<img src="'+i.image+'" style="width:40px;height:40px;border-radius:6px;object-fit:cover;" onerror="this.style.display=\'none\'"/>' : ''}
+          <span style="font-size:13px;color:#3b0d1a;font-weight:500;">${i.name || 'Product'}</span>
+        </div>
+      </td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e4e8;text-align:center;font-size:13px;color:#555;">${qty}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e4e8;text-align:right;font-size:13px;color:#555;">₹${price.toLocaleString('en-IN')}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #f0e4e8;text-align:right;font-size:13px;color:#3b0d1a;font-weight:600;">₹${lineTotal.toLocaleString('en-IN')}</td>
+    </tr>`;
+  }).join('');
+
+  const invoiceHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice ${ordNum} — Aneesa Hampers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @media print {
+      body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .no-print { display: none !important; }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Jost', sans-serif; background: #f8f4f0; color: #3b0d1a; }
+    .invoice-wrap { max-width: 700px; margin: 20px auto; background: white; border-radius: 16px; box-shadow: 0 4px 30px rgba(59,13,26,.08); overflow: hidden; }
+    .inv-header { background: linear-gradient(135deg, #3b0d1a 0%, #6b1d34 100%); padding: 32px 36px; color: white; }
+    .inv-brand { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; letter-spacing: 1px; }
+    .inv-brand em { font-style: italic; color: #f9e4e9; }
+    .inv-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; opacity: .6; margin-top: 4px; }
+    .inv-tag { display: inline-block; background: rgba(255,255,255,.15); padding: 4px 14px; border-radius: 20px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-top: 12px; }
+    .inv-body { padding: 28px 36px 20px; }
+    .inv-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+    .inv-meta-box { background: #fdf6f0; border-radius: 10px; padding: 14px 16px; }
+    .inv-meta-lbl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #c0647a; font-weight: 600; margin-bottom: 4px; }
+    .inv-meta-val { font-size: 13px; font-weight: 500; color: #3b0d1a; line-height: 1.4; }
+    .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .inv-table th { background: #fdf6f0; padding: 10px 12px; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #c0647a; font-weight: 700; text-align: left; }
+    .inv-table th:nth-child(3), .inv-table th:nth-child(4), .inv-table th:nth-child(5) { text-align: center; }
+    .inv-table th:last-child { text-align: right; }
+    .inv-totals { border-top: 2px solid #f0e4e8; padding-top: 16px; }
+    .inv-total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+    .inv-total-row.grand { background: linear-gradient(135deg, #3b0d1a, #6b1d34); color: white; padding: 14px 18px; border-radius: 10px; margin-top: 8px; font-size: 16px; font-weight: 700; }
+    .inv-footer { background: #fdf6f0; padding: 20px 36px; text-align: center; border-top: 1px solid #f0e4e8; }
+    .inv-footer p { font-size: 11px; color: #c0647a; letter-spacing: 1px; }
+    .inv-footer .thanks { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: #3b0d1a; margin-bottom: 6px; font-style: italic; }
+    .inv-status { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; }
+    .inv-status.delivered { background: #e8fdf0; color: #1a7a40; }
+    .inv-status.confirmed { background: #e8f0fd; color: #2c5aa0; }
+    .inv-status.pending { background: #fef3e8; color: #b87c2e; }
+    .inv-status.preparing { background: #f0e8fd; color: #6b3fa0; }
+    .inv-status.dispatched { background: #fff0e8; color: #c05a30; }
+    .inv-status.cancelled { background: #fde8e8; color: #c03030; }
+    .print-btn { display: block; margin: 20px auto; padding: 14px 40px; background: #3b0d1a; color: white; border: none; border-radius: 50px; font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+    .print-btn:hover { background: #c0647a; }
+  </style>
+</head>
+<body>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+  <div class="invoice-wrap">
+    <div class="inv-header">
+      <div class="inv-brand">Aneesa <em>Hampers</em></div>
+      <div class="inv-subtitle">Handcrafted with love • Kadapa, India</div>
+      <div class="inv-tag">Tax Invoice</div>
+    </div>
+
+    <div class="inv-body">
+      <div class="inv-meta-grid">
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Order Number</div>
+          <div class="inv-meta-val" style="font-size:16px;font-weight:700;">${ordNum}</div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Order Date</div>
+          <div class="inv-meta-val">${date}${time ? ' • ' + time : ''}</div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Status</div>
+          <div class="inv-meta-val"><span class="inv-status ${o.status||'pending'}">${statusLabel}</span></div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Tracking ID</div>
+          <div class="inv-meta-val">${trackId}</div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Delivery Address</div>
+          <div class="inv-meta-val">${addr}${pin ? ' — ' + pin : ''}</div>
+        </div>
+        <div class="inv-meta-box">
+          <div class="inv-meta-lbl">Phone</div>
+          <div class="inv-meta-val">${phone}</div>
+        </div>
+        ${o.giftMessage ? `<div class="inv-meta-box" style="grid-column:1/-1;">
+          <div class="inv-meta-lbl">Gift Message</div>
+          <div class="inv-meta-val">💌 ${o.giftMessage}</div>
+        </div>` : ''}
+      </div>
+
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>Product</th>
+            <th style="text-align:center">Qty</th>
+            <th style="text-align:right">Price</th>
+            <th style="text-align:right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsRows}
+        </tbody>
+      </table>
+
+      <div class="inv-totals">
+        <div class="inv-total-row">
+          <span style="color:#888;">Subtotal</span>
+          <span>₹${subtotal.toLocaleString('en-IN')}</span>
+        </div>
+        ${discount > 0 ? `<div class="inv-total-row">
+          <span style="color:#1a7a40;">Discount${o.promoCode ? ' (' + o.promoCode + ')' : ''}</span>
+          <span style="color:#1a7a40;">-₹${discount.toLocaleString('en-IN')}</span>
+        </div>` : ''}
+        <div class="inv-total-row">
+          <span style="color:#888;">Delivery</span>
+          <span>${deliveryFee > 0 ? '₹' + deliveryFee.toLocaleString('en-IN') : '<span style="color:#1a7a40;">FREE</span>'}</span>
+        </div>
+        <div class="inv-total-row">
+          <span style="color:#888;">Payment Method</span>
+          <span>${payment}</span>
+        </div>
+        <div class="inv-total-row grand">
+          <span>Total Paid</span>
+          <span>₹${total.toLocaleString('en-IN')}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="inv-footer">
+      <div class="thanks">Thank you for your order! 🌸</div>
+      <p>Aneesa Hampers • Kadapa, Andhra Pradesh, India • +91 8639066613</p>
+      <p style="margin-top:4px;opacity:.5;font-size:10px;">This is a computer-generated invoice and does not require a signature.</p>
+    </div>
+  </div>
+
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (win) {
+    win.document.write(invoiceHTML);
+    win.document.close();
+    // Auto-trigger print after content loads
+    win.onload = function() {
+      setTimeout(function() { win.print(); }, 500);
+    };
+  } else {
+    toast('⚠️ Pop-up blocked — please allow pop-ups for this site.');
+  }
+};
 
 
 // ---------------------------------------------
