@@ -303,6 +303,24 @@
         updateWishlistBadge();
       }
     });
+
+    /* ── SAME-TAB SYNC: poll every 800ms so badge updates instantly
+       when user adds to cart on the same page (storage event doesn't
+       fire for same-tab localStorage changes) ── */
+    var _lastCartCount = cartCount();
+    var _lastWishCount = wishlistCount();
+    setInterval(function () {
+      var cc = cartCount();
+      var wc = wishlistCount();
+      if (cc !== _lastCartCount) {
+        _lastCartCount = cc;
+        updateCartBadge();
+      }
+      if (wc !== _lastWishCount) {
+        _lastWishCount = wc;
+        updateWishlistBadge();
+      }
+    }, 800);
   }
 
   if (document.readyState === 'loading') {

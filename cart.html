@@ -2330,10 +2330,11 @@ function renderCart() {
   }
   wrap.innerHTML = items.map(function(i) {
     var imgH = i.image ? '<img src="' + i.image + '" alt="' + (i.name||"") + '"/>' : '&#127873;';
+    var prodUrl = 'product.html?id=' + encodeURIComponent(i.id);
     return '<div class="cart-item">' +
-      '<div class="item-img">' + imgH + '</div>' +
+      '<a href="' + prodUrl + '" class="item-img" title="View product" style="cursor:pointer;display:flex;text-decoration:none;border-radius:11px;overflow:hidden;flex-shrink:0;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform=\'scale(1.07)\';this.style.boxShadow=\'0 6px 20px rgba(192,100,122,.25)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' + imgH + '</a>' +
       '<div class="item-info">' +
-        '<div class="item-name">' + (i.name||"") + '</div>' +
+        '<a href="' + prodUrl + '" class="item-name" style="color:var(--burgundy);text-decoration:none;display:block;margin-bottom:4px;transition:color .2s;" onmouseover="this.style.color=\'var(--deep-rose)\'" onmouseout="this.style.color=\'var(--burgundy)\'">' + (i.name||"") + '</a>' +
         '<div class="item-price">&#8377;' + Number(i.price).toLocaleString("en-IN") + '</div>' +
         '<div class="item-qty">' +
           '<button class="qty-btn" onclick="Cart.updateQty(\'' + i.id + '\',-1)">&#8722;</button>' +
