@@ -3998,6 +3998,10 @@
     window.toggleCoupon = () => { const cb = $('couponBox'); if (cb) cb.classList.toggle('open'); };
     window.copyCoupon = () => { navigator.clipboard && navigator.clipboard.writeText('ANEESA10').then(() => toast('✅ Coupon copied!')); };
     window.upsellAdd = (name, price) => Cart.add({ id: 'ups_' + name.replace(/\s/g, '_'), name, price: Number(price), image: '' });
+    window.togglePinPopup = (event) => {
+      if (event && event.preventDefault) event.preventDefault();
+      toast('Delivery location settings coming soon.');
+    };
 
     // ── New Offer Functions ──
     window.scrollToCheckout = () => {
@@ -4139,7 +4143,7 @@
           const path = 'review-photos/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
           
           // Use Firebase Storage REST API
-          const storageUrl = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJ}.appspot.com/o?uploadType=media&name=${encodeURIComponent(path)}`;
+          const storageUrl = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJECT}.appspot.com/o?uploadType=media&name=${encodeURIComponent(path)}`;
           const uploadRes = await fetch(storageUrl, {
             method: 'POST',
             headers: { 'Content-Type': photoFile.type },
@@ -4147,7 +4151,7 @@
           });
           if (!uploadRes.ok) throw new Error('Photo upload failed');
           const uploadData = await uploadRes.json();
-          imageURL = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJ}.appspot.com/o/${encodeURIComponent(uploadData.name)}?alt=media`;
+          imageURL = `https://firebasestorage.googleapis.com/v0/b/${_FB_PROJECT}.appspot.com/o/${encodeURIComponent(uploadData.name)}?alt=media`;
         }
 
         btn.textContent = 'Saving review…';
@@ -4304,6 +4308,7 @@
 
     (function () {
       var user = null;
+      var _tx = null;
       try { user = JSON.parse(localStorage.getItem('ah_user') || 'null'); } catch (e) { }
       if (user && user.name) {
         var nm = document.getElementById('esb-nm');

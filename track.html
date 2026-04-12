@@ -162,7 +162,7 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, orderBy, onSnapshot }
+import { getFirestore, doc, getDoc, orderBy, onSnapshot, query, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const cfg={apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"};
@@ -218,26 +218,42 @@ window.trackOrder=async()=>{
   if(liveUnsubscribe) liveUnsubscribe();
 
   try{
-    // Search by last 6 chars of doc ID (how we show order ID to user)
-    // First try direct doc ID match
+    // Try direct document ID match first (most common)
     let orderDoc=null;
     let orderId=null;
 
-    // Try searching all orders where ID ends with the input
-    const allSnap=await getDocs(collection(db,'orders'));
-    allSnap.forEach(d=>{
-      if(d.id.slice(-6).toUpperCase()===raw || d.id.toUpperCase()===raw){
-        orderDoc={id:d.id,...d.data()};
-        orderId=d.id;
+    // Attempt 1: Try raw input as direct document ID
+    try {
+      const directSnap = await getDoc(doc(db,'orders',raw));
+      if(directSnap.exists()){
+        orderDoc={id:directSnap.id,...directSnap.data()};
+        orderId=directSnap.id;
       }
-    });
+    } catch(e){}
+
+    // Attempt 2: If not found, try common ID formats
+    // (The short ID shown to users is last 6 chars of doc ID)
+    if(!orderDoc){
+      // Try lowercase and uppercase variants
+      const variants = [raw, raw.toLowerCase()];
+      for(const v of variants){
+        try {
+          const snap = await getDoc(doc(db,'orders',v));
+          if(snap.exists()){
+            orderDoc={id:snap.id,...snap.data()};
+            orderId=snap.id;
+            break;
+          }
+        } catch(e){}
+      }
+    }
 
     if(!orderDoc){
       document.getElementById('resultArea').innerHTML=`
         <div class="not-found">
           <div class="not-found-icon">😕</div>
           <div class="not-found-title">Order Not Found</div>
-          <div class="not-found-sub">We could not find an order with ID <strong>${raw}</strong>.<br/>Please check your WhatsApp message for the correct Order ID.<br/><br/>Need help? Contact us on WhatsApp!</div>
+          <div class="not-found-sub">We could not find an order with ID <strong>${raw}</strong>.<br/>Please enter the full Order ID from your WhatsApp confirmation.<br/><br/>Need help? Contact us on WhatsApp!</div>
           <a href="https://wa.me/${WA_NUM}?text=Hi! I cannot find my order. ID: ${raw}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:11px 22px;background:var(--green);color:white;border-radius:30px;text-decoration:none;font-size:.76rem;letter-spacing:1.5px;text-transform:uppercase;cursor:none">💬 Contact on WhatsApp</a>
         </div>`;
       return;

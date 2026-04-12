@@ -86,5 +86,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Leads — authenticated users can create (popup form), admin can read/manage
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Email analytics — admin only (Cloud Functions use Admin SDK to write)
+    match /email_analytics/{docId} {
+      allow read, write: if isAdmin();
+    }
+
   }
 }

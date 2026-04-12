@@ -425,6 +425,10 @@
         
         setCookie('cart', cookieCart, CONFIG.expiry.cart);
         console.log('🛒 Cart synced to cookies:', cookieCart.length, 'items');
+      } else {
+        // Cart is empty — clear the cookie so stale items don't get restored
+        deleteCookie('cart');
+        console.log('🛒 Cart empty — cookie cleared');
       }
     } catch (e) {
       console.error('Error syncing cart to cookies:', e);

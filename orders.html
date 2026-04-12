@@ -1547,7 +1547,9 @@ window.submitOrdReview = async function(){
     await addDoc(collection(_rvDb,'reviews'),{
       name: name,
       text: text,
+      location: '',
       rating: _ordRvStar,
+      productId: 'order-review',
       orderId: _ordCurrentId || null,
       uid: u ? u.uid : null,
       imageURL: imageURL,

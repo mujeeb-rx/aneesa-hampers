@@ -18,7 +18,14 @@
       "**/.*",
       "**/node_modules/**",
       "functions",
-      "**/*.md"
+      "**/*.md",
+      "test-*.html",
+      "*-demo.html",
+      "Banner-and-Category-Image-Guide.html",
+      "deploy-rules.bat",
+      "firestore-rules-CORRECT.txt",
+      "test_canvas.js",
+      "splash.html"
     ],
     "headers": [
       {
