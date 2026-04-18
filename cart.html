@@ -1551,79 +1551,81 @@ const WA_NUM = "918639066613";
 const UPI_ID = "8639066613@ybl";
 const UPI_NAME = "Aneesa";
 
-// ── EmailJS config (same service as admin.html) ──
-const EJS_SVC  = 'service_8zx977k';
-const EJS_TPL  = 'template_qri4z8s';
+// ── EmailJS config ──
+const EJS_SVC        = 'service_4xnvng6';   // ✅ connected Gmail
+const EJS_TPL_ADMIN  = 'template_qri4z8s';   // admin notification
+const EJS_TPL_CUST   = 'template_7rx7qwj';   // customer auto-reply
 const ADMIN_NOTIFY_EMAIL = 'aneesahampers@gmail.com';
-try { emailjs.init('0WnuKvGifFFXelZLj'); } catch(e) { console.warn('EmailJS init:', e); }
+// window.emailjs — must use window. prefix inside type="module" scripts
+// to access globals from non-module CDN scripts
+try { window.emailjs.init('0WnuKvGifFFXelZLj'); } catch(e) { console.warn('EmailJS init:', e); }
 
 /**
- * _notifyOrder — fires after every successful order save.
- * 1. Sends admin a notification email
- * 2. Sends customer a confirmation email
+ * _notifyOrder — fires after every successful Razorpay order save.
+ * 1. Sends ADMIN a notification email  (template_qri4z8s)
+ * 2. Sends CUSTOMER a confirmation email (template_7rx7qwj auto-reply)
  */
 function _notifyOrder(opts) {
-  // opts: { name, phone, customerEmail, trackingId, paymentId, items, total }
-  var name         = opts.name      || 'Customer';
-  var custEmail    = opts.customerEmail || '';
-  var trackingId   = opts.trackingId   || '';
-  var paymentId    = opts.paymentId    || '';
-  var total        = Number(opts.total || 0).toLocaleString('en-IN');
-  var itemLines    = (opts.items || []).map(function(i){
-    return '• ' + i.name + ' ×' + (i.qty||1) + ' = ₹' + (i.price*(i.qty||1)).toLocaleString('en-IN');
+  var ejs = window.emailjs;
+  if (!ejs) { console.warn('EmailJS not loaded'); return; }
+
+  var name       = opts.name          || 'Customer';
+  var custEmail  = opts.customerEmail || '';
+  var trackingId = opts.trackingId    || '';
+  var paymentId  = opts.paymentId     || '';
+  var total      = Number(opts.total  || 0).toLocaleString('en-IN');
+  var itemLines  = (opts.items || []).map(function(i){
+    return '\u2022 ' + i.name + ' \u00d7' + (i.qty||1) + ' = \u20b9' + Number(i.price*(i.qty||1)).toLocaleString('en-IN');
   }).join('\n');
 
-  // ─ 1. Email to ADMIN ─
-  var adminMsg = '🔔 New Order Received!\n\n'
-    + '👤 Customer: ' + name + '\n'
-    + '📞 Phone: ' + (opts.phone||'—') + '\n'
-    + '📧 Email: ' + (custEmail||'Guest') + '\n'
-    + '🛒 Items:\n' + itemLines + '\n\n'
-    + '💰 Total: ₹' + total + '\n'
-    + '✅ Paid via Razorpay\n'
-    + '🔖 Payment ID: ' + paymentId + '\n'
-    + '🔖 Tracking: ' + trackingId;
-  try {
-    emailjs.send(EJS_SVC, EJS_TPL, {
-      to_email:      ADMIN_NOTIFY_EMAIL,
-      from_name:     'Aneesa Hampers Store',
-      subject:       '🔔 New Order #' + trackingId + ' — ₹' + total + ' from ' + name,
-      message:       adminMsg,
-      order_id:      trackingId,
-      tracking_id:   trackingId,
-      customer_name: name
-    }).then(function(){
-      console.log('✅ Admin email sent');
-    }).catch(function(err){
-      console.warn('⚠️ Admin email failed:', err);
-    });
-  } catch(e) { console.warn('EmailJS admin send:', e); }
+  // ── 1. Email to ADMIN ──
+  var adminMsg = '\ud83d\udd14 New Order Received!\n\n'
+    + '\ud83d\udc64 Customer : ' + name + '\n'
+    + '\ud83d\udcde Phone    : ' + (opts.phone || '\u2014') + '\n'
+    + '\ud83d\udce7 Email    : ' + (custEmail || 'Guest / no email') + '\n'
+    + '\ud83d\uded2 Items    :\n' + itemLines + '\n\n'
+    + '\ud83d\udcb0 Total    : \u20b9' + total + '\n'
+    + '\u2705 Paid via Razorpay\n'
+    + '\ud83d\udd16 Payment ID : ' + paymentId + '\n'
+    + '\ud83d\udd16 Tracking   : ' + trackingId;
 
-  // ─ 2. Confirmation email to CUSTOMER (only if email is available) ─
-  if (!custEmail) return;
-  var custMsg = 'Hi ' + name + '! 🎀\n\n'
-    + 'Thank you for your order at Aneesa Hampers! We’re preparing it with love.\n\n'
-    + '🔖 Order Tracking ID: ' + trackingId + '\n'
-    + '🛒 Items:\n' + itemLines + '\n\n'
-    + '💰 Total Paid: ₹' + total + ' (via Razorpay)\n\n'
-    + 'We’ll WhatsApp you as we progress your order!\n'
-    + 'Questions? WhatsApp us: +91 86390 66613\n\n'
-    + 'With love, Aneesa Hampers 🌸\nKadapa, Andhra Pradesh';
-  try {
-    emailjs.send(EJS_SVC, EJS_TPL, {
-      to_email:      custEmail,
-      from_name:     'Aneesa Hampers',
-      subject:       '🎀 Your Order is Confirmed! Tracking: ' + trackingId,
-      message:       custMsg,
-      order_id:      trackingId,
-      tracking_id:   trackingId,
-      customer_name: name
-    }).then(function(){
-      console.log('✅ Customer confirmation email sent');
-    }).catch(function(err){
-      console.warn('⚠️ Customer email failed:', err);
-    });
-  } catch(e) { console.warn('EmailJS customer send:', e); }
+  ejs.send(EJS_SVC, EJS_TPL_ADMIN, {
+    to_email:      ADMIN_NOTIFY_EMAIL,
+    from_name:     'Aneesa Hampers Store',
+    reply_to:      custEmail || ADMIN_NOTIFY_EMAIL,
+    subject:       '\ud83d\udd14 New Order #' + trackingId + ' \u2014 \u20b9' + total + ' from ' + name,
+    message:       adminMsg,
+    order_id:      trackingId,
+    tracking_id:   trackingId,
+    customer_name: name
+  }).then(function(){ console.log('\u2705 Admin email sent to', ADMIN_NOTIFY_EMAIL); })
+    .catch(function(err){ console.error('\u274c Admin email failed:', err); });
+
+  // ── 2. Auto-reply confirmation email to CUSTOMER ──
+  if (!custEmail) {
+    console.log('\u2139\ufe0f No customer email \u2014 skipping customer confirmation');
+    return;
+  }
+  var custMsg = 'Hi ' + name + '! \ud83c\udf80\n\n'
+    + 'Thank you for shopping at Aneesa Hampers! Your order has been confirmed and we\'re preparing it with love.\n\n'
+    + '\ud83d\udd16 Tracking ID : ' + trackingId + '\n'
+    + '\ud83d\uded2 Items       :\n' + itemLines + '\n\n'
+    + '\ud83d\udcb0 Total Paid  : \u20b9' + total + ' (Razorpay)\n\n'
+    + 'We\'ll send you WhatsApp updates as your order progresses!\n'
+    + 'Questions? WhatsApp: +91 86390 66613\n\n'
+    + 'With love,\nAneesa Hampers \ud83c\udf38\nKadapa, Andhra Pradesh';
+
+  ejs.send(EJS_SVC, EJS_TPL_CUST, {
+    to_email:      custEmail,
+    from_name:     'Aneesa Hampers',
+    reply_to:      ADMIN_NOTIFY_EMAIL,
+    subject:       '\ud83c\udf80 Order Confirmed! Tracking: ' + trackingId + ' | Aneesa Hampers',
+    message:       custMsg,
+    order_id:      trackingId,
+    tracking_id:   trackingId,
+    customer_name: name
+  }).then(function(){ console.log('\u2705 Customer email sent to', custEmail); })
+    .catch(function(err){ console.error('\u274c Customer email failed:', err); });
 }
 
 // ── RAZORPAY ──────────────────────────────────────────────────

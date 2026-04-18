@@ -2883,7 +2883,7 @@
   <!-- EmailJS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="module">
-    emailjs.init('0WnuKvGifFFXelZLj');
+    window.emailjs.init('0WnuKvGifFFXelZLj');
 
     // ---------------------------------------------
 
@@ -3457,7 +3457,7 @@
         // ── 2. Auto-send Email to customer ──
         if (custEmail && emailSubjects[st]) {
           try {
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
               to_email: custEmail,
               from_name: 'Aneesa Hampers',
               subject: emailSubjects[st],
@@ -3485,7 +3485,7 @@
     // ══════════════════════════════════════════
 
     // ── EmailJS config — replace with your real IDs from dashboard.emailjs.com ──
-    const EMAILJS_SERVICE_ID = 'service_8zx977k';   // Your EmailJS Service ID
+    const EMAILJS_SERVICE_ID = 'service_4xnvng6';   // ✅ connected Gmail
     const EMAILJS_TEMPLATE_ID = 'template_qri4z8s';
     // Public key is set above via emailjs.init()
 
@@ -3720,7 +3720,7 @@ Kadapa, Andhra Pradesh, India`
 
       // -- Try EmailJS first --
       try {
-        const result = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        const result = await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           to_email: to,
           to_name: name,
           from_name: 'Aneesa Hampers',

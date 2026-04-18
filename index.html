@@ -595,8 +595,15 @@ a{text-decoration:none;}
   scroll-snap-align:start;}
 .cat-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(192,100,122,.22);}
 .cat-card.span2{width:220px;}
-.cat-img{height:200px;position:relative;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
+/* Fixed height reservations prevent CLS when images load */
+.cat-img{height:200px;aspect-ratio:9/10;position:relative;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
 .cat-card.span2 .cat-img{height:200px;}
+/* Prevent CLS: reserve space for all dynamic images */
+.cat-img img,.cat-circle-img img,.cat-square-img{width:100%;height:100%;object-fit:cover;}
+/* Banner slide images — reserve 16:9 space before load */
+.bslide-bg{aspect-ratio:16/9;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+/* Product thumb — fixed reserve prevents reflow */
+
 /* Gradient overlay on image cards */
 .cat-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(59,13,26,.72) 0%,rgba(59,13,26,.1) 55%,transparent 100%);z-index:1;}
 /* Name on image */
@@ -693,8 +700,8 @@ a{text-decoration:none;}
 .prod-buy-btn:hover{background:var(--burgundy);transform:translateY(-1px);}
 
 
-/* PROMO STRIP */
-.promo-strip{background:var(--burgundy);padding:48px 52px;display:grid;grid-template-columns:repeat(3,1fr);}
+/* PROMO STRIP — below fold, skip render until visible */
+.promo-strip{background:var(--burgundy);padding:48px 52px;display:grid;grid-template-columns:repeat(3,1fr);content-visibility:auto;contain-intrinsic-size:0 180px;}
 .promo-item{text-align:center;padding:18px;border-right:1px solid rgba(255,255,255,.08);}
 .promo-item:last-child{border-right:none;}
 .promo-icon{font-size:1.9rem;margin-bottom:9px;}
@@ -704,11 +711,14 @@ a{text-decoration:none;}
 /* ═══════════════════════════════════════════════
    PROMOTIONAL BANNERS (Vertical Stack)
 ═══════════════════════════════════════════════ */
+/* PROMOTIONAL BANNERS — below fold */
 .promo-banners-wrap{
   width:100%;
   padding:0;
   margin:0;
   background:var(--cream);
+  content-visibility:auto;
+  contain-intrinsic-size:0 400px;
 }
 .promo-banners-container{
   max-width:100%;
@@ -810,8 +820,8 @@ a{text-decoration:none;}
   transform:translateY(0);
 }
 
-/* FOOTER */
-footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
+/* FOOTER — always below fold */
+footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;content-visibility:auto;contain-intrinsic-size:0 380px;}
 .foot-grid{display:grid;grid-template-columns:1.5fr 1.3fr 1fr 1fr;gap:40px;margin-bottom:40px;padding-top:48px;}
 .foot-logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-style:italic;display:block;margin-bottom:14px;color:white;}
 .foot-logo span{color:var(--rose);}
@@ -839,8 +849,8 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
    PROMO POPUP
 ═══════════════════════════════════════════════ */
 #ah-popup-overlay{
-  position:fixed;inset:0;background:rgba(30,6,16,.55);
-  backdrop-filter:blur(6px);z-index:50000;
+  position:fixed;inset:0;background:rgba(20,3,10,.62);
+  z-index:50000;
   display:none;align-items:center;justify-content:center;
   padding:16px;opacity:0;transition:opacity .4s ease;pointer-events:none;
 }
@@ -3610,7 +3620,7 @@ setTimeout(function(){
     setTimeout(function(){ el.textContent = orig; }, 1600);
   };
 
-  // Auto-show after 3s, once per session
+  // Auto-show after 10s — delayed so LCP is measured before popup paints
   var _autoShowTimer = null;
   var seen      = localStorage.getItem(STORAGE_KEY);
   var submitted = localStorage.getItem('ah_popup_submitted');
@@ -3618,12 +3628,12 @@ setTimeout(function(){
     _autoShowTimer = setTimeout(function() {
       if (_active) { ahPopupOpen(); }
       localStorage.setItem(STORAGE_KEY, '1');
-    }, 3000);
+    }, 10000);
   } else if (!submitted) {
     setTimeout(function(){
       var fb = document.getElementById('ah-popup-float');
       if(fb && _active) fb.classList.add('show');
-    }, 5000);
+    }, 8000);
   }
 
   // Load settings (may update UI after a moment)
