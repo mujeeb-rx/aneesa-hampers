@@ -1847,6 +1847,8 @@ function _revealConfBanner(trackingId, paymentId) {
   // ── Hide unwanted elements ──
   var pi = document.getElementById('preConfInfo'); if (pi) pi.style.display = 'none';
   var sc = document.getElementById('scrCard');     if (sc) sc.style.display = 'none';
+  // ── Auto-redirect to orders.html after 5 seconds ──
+  _startOrdersRedirectCountdown();
 
   // ── Show banner ──
   var cb = document.getElementById('confBanner'); if (cb) cb.style.display = 'block';
@@ -1899,6 +1901,29 @@ function _revealConfBanner(trackingId, paymentId) {
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 
+
+// ── Countdown redirect to orders.html ──
+function _startOrdersRedirectCountdown() {
+  var secs = 6;
+  // Show countdown in confActions if it exists
+  var ca = document.getElementById('confActions');
+  var countdown = document.getElementById('ordersRedirectCountdown');
+  if (!countdown && ca) {
+    countdown = document.createElement('div');
+    countdown.id = 'ordersRedirectCountdown';
+    countdown.style.cssText = 'width:100%;text-align:center;font-size:.72rem;opacity:.55;margin-top:6px;letter-spacing:.5px;';
+    ca.parentNode.insertBefore(countdown, ca.nextSibling);
+  }
+  var tick = setInterval(function() {
+    secs--;
+    if (countdown) countdown.textContent = '📦 Taking you to My Orders in ' + secs + 's…';
+    if (secs <= 0) {
+      clearInterval(tick);
+      window.location.href = 'orders.html';
+    }
+  }, 1000);
+  if (countdown) countdown.textContent = '📦 Taking you to My Orders in ' + secs + 's…';
+}
 
 function _tlRow(type, icon, label, when) {
   return '<div class="tl-row '+(type==='done'?'done':'')+'" style="margin-bottom:0">' +
@@ -3000,6 +3025,9 @@ function _showConfirmation() {
   // Animate scrCard to done state
   var sc = document.getElementById('scrCard'); if (sc) sc.style.display = 'none';
   window.scrollTo({ top:0, behavior:'smooth' });
+
+  // ── Auto-redirect to orders.html after 5 seconds ──
+  _startOrdersRedirectCountdown();
 }
 
 function _buildOrderItems(items, total, trackingId, delivery) {
@@ -3175,11 +3203,11 @@ window.confirmPaid = async function() {
       setDoc(doc(db,'customers',currentUser.uid),{savedAddress:addrToSave},{merge:true}).catch(function(){});
     }
 
-    // Clear this user's cart only, then sign out
+    // Clear this user's cart only
     var userCartKey = cartKey();
     localStorage.removeItem(userCartKey);
-    localStorage.removeItem("ah_user");
-    try { await auth.signOut(); } catch(se) {}
+    // NOTE: Do NOT call auth.signOut() here — it triggers onAuthStateChanged
+    // which shows the login gate over the confirmation screen (blank page bug)
 
     // ── Show animated order confirmation immediately ──
     _showConfirmation();
