@@ -32,15 +32,13 @@
 <meta name="googlebot" content="index, follow"/>
 <link rel="canonical" href="https://aneesa-hampers.web.app/"/>
 
-<!-- Preconnect + dns-prefetch for performance -->
+<!-- Google Fonts — display=swap prevents render-blocking, no CLS caused by async hack -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
 <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin/>
-<link rel="dns-prefetch" href="https://firebasejs.googleapis.com"/>
 <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
-<!-- Non-blocking Google Fonts (no render-blocking) -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/></noscript>
 <style>
 :root{
@@ -63,12 +61,6 @@ body{
 }
 img{max-width:100%;display:block;height:auto;}
 a{text-decoration:none;}
-/* Font display swap fallback (for when font CSS loads async) */
-body,h1,h2,h3,h4,h5,h6,p,span,div,button,input,textarea,select{
-  font-display:swap;
-}
-/* Image sizing hints — prevent layout shift */
-img[width],img[height]{aspect-ratio:attr(width)/attr(height);}
 
 /* ACCESSIBILITY - Focus styles */
 *:focus{outline:2px solid var(--deep-rose);outline-offset:2px;}
@@ -95,29 +87,25 @@ img[width],img[height]{aspect-ratio:attr(width)/attr(height);}
   background:linear-gradient(145deg,var(--cl-bg1) 0%,var(--cl-bg2) 40%,var(--cl-bg3) 70%,var(--cl-bg4) 100%);
   overflow:hidden;z-index:99999;
   opacity:1;visibility:visible;
-  transition:opacity 1.0s cubic-bezier(.4,0,.2,1),visibility 1.0s;
+  transition:opacity .7s cubic-bezier(.4,0,.2,1),visibility .7s;
   will-change:opacity;
+  contain:strict;
 }
 #cin-loader.cin-done{opacity:0;visibility:hidden;pointer-events:none;}
 
-/* Ambient background glow pool */
+/* Ambient background glow — static, no animation (saves paint) */
 .cin-bg-glow{
   position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(ellipse 58% 48% at 50% 48%,rgba(201,169,110,.06) 0%,transparent 72%),
     radial-gradient(ellipse 80% 60% at 50% 52%,rgba(192,100,122,.055) 0%,transparent 80%);
-  animation:cinBgPulse 4.5s ease-in-out infinite alternate;
 }
-@keyframes cinBgPulse{from{opacity:.65;}to{opacity:1;}}
 
-/* Ambient blobs — contain paint, reduce will-change to transform only on 2 blobs */
-.cin-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
-.cin-blob-1{width:520px;height:520px;background:radial-gradient(circle,var(--cl-rose) 0%,transparent 70%);top:-150px;left:-120px;will-change:transform;animation:cinBlob1 7s ease-in-out infinite alternate;}
-.cin-blob-2{width:420px;height:420px;background:radial-gradient(circle,var(--cl-rose2) 0%,transparent 70%);bottom:-120px;right:-90px;animation:cinBlob2 8s ease-in-out infinite alternate;}
-.cin-blob-3{width:320px;height:320px;background:radial-gradient(circle,var(--cl-gold) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:cinBlob3 5.5s ease-in-out infinite alternate;}
-@keyframes cinBlob1{from{transform:translate(0,0) scale(1);}to{transform:translate(45px,35px) scale(1.18);}}
-@keyframes cinBlob2{from{transform:translate(0,0) scale(1);}to{transform:translate(-35px,25px) scale(1.14);}}
-@keyframes cinBlob3{from{transform:translate(-50%,-50%) scale(1);}to{transform:translate(-50%,-50%) scale(1.22);}}
+/* Ambient blobs — NO blur filter (was the #1 GPU cost on mobile) */
+.cin-blob{position:absolute;border-radius:50%;pointer-events:none;opacity:.55;}
+.cin-blob-1{width:520px;height:520px;background:radial-gradient(circle,rgba(192,100,122,.35) 0%,transparent 70%);top:-150px;left:-120px;}
+.cin-blob-2{width:420px;height:420px;background:radial-gradient(circle,rgba(232,160,176,.2) 0%,transparent 70%);bottom:-120px;right:-90px;}
+.cin-blob-3{width:320px;height:320px;background:radial-gradient(circle,rgba(201,169,110,.18) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
 
 /* Diagonal shimmer sweep */
 .cin-shimmer-line{
@@ -234,34 +222,32 @@ img[width],img[height]{aspect-ratio:attr(width)/attr(height);}
 @keyframes cinBf3{0%,100%{transform:translate(128px,52px) rotate(25deg) translateY(0);}50%{transform:translate(128px,52px) rotate(31deg) translateY(-7px);}}
 @keyframes cinBf4{0%,100%{transform:translate(138px,35px) rotate(5deg) translateY(0);}50%{transform:translate(138px,35px) rotate(11deg) translateY(-13px);}}
 
-/* PHASE 2: Brand name — staggered reveal */
+/* PHASE 2: Brand name — appears immediately for better LCP */
 .cin-brand-block{display:flex;flex-direction:column;align-items:center;gap:0;}
 
 .cin-eyebrow{
   font-family:'Jost',sans-serif;font-size:.52rem;letter-spacing:5.5px;
   text-transform:uppercase;color:var(--cl-accent2);
-  opacity:0;margin-bottom:13px;
-  animation:cinFadeUp .9s 1.1s cubic-bezier(.4,0,.2,1) forwards;
+  opacity:1;margin-bottom:13px; /* was opacity:0 with 1.1s delay — now visible immediately */
 }
 .cin-word-aneesa{
   display:block;font-family:'Cormorant Garamond',serif;
   font-size:clamp(2.8rem,6vw,4.2rem);font-style:italic;font-weight:400;
   color:rgba(255,255,255,.96);letter-spacing:3px;line-height:1;
   text-shadow:0 4px 36px rgba(0,0,0,.6),0 0 70px rgba(192,100,122,.18);
-  opacity:0;
-  animation:cinWordReveal 1.2s 1.4s cubic-bezier(.22,1,.36,1) forwards;
+  opacity:1; /* was opacity:0 with 1.4s delay — this was causing LCP to measure 1.4s+ */
+  animation:cinWordReveal .6s cubic-bezier(.22,1,.36,1) both; /* no delay */
 }
 .cin-word-hampers{
   display:block;font-family:'Jost',sans-serif;
   font-size:clamp(.82rem,1.7vw,1.05rem);font-weight:300;letter-spacing:10px;
   text-transform:uppercase;color:rgba(255,255,255,.62);margin-top:4px;
-  opacity:0;
-  animation:cinWordReveal 1.0s 1.8s cubic-bezier(.22,1,.36,1) forwards;
+  opacity:1;
+  animation:cinWordReveal .6s .15s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes cinWordReveal{
-  0%  {opacity:0;transform:translateX(-24px);filter:blur(10px);}
-  38% {opacity:.7;filter:blur(3px);}
-  100%{opacity:1;transform:translateX(0);filter:blur(0);}
+  0%  {opacity:0;transform:translateX(-16px);}
+  100%{opacity:1;transform:translateX(0);}
 }
 
 /* Horizontal gold ornament */
@@ -4598,10 +4584,10 @@ function launchConfetti(){
     }, 950);
   }
 
-  /* ── Reduced loader times for better LCP / PageSpeed ── */
+  /* ── Loader timeout: short enough to not kill LCP ── */
   var isMobile = window.matchMedia('(max-width:600px)').matches;
-  /* Desktop: 4s  |  Mobile: 2.5s  — enough for the animation, no LCP penalty */
-  var dismissDelay = isMobile ? 2500 : 4000;
+  /* Mobile: 1.2s  |  Desktop: 2s — gives the logo animation time to play */
+  var dismissDelay = isMobile ? 1200 : 2000;
 
   /* Hard timeout fallback */
   setTimeout(dismissLoader, dismissDelay);

@@ -2,52 +2,60 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if user is admin
+    // ── Admin check: matches the ADMIN_EMAIL used in admin.html ──
     function isAdmin() {
-      return request.auth != null && 
-             request.auth.token.email == "phatanmujeebkhan64@gmail.com";
+      return request.auth != null &&
+             request.auth.token.email == "aneesahampers@gmail.com";
     }
 
-    // Users — readable by owner, writable by auth + functions
+    // ── Users ──
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
       allow read: if request.auth != null;
     }
 
-    // Orders — readable/writable by the order owner OR admin
+    // ── Orders ──
+    // Admin reads/writes ALL orders (real-time dashboard)
+    // Logged-in users can create & read their own orders
+    // Guests (unauthenticated) can CREATE orders (uid will be null in the doc)
     match /orders/{orderId} {
-      // Admin can read/write ALL orders
       allow read, write: if isAdmin();
-      // Users can read their own orders
+
+      // Logged-in users — read their own orders
       allow read: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
-      // Users can create orders for themselves
+
+      // Logged-in users — create an order for themselves
       allow create: if request.auth != null &&
         (request.auth.uid == request.resource.data.uid ||
          request.auth.uid == request.resource.data.customerUID);
-      // Users can update/delete only their own orders
+
+      // GUEST orders — uid is null, allow creation without auth
+      allow create: if request.resource.data.uid == null ||
+                       request.resource.data.uid == "";
+
+      // Users can update/delete their own orders
       allow update, delete: if request.auth != null &&
         (request.auth.uid == resource.data.uid ||
          request.auth.uid == resource.data.customerUID);
     }
 
-    // Offers — public read, admin-only write
+    // ── Offers ──
     match /offers/{offerId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Site settings — public read
+    // ── Site settings ──
     match /settings/{doc} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Reviews — anyone can read; authenticated users can create (with validation); admin can delete/update
+    // ── Reviews ──
     match /reviews/{reviewId} {
       allow read: if true;
-      // Only authenticated users can create reviews with proper validation
       allow create: if request.auth != null &&
         request.resource.data.keys().hasAll(['name', 'rating', 'text', 'productId', 'createdAt']) &&
         request.resource.data.name is string &&
@@ -62,39 +70,51 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // siteSettings (used as config doc)
+    // ── siteSettings ──
     match /siteSettings/{doc} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Products — public read, admin-only write
+    // ── Products ──
     match /products/{productId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Categories — public read, admin-only write
+    // ── Categories ──
     match /categories/{categoryId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Subcategories — public read, admin-only write
+    // ── Subcategories ──
     match /subcategories/{subId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Leads — authenticated users can create (popup form), admin can read/manage
+    // ── Leads ──
     match /leads/{leadId} {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
-    // Email analytics — admin only (Cloud Functions use Admin SDK to write)
+    // ── Email analytics ──
     match /email_analytics/{docId} {
       allow read, write: if isAdmin();
+    }
+
+    // ── Promo codes ──
+    match /promoCodes/{codeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Banners ──
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
   }
