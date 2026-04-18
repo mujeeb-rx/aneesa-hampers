@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -1467,69 +1467,8 @@ body.buynow-mode footer{display:none!important;}
 
 </div>
 
-<!-- PAYMENT MODAL — Razorpay + UPI fallback -->
-<div class="modal-overlay" id="payModal">
-  <div class="modal-box" style="max-width:420px;padding:0;overflow:hidden;border-radius:20px;">
-
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,var(--burgundy),#5a1528);padding:20px 22px 16px;position:relative;">
-      <button class="modal-close" onclick="closePayModal()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.8rem;">✕</button>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:white;margin-bottom:2px;">Complete Payment</div>
-      <div style="font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:1px;text-transform:uppercase;">Aneesa Hampers · Secure Checkout</div>
-      <div id="payAmount" style="font-size:2.2rem;font-weight:700;color:white;margin-top:10px;font-family:'Cormorant Garamond',serif;"></div>
-    </div>
-
-    <div style="padding:20px 22px;">
-
-      <!-- ── RAZORPAY BUTTON (primary) ── -->
-      <button id="rzpPayBtn" onclick="openRazorpay()" style="width:100%;padding:16px;background:linear-gradient(135deg,#528FF0,#3D72E8);color:white;border:none;border-radius:14px;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;box-shadow:0 6px 20px rgba(61,114,232,.35);transition:all .2s;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M4 4h16v2H4zm0 5h10v2H4zm0 5h7v2H4z"/></svg>
-        Pay with Razorpay
-        <span style="font-size:.65rem;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;letter-spacing:.5px;">Cards · UPI · Wallet</span>
-      </button>
-      <div style="font-size:.62rem;color:rgba(59,13,26,.35);text-align:center;margin-bottom:16px;">🔒 Secured by Razorpay · 256-bit SSL</div>
-
-      <!-- Divider -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <div style="flex:1;height:1px;background:rgba(192,100,122,.15);"></div>
-        <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.35;">or pay directly via UPI</div>
-        <div style="flex:1;height:1px;background:rgba(192,100,122,.15);"></div>
-      </div>
-
-      <!-- UPI App Buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-        <a id="phonePeLink" href="#" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;background:#5f259f;color:white;border-radius:11px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">
-          <img src="https://cdn.razorpay.com/app/phonepe.svg" onerror="this.style.display='none'" width="18" height="18" style="border-radius:4px;"/> PhonePe
-        </a>
-        <a id="gpayLink" href="#" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;background:#1a73e8;color:white;border-radius:11px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">
-          <img src="https://cdn.razorpay.com/app/googlepay.svg" onerror="this.style.display='none'" width="18" height="18" style="border-radius:4px;"/> GPay
-        </a>
-        <a id="paytmLink" href="#" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;background:#002970;color:white;border-radius:11px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">
-          💙 Paytm
-        </a>
-        <a id="bhimLink" href="#" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;background:#0f6e3e;color:white;border-radius:11px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">
-          🇮🇳 BHIM UPI
-        </a>
-      </div>
-
-      <!-- QR Code — desktop only (mobile can't scan own screen) -->
-      <div id="qrDesktopWrap" style="margin-bottom:12px;text-align:center;">
-        <img id="payQRImg" src="" alt="UPI QR" style="width:160px;height:160px;border-radius:12px;border:2px solid var(--blush);display:block;margin:0 auto 8px;"/>
-        <div class="upi-id-box" onclick="copyUpiId()" style="cursor:pointer;margin:0 auto;max-width:220px;" title="Tap to copy UPI ID">
-          <strong>UPI ID: </strong><span id="upiIdShow">8639066613@ybl</span>
-          <span style="font-size:.58rem;opacity:.35;margin-left:4px;">tap to copy</span>
-        </div>
-        <div style="font-size:.62rem;opacity:.35;margin-top:6px;">Scan from another device to pay</div>
-      </div>
-
-      <!-- Manual confirm (after direct UPI payment) -->
-      <button class="paid-btn" onclick="confirmPaid()" style="width:100%;padding:14px;background:var(--green,#25a055);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;margin-bottom:6px;">
-        ✅ I've Paid via UPI — Continue
-      </button>
-      <div style="font-size:.6rem;opacity:.28;text-align:center;line-height:1.6;">Used a UPI app above? Tap to upload your screenshot next.</div>
-    </div>
-  </div>
-</div>
+<!-- payModal placeholder — kept so closePayModal() calls don't error -->
+<div id="payModal" style="display:none;"></div>
 </main>
 
 <a href="#" id="floatWA" aria-label="Contact us on WhatsApp">&#128172; WhatsApp</a>
@@ -1614,41 +1553,43 @@ const UPI_NAME = "Aneesa";
 // Test key starts with rzp_test_  |  Live key starts with rzp_live_
 const RZP_KEY = "rzp_live_SewprsrDytr3Cg";
 
-// ── Shared Razorpay opener — used by both Cart and Buy Now ──
+// ── RAZORPAY — Direct checkout open ──────────────────────────
+// Opens the native Razorpay checkout SDK which provides:
+// Cards, UPI (all apps), Net Banking, Wallets, EMI — user picks inside Razorpay
 function _openRazorpay(amount, name, phone, email, desc, onSuccess) {
-  // Pre-fill UPI fallback modal
-  var note   = "Aneesa Hampers Order";
-  var upiStr = "upi://pay?pa="+UPI_ID+"&pn="+encodeURIComponent(UPI_NAME)+"&am="+amount+"&cu=INR&tn="+encodeURIComponent(note);
-  var setEl  = function(id,p,v){ var el=document.getElementById(id); if(el) el[p]=v; };
-  setEl("payAmount","textContent","₹"+amount.toLocaleString("en-IN"));
-  setEl("payQRImg","src","https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl="+encodeURIComponent(upiStr)+"&choe=UTF-8");
-  setEl("phonePeLink","href","phonepe://pay?pa="+UPI_ID+"&pn="+encodeURIComponent(UPI_NAME)+"&am="+amount+"&cu=INR&tn="+encodeURIComponent(note));
-  setEl("gpayLink","href","tez://upi/pay?pa="+UPI_ID+"&pn="+encodeURIComponent(UPI_NAME)+"&am="+amount+"&cu=INR&tn="+encodeURIComponent(note));
-  setEl("paytmLink","href","paytmmp://pay?pa="+UPI_ID+"&pn="+encodeURIComponent(UPI_NAME)+"&am="+amount+"&cu=INR&tn="+encodeURIComponent(note));
-  setEl("bhimLink","href","upi://pay?pa="+UPI_ID+"&pn="+encodeURIComponent(UPI_NAME)+"&am="+amount+"&cu=INR&tn="+encodeURIComponent(note));
   window._rzpTotal = amount;
-
   var opts = {
-    key: RZP_KEY, amount: amount*100, currency: "INR",
-    name: "Aneesa Hampers", description: desc,
-    prefill: { name: name, contact: phone, email: email },
-    theme: { color: "#3b0d1a" }, modal: { backdropclose: false },
-    handler: function(response) { onSuccess(response.razorpay_payment_id); }
+    key:         RZP_KEY,
+    amount:      amount * 100,   // Razorpay expects paise
+    currency:    "INR",
+    name:        "Aneesa Hampers",
+    description: desc || "Order Payment",
+    image:       "https://aneesa-hampers.web.app/assets/logo.png",
+    prefill: {
+      name:    name  || "",
+      contact: phone || "",
+      email:   email || ""
+    },
+    theme:  { color: "#3b0d1a" },
+    modal:  { backdropclose: false, escape: true },
+    handler: function(response) {
+      // Payment succeeded — response.razorpay_payment_id is the confirmed ID
+      onSuccess(response.razorpay_payment_id);
+    }
   };
   try {
     var rzp = new Razorpay(opts);
-    rzp.on("payment.failed", function() {
-      toast("⚠️ Payment failed. Use UPI apps below.");
-      document.getElementById("payModal").classList.add("open");
+    rzp.on("payment.failed", function(response) {
+      toast("⚠️ Payment failed: " + (response.error && response.error.description || "Please try again."));
     });
     rzp.open();
   } catch(e) {
-    console.error("Razorpay:", e);
-    document.getElementById("payModal").classList.add("open");
+    console.error("Razorpay load error:", e);
+    toast("❌ Could not open payment. Please refresh and try again.");
   }
 }
 
-// openRazorpay — called from UPI modal "Pay with Razorpay" button (fallback)
+// openRazorpay — retry entry from any fallback context
 window.openRazorpay = function() {
   var total = window._rzpTotal || 0;
   if (!total || total <= 0) { toast('⚠️ No order amount set'); return; }
@@ -1660,7 +1601,6 @@ window.openRazorpay = function() {
   var desc  = bn ? (bn.items&&bn.items[0]&&bn.items[0].name||'Hamper') : 'Cart Order';
   _openRazorpay(total, name, phone, email, desc, async function(paymentId) {
     toast('✅ Payment successful! Saving your order…');
-    closePayModal();
     if (bn) {
       var items = bn.items || [];
       await _saveOrderRazorpay(paymentId, total, items, name, phone);
@@ -2738,10 +2678,10 @@ window.goToPayment = function() {
   window._rzpTotal = total;
 
   // Save order meta for _saveCartOrderRazorpay
-  window._bnOrderData  = null;
+  window._bnOrderData   = null;
   window._cartOrderMeta = { name, phone, street, city, state, country, pin, giftMsg, deliveryType, items, total };
 
-  // Open Razorpay via shared helper
+  // Open Razorpay native checkout directly
   var email = currentUser ? currentUser.email : (name.toLowerCase().replace(/[^a-z0-9]/g,"")+"@customer.com");
   var desc  = items.length === 1 ? (items[0].name||"Hamper") : items.length+" items";
   _openRazorpay(total, name, phone, email, desc, async function(paymentId) {
@@ -2798,7 +2738,10 @@ async function _saveCartOrderRazorpay(paymentId) {
 }
 
 
-window.closePayModal = function() { document.getElementById("payModal").classList.remove("open"); };
+window.closePayModal = function() {
+  var m = document.getElementById("payModal");
+  if (m) { m.style.display = 'none'; m.classList.remove('open'); }
+};
 window.copyUpiId = function() {
   var txt = "8639066613@ybl";
   if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(function(){ toast("✅ UPI ID copied!"); }).catch(function(){ _legacyCopy(txt); }); }
