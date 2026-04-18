@@ -1473,6 +1473,8 @@ body.buynow-mode footer{display:none!important;}
 
 <a href="#" id="floatWA" aria-label="Contact us on WhatsApp">&#128172; WhatsApp</a>
 
+<!-- EmailJS — for automated order notification emails (no backend needed) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <!-- Razorpay Checkout SDK — MUST load before the module script below -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -1548,6 +1550,81 @@ gp.setCustomParameters({ prompt: "select_account" });
 const WA_NUM = "918639066613";
 const UPI_ID = "8639066613@ybl";
 const UPI_NAME = "Aneesa";
+
+// ── EmailJS config (same service as admin.html) ──
+const EJS_SVC  = 'service_8zx977k';
+const EJS_TPL  = 'template_qri4z8s';
+const ADMIN_NOTIFY_EMAIL = 'aneesahampers@gmail.com';
+try { emailjs.init('0WnuKvGifFFXelZLj'); } catch(e) { console.warn('EmailJS init:', e); }
+
+/**
+ * _notifyOrder — fires after every successful order save.
+ * 1. Sends admin a notification email
+ * 2. Sends customer a confirmation email
+ */
+function _notifyOrder(opts) {
+  // opts: { name, phone, customerEmail, trackingId, paymentId, items, total }
+  var name         = opts.name      || 'Customer';
+  var custEmail    = opts.customerEmail || '';
+  var trackingId   = opts.trackingId   || '';
+  var paymentId    = opts.paymentId    || '';
+  var total        = Number(opts.total || 0).toLocaleString('en-IN');
+  var itemLines    = (opts.items || []).map(function(i){
+    return '• ' + i.name + ' ×' + (i.qty||1) + ' = ₹' + (i.price*(i.qty||1)).toLocaleString('en-IN');
+  }).join('\n');
+
+  // ─ 1. Email to ADMIN ─
+  var adminMsg = '🔔 New Order Received!\n\n'
+    + '👤 Customer: ' + name + '\n'
+    + '📞 Phone: ' + (opts.phone||'—') + '\n'
+    + '📧 Email: ' + (custEmail||'Guest') + '\n'
+    + '🛒 Items:\n' + itemLines + '\n\n'
+    + '💰 Total: ₹' + total + '\n'
+    + '✅ Paid via Razorpay\n'
+    + '🔖 Payment ID: ' + paymentId + '\n'
+    + '🔖 Tracking: ' + trackingId;
+  try {
+    emailjs.send(EJS_SVC, EJS_TPL, {
+      to_email:      ADMIN_NOTIFY_EMAIL,
+      from_name:     'Aneesa Hampers Store',
+      subject:       '🔔 New Order #' + trackingId + ' — ₹' + total + ' from ' + name,
+      message:       adminMsg,
+      order_id:      trackingId,
+      tracking_id:   trackingId,
+      customer_name: name
+    }).then(function(){
+      console.log('✅ Admin email sent');
+    }).catch(function(err){
+      console.warn('⚠️ Admin email failed:', err);
+    });
+  } catch(e) { console.warn('EmailJS admin send:', e); }
+
+  // ─ 2. Confirmation email to CUSTOMER (only if email is available) ─
+  if (!custEmail) return;
+  var custMsg = 'Hi ' + name + '! 🎀\n\n'
+    + 'Thank you for your order at Aneesa Hampers! We’re preparing it with love.\n\n'
+    + '🔖 Order Tracking ID: ' + trackingId + '\n'
+    + '🛒 Items:\n' + itemLines + '\n\n'
+    + '💰 Total Paid: ₹' + total + ' (via Razorpay)\n\n'
+    + 'We’ll WhatsApp you as we progress your order!\n'
+    + 'Questions? WhatsApp us: +91 86390 66613\n\n'
+    + 'With love, Aneesa Hampers 🌸\nKadapa, Andhra Pradesh';
+  try {
+    emailjs.send(EJS_SVC, EJS_TPL, {
+      to_email:      custEmail,
+      from_name:     'Aneesa Hampers',
+      subject:       '🎀 Your Order is Confirmed! Tracking: ' + trackingId,
+      message:       custMsg,
+      order_id:      trackingId,
+      tracking_id:   trackingId,
+      customer_name: name
+    }).then(function(){
+      console.log('✅ Customer confirmation email sent');
+    }).catch(function(err){
+      console.warn('⚠️ Customer email failed:', err);
+    });
+  } catch(e) { console.warn('EmailJS customer send:', e); }
+}
 
 // ── RAZORPAY ──────────────────────────────────────────────────
 // 🔑 REPLACE THIS with your real Razorpay Key ID from dashboard.razorpay.com
@@ -1647,10 +1724,27 @@ async function _saveOrderRazorpay(paymentId, total, items, name, phone) {
     _savedOrderId   = ref.id;
     _savedTrackingId = trackingId;
 
-    // Notify admin via WhatsApp
+    // ── Automated notifications ──
+    _notifyOrder({
+      name:          name,
+      phone:         phone,
+      customerEmail: customerEmail,
+      trackingId:    trackingId,
+      paymentId:     paymentId,
+      items:         items,
+      total:         total
+    });
+
+    // ── WhatsApp notify admin (auto-click anchor — not blocked by popup blockers) ──
     var lines = items.map(function(i){ return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+((i.price*(i.qty||1)).toLocaleString('en-IN')); }).join('\n');
     var waMsg = '🎁 *New Order (Razorpay Paid)* — Aneesa Hampers\n━━━━━━━\n👤 '+name+'\n📞 '+phone+'\n📍 '+addr+', '+city+(state?', '+state:'')+' - '+pin+'\n━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+total.toLocaleString('en-IN')+'*\n✅ *PAID via Razorpay*\n🔖 Payment ID: '+paymentId+'\n🔖 Tracking: '+trackingId;
-    setTimeout(function(){ window.open('https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg),'_blank'); }, 800);
+    var waUrl = 'https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg);
+    window._adminWaUrl = waUrl;
+    var a = document.createElement('a');
+    a.href = waUrl; a.target = '_blank'; a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    setTimeout(function(){ a.click(); document.body.removeChild(a); }, 400);
 
     // Clear cart and Buy Now data
     if (window._bnOrderData) { window._bnOrderData = null; }
@@ -2719,10 +2813,27 @@ async function _saveCartOrderRazorpay(paymentId) {
     _saveAddress({ name:m.name, phone:m.phone, addr:m.street, city:m.city, state:m.state, pin:m.pin, country:m.country });
     // Clear cart
     Cart.clear ? Cart.clear() : localStorage.removeItem(cartKey());
-    // WhatsApp notify admin
+    // ── Automated notifications ──
+    _notifyOrder({
+      name:          m.name,
+      phone:         m.phone,
+      customerEmail: orderData.customerEmail || '',
+      trackingId:    trackingId,
+      paymentId:     paymentId,
+      items:         m.items,
+      total:         m.total
+    });
+    // ── WhatsApp notify admin (auto-click anchor — not blocked by popup blockers) ──
     var lines = m.items.map(function(i){ return "• "+i.name+" ×"+(i.qty||1)+" = ₹"+((i.price*(i.qty||1)).toLocaleString("en-IN")); }).join("\n");
     var waMsg = "🎁 *New Order (Razorpay)*\n━━━━━━━\n👤 "+m.name+"\n📞 "+m.phone+"\n📍 "+m.street+", "+m.city+", "+m.country+"\n━━━━━━━\n"+lines+"\n━━━━━━━\n💰 ₹"+m.total.toLocaleString("en-IN")+"\n✅ PAID · ID: "+paymentId+"\n🔖 Tracking: "+trackingId;
-    setTimeout(function(){ window.open("https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(waMsg),"_blank"); }, 800);
+    var waUrl = "https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(waMsg);
+    window._adminWaUrl = waUrl; // expose for fallback button
+    // Auto-click hidden anchor (works on mobile; desktop user sees fallback button)
+    var a = document.createElement('a');
+    a.href = waUrl; a.target = '_blank'; a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    setTimeout(function(){ a.click(); document.body.removeChild(a); }, 400);
     // Show confirmation screen
     _buildOrderItems(m.items, m.total, trackingId, m.deliveryType);
     document.getElementById("detailsStep").style.display = "none";
