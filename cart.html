@@ -2815,7 +2815,7 @@ async function _saveCartOrderRazorpay(paymentId) {
     _saveAddress({ name:m.name, phone:m.phone, addr:m.street, city:m.city, state:m.state, pin:m.pin, country:m.country });
     // Clear cart
     Cart.clear ? Cart.clear() : localStorage.removeItem(cartKey());
-    // ── Automated notifications ──
+    // ── Automated email notifications ──
     _notifyOrder({
       name:          m.name,
       phone:         m.phone,
@@ -2825,23 +2825,20 @@ async function _saveCartOrderRazorpay(paymentId) {
       items:         m.items,
       total:         m.total
     });
-    // ── WhatsApp notify admin (auto-click anchor — not blocked by popup blockers) ──
-    var lines = m.items.map(function(i){ return "• "+i.name+" ×"+(i.qty||1)+" = ₹"+((i.price*(i.qty||1)).toLocaleString("en-IN")); }).join("\n");
-    var waMsg = "🎁 *New Order (Razorpay)*\n━━━━━━━\n👤 "+m.name+"\n📞 "+m.phone+"\n📍 "+m.street+", "+m.city+", "+m.country+"\n━━━━━━━\n"+lines+"\n━━━━━━━\n💰 ₹"+m.total.toLocaleString("en-IN")+"\n✅ PAID · ID: "+paymentId+"\n🔖 Tracking: "+trackingId;
-    var waUrl = "https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(waMsg);
-    window._adminWaUrl = waUrl; // expose for fallback button
-    // Auto-click hidden anchor (works on mobile; desktop user sees fallback button)
-    var a = document.createElement('a');
-    a.href = waUrl; a.target = '_blank'; a.rel = 'noopener';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    setTimeout(function(){ a.click(); document.body.removeChild(a); }, 400);
-    // Show confirmation screen
+    // ── WhatsApp notify admin ──
+    var waLines = m.items.map(function(i){ return "• "+i.name+" ×"+(i.qty||1)+" = ₹"+((i.price*(i.qty||1)).toLocaleString("en-IN")); }).join("\n");
+    var waMsg   = "🎁 *New Order*\n👤 "+m.name+"\n📞 "+m.phone+"\n💰 ₹"+m.total.toLocaleString("en-IN")+"\n✅ PAID Razorpay\n🔖 "+trackingId;
+    var waUrl   = "https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(waMsg);
+    var waAnc   = document.createElement('a');
+    waAnc.href = waUrl; waAnc.target = '_blank'; waAnc.rel = 'noopener'; waAnc.style.display = 'none';
+    document.body.appendChild(waAnc);
+    setTimeout(function(){ waAnc.click(); document.body.removeChild(waAnc); }, 400);
+    // ── Show confirmation screen (null-safe) ──
     _buildOrderItems(m.items, m.total, trackingId, m.deliveryType);
-    document.getElementById("detailsStep").style.display = "none";
-    document.getElementById("successScreen").classList.add("show");
-    document.getElementById("summaryBox").style.display  = "none";
-    document.getElementById("scrCard").style.display     = "none";
+    var dtEl = document.getElementById("detailsStep");  if(dtEl) dtEl.style.display = "none";
+    var ssEl = document.getElementById("successScreen"); if(ssEl) ssEl.classList.add("show");
+    var sbEl = document.getElementById("summaryBox");   if(sbEl) sbEl.style.display = "none";
+    var scEl = document.getElementById("scrCard");      if(scEl) scEl.style.display = "none";
     window._cartOrderMeta = null;
     _showConfirmationRazorpay(trackingId, paymentId);
     window.scrollTo({ top:0, behavior:"smooth" });
