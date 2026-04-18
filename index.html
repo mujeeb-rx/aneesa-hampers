@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover"/>
-<title>Aneesa Hampers — Premium Gift Hampers | Kadapa</title>
+<title>sara hampers | Kadapa</title>
 <meta name="description" content="Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh."/>
 <meta name="keywords" content="gift hampers, premium hampers, birthday gifts, wedding gifts, Kadapa gifts, handcrafted hampers, custom hampers, flower bouquet, hijabs, Islamic gifts"/>
 <meta name="author" content="Aneesa Hampers"/>
@@ -32,12 +32,16 @@
 <meta name="googlebot" content="index, follow"/>
 <link rel="canonical" href="https://aneesa-hampers.web.app/"/>
 
-<!-- Preconnect for performance -->
+<!-- Preconnect + dns-prefetch for performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link rel="preconnect" href="https://www.gstatic.com"/>
-<link rel="preconnect" href="https://firebasestorage.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin/>
+<link rel="dns-prefetch" href="https://firebasejs.googleapis.com"/>
+<link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
+<!-- Non-blocking Google Fonts (no render-blocking) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/></noscript>
 <style>
 :root{
   --blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;
@@ -57,8 +61,14 @@ body{
   position:relative;
   margin:0;
 }
-img{max-width:100%;display:block;}
+img{max-width:100%;display:block;height:auto;}
 a{text-decoration:none;}
+/* Font display swap fallback (for when font CSS loads async) */
+body,h1,h2,h3,h4,h5,h6,p,span,div,button,input,textarea,select{
+  font-display:swap;
+}
+/* Image sizing hints — prevent layout shift */
+img[width],img[height]{aspect-ratio:attr(width)/attr(height);}
 
 /* ACCESSIBILITY - Focus styles */
 *:focus{outline:2px solid var(--deep-rose);outline-offset:2px;}
@@ -100,9 +110,9 @@ a{text-decoration:none;}
 }
 @keyframes cinBgPulse{from{opacity:.65;}to{opacity:1;}}
 
-/* Ambient blobs */
-.cin-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;will-change:transform;}
-.cin-blob-1{width:520px;height:520px;background:radial-gradient(circle,var(--cl-rose) 0%,transparent 70%);top:-150px;left:-120px;animation:cinBlob1 7s ease-in-out infinite alternate;}
+/* Ambient blobs — contain paint, reduce will-change to transform only on 2 blobs */
+.cin-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.cin-blob-1{width:520px;height:520px;background:radial-gradient(circle,var(--cl-rose) 0%,transparent 70%);top:-150px;left:-120px;will-change:transform;animation:cinBlob1 7s ease-in-out infinite alternate;}
 .cin-blob-2{width:420px;height:420px;background:radial-gradient(circle,var(--cl-rose2) 0%,transparent 70%);bottom:-120px;right:-90px;animation:cinBlob2 8s ease-in-out infinite alternate;}
 .cin-blob-3{width:320px;height:320px;background:radial-gradient(circle,var(--cl-gold) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:cinBlob3 5.5s ease-in-out infinite alternate;}
 @keyframes cinBlob1{from{transform:translate(0,0) scale(1);}to{transform:translate(45px,35px) scale(1.18);}}
@@ -667,7 +677,7 @@ a{text-decoration:none;}
   border-bottom:none;
   transform:translateX(4px);
 }
-.prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
+.prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;contain:layout style;}
 .prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
 .prod-thumb{
   height:196px;position:relative;overflow:hidden;
@@ -2385,10 +2395,10 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20order%20a%20hamper" target="_blank" id="floatWA">💬 Order via WhatsApp</a>
 
 
-<script src="lang-currency.js"></script>
-<script src="mobilenav.js"></script>
-<script src="bottomnav.js"></script>
-<script src="cookies.js"></script>
+<script src="lang-currency.js" defer></script>
+<script src="mobilenav.js" defer></script>
+<script src="bottomnav.js" defer></script>
+<script src="cookies.js" defer></script>
 
 <!-- ═══════ ENHANCED SIDEBAR ═══════ -->
 <div id="enh-overlay" onclick="enhSbClose()"></div>
@@ -4588,20 +4598,21 @@ function launchConfetti(){
     }, 950);
   }
 
+  /* ── Reduced loader times for better LCP / PageSpeed ── */
   var isMobile = window.matchMedia('(max-width:600px)').matches;
-  /* Desktop: 8.2s — full animation cycle. Mobile: 5.5s. */
-  var dismissDelay = isMobile ? 5500 : 8200;
+  /* Desktop: 4s  |  Mobile: 2.5s  — enough for the animation, no LCP penalty */
+  var dismissDelay = isMobile ? 2500 : 4000;
 
   /* Hard timeout fallback */
   setTimeout(dismissLoader, dismissDelay);
 
-  /* Also dismiss once DOM is interactive, but never before minimum */
+  /* Dismiss as soon as page is interactive (whichever comes first) */
   function safeEarlyDismiss(){
     setTimeout(function(){
       if(document.readyState === 'complete' || document.readyState === 'interactive'){
         dismissLoader();
       }
-    }, isMobile ? 5500 : 8200);
+    }, isMobile ? 2500 : 4000);
   }
 
   if(document.readyState === 'loading'){

@@ -92,7 +92,7 @@ nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT a
 .acc-nav-logout:hover{color:#e05050;background:#fde8e8;}
 
 /* CONTENT PANELS */
-.acc-content{}
+.acc-content{min-width:0;overflow:hidden;}
 .acc-panel{display:none;}
 .acc-panel.active{display:block;animation:pnIn .3s ease;}
 @keyframes pnIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -161,7 +161,7 @@ nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT a
 .wish-card-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;background:rgba(255,255,255,.92);border:none;border-radius:50%;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:background .2s;}
 .wish-card-remove:hover{background:#fde8e8;}
 .wish-card-body{padding:12px 14px 14px;}
-.wish-card-name{font-size:.84rem;font-weight:600;color:var(--burgundy);line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.wish-card-name{font-size:.84rem;font-weight:600;color:var(--burgundy);line-height:1.3;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;/* autoprefixer: ignore next */-webkit-box-orient:vertical;line-clamp:2;}
 .wish-card-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--deep-rose);margin-bottom:10px;}
 .wish-card-old{font-size:.72rem;color:rgba(59,13,26,.35);text-decoration:line-through;margin-left:4px;}
 .wish-card-btns{display:flex;gap:7px;}
