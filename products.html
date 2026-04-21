@@ -297,8 +297,11 @@
 
     /* FILTERS */
     .filters-bar {
-      padding: 16px 60px;
-      background: #ffffff;
+      padding: 12px 60px;
+      /* Nav is display:none on this page — no topbar — stick to very top */
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(192, 100, 122, .1);
       display: flex;
       align-items: center;
@@ -306,31 +309,22 @@
       gap: 14px;
       flex-wrap: nowrap;
       position: sticky;
-      top: 68px;
-      z-index: 500;
-      box-shadow: 0 2px 12px rgba(59, 13, 26, .08);
+      top: 0;          /* Changed from 68px — nav is hidden, no topbar exists */
+      z-index: 1000;   /* High enough to stay above all product cards & badges */
+      isolation: isolate;
+      box-shadow: 0 2px 16px rgba(59, 13, 26, .1);
       overflow-x: auto;
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-      min-height: 72px;
+      scrollbar-width: none; /* Firefox — hide scrollbar chrome */
+      min-height: 68px;
     }
 
+    /* Hide the filter bar scrollbar visually (still scrollable on touch) */
     .filters-bar::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    .filters-bar::-webkit-scrollbar-track {
-      background: rgba(192, 100, 122, .08);
-    }
-
-    .filters-bar::-webkit-scrollbar-thumb {
-      background: var(--deep-rose);
-      border-radius: 4px;
-    }
-    
-    .filters-bar::-webkit-scrollbar-thumb:hover {
-      background: var(--burgundy);
+      height: 0;
+      display: none;
     }
 
     .filter-pill {
@@ -462,11 +456,12 @@
     /* ── RESPONSIVE: Desktop optimization ── */
     @media (min-width: 1200px) {
       .filters-bar {
-        padding: 18px 80px;
+        padding: 12px 80px;
         gap: 16px;
         justify-content: flex-start;
         flex-wrap: nowrap;
         overflow-x: auto;
+        top: 0;
       }
       
       .filter-pill {
@@ -482,11 +477,12 @@
 
     @media (min-width: 1400px) {
       .filters-bar {
-        padding: 18px 100px;
+        padding: 12px 100px;
         gap: 18px;
         flex-wrap: nowrap;
         overflow-x: auto;
         justify-content: flex-start;
+        top: 0;
       }
       
       .filter-right {
@@ -496,15 +492,18 @@
 
     @media (max-width: 900px) {
       .filters-bar {
-        padding: 14px 20px;
-        gap: 10px;
-        overflow-x: scroll;
+        padding: 10px 16px;
+        gap: 8px;
+        overflow-x: auto;
         flex-wrap: nowrap;
+        top: 0;
+        min-height: 58px;
       }
       
       .filter-pill {
-        padding: 9px 20px;
+        padding: 8px 16px;
         font-size: .68rem;
+        min-height: 38px;
       }
     }
 
@@ -1023,10 +1022,11 @@
       }
 
       .filters-bar {
-        padding: 14px 20px;
-        top: 0; /* Changed from 60px since nav is hidden */
+        padding: 10px 20px;
+        top: 0;
         overflow-x: auto;
         flex-wrap: nowrap;
+        min-height: 58px;
       }
 
       .filter-pill {
@@ -1068,7 +1068,9 @@
       }
 
       .filters-bar {
-        top: 0; /* Changed from 60px */
+        top: 0;
+        padding: 10px 16px;
+        min-height: 56px;
       }
 
       .products-section {
@@ -1798,17 +1800,13 @@
         <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
       </button>
       <div class="esb-sub" id="esb-cat-sub">
-        <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
-        <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
-        <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
-        <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
-        <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
-        <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+        <!-- Dynamically populated from Firestore — do NOT add hardcoded categories here -->
+        <div style="opacity:.4;font-size:.75rem;padding:8px 14px 4px;">Loading categories…</div>
       </div>
 
-      <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
-      <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
-      <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+      <a href="products.html?filter=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+      <a href="products.html?filter=bestseller" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+      <a href="products.html?filter=offers" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
 
       <div class="esb-divider"></div>
 
@@ -1884,7 +1882,7 @@
     </div>
   </div>
   <!-- SUBCATEGORY PILLS — appears when a category with subcategories is selected -->
-  <div id="subcatBar" style="display:none;padding:10px 24px;background:rgba(249,228,233,.45);border-bottom:1px solid rgba(192,100,122,.1);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;">
+  <div id="subcatBar" style="display:none;position:sticky;top:68px;z-index:999;padding:10px 24px;background:rgba(249,228,233,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(192,100,122,.1);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
     <div style="display:inline-flex;gap:8px;align-items:center;">
       <span style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;flex-shrink:0;">Subcategory:</span>
       <span id="subcatPillsWrap" style="display:inline-flex;gap:8px;"></span>
@@ -2155,7 +2153,7 @@
     let allProducts = [];
     let allCategories = [];
     let allSubcategories = [];
-    let selectedCategories = []; // Multi-select: array of selected category IDs
+    let selectedCategories = []; // Single-select: array with at most ONE selected category ID
     let currentSubcat = 'all';
     let currentSearch = '';
     const urlCat = new URLSearchParams(location.search).get('cat');
@@ -2163,9 +2161,10 @@
     const urlSearch = new URLSearchParams(location.search).get('search');
     const urlFilter = new URLSearchParams(location.search).get('filter'); // new | bestseller | offers
     
-    // Parse URL categories (supports comma-separated values for multi-select)
+    // Parse URL categories (single-select: only the first value is used)
     if (urlCat && urlCat !== 'all') {
-      selectedCategories = urlCat.split(',').map(c => c.trim()).filter(Boolean);
+      const _urlCats = urlCat.split(',').map(c => c.trim()).filter(Boolean);
+      if (_urlCats.length > 0) selectedCategories = [_urlCats[0]];
     }
     if (urlSub) { currentSubcat = urlSub; }
     if (urlSearch) {
@@ -2352,31 +2351,23 @@
         updateSubcatBar('all');
         updateClearButton();
       } else {
-        // Toggle category selection (multi-select)
-        const index = selectedCategories.indexOf(cat);
-        
-        if (index > -1) {
-          // Category already selected - deselect it
-          selectedCategories.splice(index, 1);
-          btn.classList.remove('active');
-          
-          // If no categories selected, activate "All"
-          if (selectedCategories.length === 0) {
-            document.querySelector('.filter-pill[data-cat="all"]').classList.add('active');
-          }
+        // Single-select: clicking the active category again resets to "All"
+        if (selectedCategories.length === 1 && selectedCategories[0] === cat) {
+          // Same category clicked — toggle off, reset to All
+          selectedCategories = [];
+          document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+          document.querySelector('.filter-pill[data-cat="all"]').classList.add('active');
         } else {
-          // Category not selected - add it
-          selectedCategories.push(cat);
+          // New category clicked — select it exclusively
+          selectedCategories = [cat];
+          document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          
-          // Deactivate "All" button when categories are selected
-          document.querySelector('.filter-pill[data-cat="all"]').classList.remove('active');
         }
         
         // Reset subcategory filter when changing categories
         currentSubcat = 'all';
         
-        // Update subcategory bar to show subcats from all selected categories
+        // Update subcategory bar
         updateSubcatBar(selectedCategories.length > 0 ? selectedCategories : 'all');
         updateClearButton();
       }
@@ -2418,7 +2409,8 @@
     function updateClearButton() {
       const clearBtn = document.getElementById('clearFiltersBtn');
       if (clearBtn) {
-        if (selectedCategories.length >= 2) {
+        // Show clear button whenever any category is active
+        if (selectedCategories.length >= 1) {
           clearBtn.classList.add('show');
         } else {
           clearBtn.classList.remove('show');

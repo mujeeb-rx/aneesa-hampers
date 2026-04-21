@@ -2370,9 +2370,10 @@
             <option value="">None / All</option>
           </select></div>
         <div class="fg"><label class="fl">Price (₹) *</label><input class="fi" id="pPrice" type="number"
-            placeholder="1499" /></div>
+            placeholder="1499" oninput="updatePricePreview('p')" /></div>
         <div class="fg"><label class="fl">Discount %</label><input class="fi" id="pDisc" type="number" placeholder="0"
-            min="0" max="90" /></div>
+            min="0" max="90" oninput="updatePricePreview('p')" /></div>
+        <div class="fg form-full" id="pPricePreview" style="display:none;background:linear-gradient(135deg,rgba(192,100,122,.06),rgba(249,228,233,.4));border-radius:12px;padding:12px 16px;border:1px solid rgba(192,100,122,.15);"></div>
         <div class="fg"><label class="fl">Badge</label><select class="fi" id="pBadge">
             <option value="">None</option>
             <option value="new">🆕 New</option>
@@ -2415,9 +2416,10 @@
         <div class="fg"><label class="fl">Subcategory</label><select class="fi" id="eSubCat">
             <option value="">None / All</option>
           </select></div>
-        <div class="fg"><label class="fl">Price (₹)</label><input class="fi" id="ePrice" type="number" /></div>
+        <div class="fg"><label class="fl">Price (₹)</label><input class="fi" id="ePrice" type="number" oninput="updatePricePreview('e')" /></div>
         <div class="fg"><label class="fl">Discount %</label><input class="fi" id="eDisc" type="number" min="0"
-            max="90" /></div>
+            max="90" oninput="updatePricePreview('e')" /></div>
+        <div class="fg form-full" id="ePricePreview" style="display:none;background:linear-gradient(135deg,rgba(192,100,122,.06),rgba(249,228,233,.4));border-radius:12px;padding:12px 16px;border:1px solid rgba(192,100,122,.15);"></div>
         <div class="fg"><label class="fl">Badge</label><select class="fi" id="eBadge">
             <option value="">None</option>
             <option value="new">🆕 New</option>
@@ -4015,6 +4017,38 @@ Kadapa, Andhra Pradesh, India`
       }
       statusEl.textContent = `✅ ${arr.length} photo(s) ready`;
     };
+    /* ───── LIVE PRICE PREVIEW — Add / Edit Product modal ───── */
+    window.updatePricePreview = function (prefix) {
+      const priceEl = document.getElementById(prefix + 'Price');
+      const discEl  = document.getElementById(prefix + 'Disc');
+      const preview = document.getElementById(prefix + 'PricePreview');
+      if (!priceEl || !discEl || !preview) return;
+
+      const mrp  = parseFloat(priceEl.value) || 0;
+      const disc = parseFloat(discEl.value)  || 0;
+
+      if (mrp <= 0) { preview.style.display = 'none'; return; }
+      preview.style.display = 'block';
+
+      if (disc > 0 && disc < 100) {
+        const final   = Math.round(mrp * (1 - disc / 100));
+        const saving  = mrp - final;
+        preview.innerHTML =
+          '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">'+
+            '<span style="font-size:.72rem;font-family:\'Jost\',sans-serif;text-decoration:line-through;opacity:.42;color:var(--burgundy);">MRP ₹'+ mrp.toLocaleString('en-IN') +'</span>'+
+            '<span style="font-size:1.05rem;font-weight:700;color:var(--deep-rose);font-family:\'Jost\',sans-serif;">₹'+ final.toLocaleString('en-IN') +'</span>'+
+            '<span style="background:linear-gradient(135deg,#c0647a,#3b0d1a);color:white;font-size:.58rem;font-weight:700;padding:3px 9px;border-radius:12px;letter-spacing:.5px;white-space:nowrap;">'+ disc +'% OFF</span>'+
+          '</div>'+
+          '<div style="font-size:.68rem;color:#2d7a4f;font-family:\'Jost\',sans-serif;">✅ Customer saves ₹'+ saving.toLocaleString('en-IN') +'</div>';
+      } else {
+        preview.innerHTML =
+          '<div style="display:flex;align-items:center;gap:8px;">'+
+            '<span style="font-size:1.05rem;font-weight:700;color:var(--burgundy);font-family:\'Jost\',sans-serif;">₹'+ mrp.toLocaleString('en-IN') +'</span>'+
+            '<span style="font-size:.72rem;opacity:.4;font-family:\'Jost\',sans-serif;">No discount — full price charged</span>'+
+          '</div>';
+      }
+    };
+
     window.saveNewProduct = async function () {
       const name = document.getElementById('pName').value.trim();
       const price = parseInt(document.getElementById('pPrice').value) || 0;

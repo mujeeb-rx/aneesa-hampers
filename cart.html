@@ -1651,7 +1651,22 @@ function _openRazorpay(amount, name, phone, email, desc, onSuccess) {
       email:   email || ""
     },
     theme:  { color: "#3b0d1a" },
-    modal:  { backdropclose: false, escape: true },
+    modal:  {
+      backdropclose: false,
+      escape: true,
+      ondismiss: function() {
+        // User closed / cancelled the payment popup
+        toast("⚠️ Payment cancelled. Returning to cart…");
+        var secs = 3;
+        var t = setInterval(function() {
+          secs--;
+          if (secs <= 0) {
+            clearInterval(t);
+            window.location.href = 'cart.html';
+          }
+        }, 1000);
+      }
+    },
     handler: function(response) {
       // Payment succeeded — response.razorpay_payment_id is the confirmed ID
       onSuccess(response.razorpay_payment_id);
@@ -1904,7 +1919,7 @@ function _revealConfBanner(trackingId, paymentId) {
 
 // ── Countdown redirect to orders.html ──
 function _startOrdersRedirectCountdown() {
-  var secs = 6;
+  var secs = 3;
   // Show countdown in confActions if it exists
   var ca = document.getElementById('confActions');
   var countdown = document.getElementById('ordersRedirectCountdown');
@@ -3442,20 +3457,44 @@ window.bnCancelEdit = function() {
 };
 
 window.bnDetectPin = function(pin) {
+  var cityEl    = document.getElementById('bnCity');
+  var stateEl   = document.getElementById('bnState');
+  var countryEl = document.getElementById('bnCountry');
+
+  // ── Immediately clear stale city/state so old data never lingers ──
+  if (cityEl)  { cityEl.value = '';  cityEl.placeholder  = 'City'; }
+  if (stateEl) { stateEl.value = ''; stateEl.placeholder = 'State'; }
+
   if (!pin || pin.length < 6) return;
+
+  // Show inline "Detecting…" hint while API is in flight
+  if (cityEl)  cityEl.placeholder  = 'Detecting…';
+  if (stateEl) stateEl.placeholder = 'Detecting…';
+
   fetch('https://api.postalpincode.in/pincode/' + pin)
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length) {
+      // Reset placeholders regardless of result
+      if (cityEl)  cityEl.placeholder  = 'City';
+      if (stateEl) stateEl.placeholder = 'State';
+
+      if (data && data[0] && data[0].Status === 'Success' &&
+          data[0].PostOffice && data[0].PostOffice.length) {
         var po = data[0].PostOffice[0];
-        var city = document.getElementById('bnCity');
-        var state = document.getElementById('bnState');
-        var country = document.getElementById('bnCountry');
-        if (city && !city.value) city.value = po.District || po.Name || '';
-        if (state && !state.value) state.value = po.State || '';
-        if (country) country.value = 'India';
+        // ── ALWAYS overwrite — no !city.value / !state.value guard ──
+        if (cityEl)    cityEl.value    = po.District || po.Name || '';
+        if (stateEl)   stateEl.value   = po.State    || '';
+        if (countryEl) countryEl.value = 'India';
+      } else {
+        // PIN not found — guide user to fill manually
+        if (cityEl)  cityEl.placeholder  = 'City (enter manually)';
+        if (stateEl) stateEl.placeholder = 'State (enter manually)';
       }
-    }).catch(function(){});
+    })
+    .catch(function() {
+      if (cityEl)  cityEl.placeholder  = 'City';
+      if (stateEl) stateEl.placeholder = 'State';
+    });
 };
 
 window.saveBnAddress = function() {
