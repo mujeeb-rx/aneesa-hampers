@@ -3171,6 +3171,29 @@ window.confirmPaid = async function() {
     var ref = await addDoc(collection(db, "orders"), orderData);
     currentOrderId = ref.id;
     _savedOrderId  = ref.id;
+
+    // ── Auto-notify admin via n8n email webhook ──
+    try {
+      fetch("https://mujeebkhan.app.n8n.cloud/webhook/order-created", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId:       ref.id,
+          customerName:  orderData.customerName,
+          customerEmail: orderData.customerEmail,
+          phone:         orderData.customerPhone,
+          address:       orderData.address,
+          city:          orderData.city,
+          state:         orderData.state,
+          zipCode:       orderData.zipCode,
+          total:         orderData.total,
+          paymentMethod: orderData.paymentMethod,
+          items:         orderData.items,
+          status:        orderData.status,
+          trackingId:    orderData.trackingId
+        })
+      }).catch(function(e){ console.warn("[n8n] Admin notify failed:", e); });
+    } catch(e) { console.warn("[n8n] Admin notify error:", e); }
     closePayModal();
 
     // Show success screen (screenshot upload step)
