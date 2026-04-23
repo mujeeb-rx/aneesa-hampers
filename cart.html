@@ -1569,31 +1569,39 @@ function _notifyOrder(opts) {
   var ejs = window.emailjs;
   if (!ejs) { console.warn('EmailJS not loaded'); return; }
 
-  var name       = opts.name          || 'Customer';
-  var custEmail  = opts.customerEmail || '';
-  var trackingId = opts.trackingId    || '';
-  var paymentId  = opts.paymentId     || '';
-  var total      = Number(opts.total  || 0).toLocaleString('en-IN');
-  var itemLines  = (opts.items || []).map(function(i){
+  var name          = opts.name          || 'Customer';
+  var custEmail     = opts.customerEmail || '';
+  var trackingId    = opts.trackingId    || '';
+  var paymentId     = opts.paymentId     || '';
+  var paymentMethod = opts.paymentMethod || 'Razorpay';
+  var total         = Number(opts.total  || 0).toLocaleString('en-IN');
+  var itemLines     = (opts.items || []).map(function(i){
     return '\u2022 ' + i.name + ' \u00d7' + (i.qty||1) + ' = \u20b9' + Number(i.price*(i.qty||1)).toLocaleString('en-IN');
   }).join('\n');
 
   // ── 1. Email to ADMIN ──
-  var adminMsg = '\ud83d\udd14 New Order Received!\n\n'
-    + '\ud83d\udc64 Customer : ' + name + '\n'
-    + '\ud83d\udcde Phone    : ' + (opts.phone || '\u2014') + '\n'
-    + '\ud83d\udce7 Email    : ' + (custEmail || 'Guest / no email') + '\n'
-    + '\ud83d\uded2 Items    :\n' + itemLines + '\n\n'
-    + '\ud83d\udcb0 Total    : \u20b9' + total + '\n'
-    + '\u2705 Paid via Razorpay\n'
-    + '\ud83d\udd16 Payment ID : ' + paymentId + '\n'
-    + '\ud83d\udd16 Tracking   : ' + trackingId;
+  var adminMsg = '\uD83D\uDD14 NEW ORDER RECEIVED — Aneesa Hampers\n'
+    + '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    + '\uD83D\uDC64 Customer  : ' + name + '\n'
+    + '\uD83D\uDCDE Phone     : ' + (opts.phone || '\u2014') + '\n'
+    + '\uD83D\uDCE7 Email     : ' + (custEmail || 'Guest / no email') + '\n'
+    + '\uD83D\uDCCD Address   : ' + (opts.address || '\u2014') + '\n'
+    + '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    + '\uD83D\uDED2 Items:\n' + itemLines + '\n'
+    + '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    + '\uD83D\uDCB0 Total     : \u20B9' + total + '\n'
+    + '\uD83D\uDCB3 Payment   : ' + paymentMethod + (paymentId ? ' (ID: ' + paymentId + ')' : '') + '\n'
+    + '\uD83D\uDD16 Tracking  : ' + trackingId + '\n'
+    + '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    + '\uD83D\uDCCA View orders: https://aneesa-hampers.web.app/admin.html';
+
+  var payIcon = paymentMethod === 'UPI' ? '\uD83D\uDCB8 UPI Order' : '\u2705 Razorpay Paid';
 
   ejs.send(EJS_SVC, EJS_TPL_ADMIN, {
     to_email:      ADMIN_NOTIFY_EMAIL,
     from_name:     'Aneesa Hampers Store',
     reply_to:      custEmail || ADMIN_NOTIFY_EMAIL,
-    subject:       '\ud83d\udd14 New Order #' + trackingId + ' \u2014 \u20b9' + total + ' from ' + name,
+    subject:       '\uD83D\uDD14 New Order #' + trackingId + ' \u2014 \u20B9' + total + ' | ' + payIcon + ' | ' + name,
     message:       adminMsg,
     order_id:      trackingId,
     tracking_id:   trackingId,
@@ -3111,6 +3119,19 @@ window.confirmPaid = async function() {
       var lines=bnItems.map(function(i){return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+(i.price*(i.qty||1)).toLocaleString('en-IN');}).join('\n');
       var waMsg='🎁 *New Order — Aneesa Hampers*\n━━━━━━━\n👤 '+bnData.customerName+'\n📞 '+bnData.customerPhone+'\n📍 '+bnData.address+', '+bnData.city+(bnData.state?', '+bnData.state:'')+(bnData.zipCode?' - '+bnData.zipCode:'')+'\n🌍 '+bnData.country+'\n'+(bnData.giftMessage?'💌 '+bnData.giftMessage+'\n':'')+'━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+bnTotal.toLocaleString('en-IN')+'*\n🔖 Tracking: '+trackingId+'\n⚠️ Awaiting payment screenshot.';
       var waEl=document.getElementById('confirmWA'); if(waEl) waEl.href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg);
+      // ── Auto-notify admin via EmailJS ──
+      try {
+        _notifyOrder({
+          name:          bnData.customerName,
+          phone:         bnData.customerPhone,
+          customerEmail: bnData.customerEmail || '',
+          address:       [bnData.address, bnData.city, bnData.state].filter(Boolean).join(', '),
+          trackingId:    trackingId,
+          paymentMethod: bnData.paymentMethod || 'UPI',
+          items:         bnItems,
+          total:         bnTotal
+        });
+      } catch(e) { console.warn('Admin email (BN-UPI):', e); }
       // ── Show animated confirmation immediately ──
       _showConfirmation();
       toast('🎉 Order placed! Your hamper is on its way 🌸');
@@ -3172,28 +3193,19 @@ window.confirmPaid = async function() {
     currentOrderId = ref.id;
     _savedOrderId  = ref.id;
 
-    // ── Auto-notify admin via n8n email webhook ──
+    // ── Auto-notify admin via EmailJS (fires for every UPI/COD order) ──
     try {
-      fetch("https://mujeebkhan.app.n8n.cloud/webhook/order-created", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId:       ref.id,
-          customerName:  orderData.customerName,
-          customerEmail: orderData.customerEmail,
-          phone:         orderData.customerPhone,
-          address:       orderData.address,
-          city:          orderData.city,
-          state:         orderData.state,
-          zipCode:       orderData.zipCode,
-          total:         orderData.total,
-          paymentMethod: orderData.paymentMethod,
-          items:         orderData.items,
-          status:        orderData.status,
-          trackingId:    orderData.trackingId
-        })
-      }).catch(function(e){ console.warn("[n8n] Admin notify failed:", e); });
-    } catch(e) { console.warn("[n8n] Admin notify error:", e); }
+      _notifyOrder({
+        name:          orderData.customerName,
+        phone:         orderData.customerPhone,
+        customerEmail: orderData.customerEmail || '',
+        address:       [orderData.address, orderData.city, orderData.state].filter(Boolean).join(', '),
+        trackingId:    trackingId,
+        paymentMethod: orderData.paymentMethod || 'UPI',
+        items:         orderData.items,
+        total:         orderData.total
+      });
+    } catch(e) { console.warn('Admin email (UPI-cart):', e); }
     closePayModal();
 
     // Show success screen (screenshot upload step)

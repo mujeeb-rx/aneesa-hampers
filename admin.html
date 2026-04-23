@@ -1622,7 +1622,7 @@
         </a>
         <a class="sb-item" data-pg="orders" href="#" onclick="switchPage('orders');return false">
           <span class="sb-icon">📦</span><span>Orders</span>
-          <span class="sb-badge" id="pendingBadge">0</span>
+          <span class="sb-badge" id="pendingBadge" style="display:none">0</span>
         </a>
         <a class="sb-item" data-pg="products" href="#" onclick="switchPage('products');return false">
           <span class="sb-icon">🎁</span><span>Products</span>
@@ -3156,7 +3156,15 @@
       document.getElementById('st-rev').textContent = '₹' + revenue.toLocaleString('en-IN');
       document.getElementById('st-month-rev').textContent = '₹' + monthRev.toLocaleString('en-IN');
       document.getElementById('st-month-lbl').textContent = monthNames[thisM] + ' ' + thisY + ' revenue';
-      document.getElementById('pendingBadge').textContent = pending;
+
+      // ── Sidebar badge: count all orders needing action (pending + confirmed) ──
+      // New orders from cart arrive as 'confirmed', not 'pending'
+      const actionNeeded = _orders.filter(o =>
+        o.status === 'pending' || o.status === 'confirmed'
+      ).length;
+      const badge = document.getElementById('pendingBadge');
+      badge.textContent = actionNeeded;
+      badge.style.display = actionNeeded > 0 ? 'inline-block' : 'none';
     }
 
     // ── DATE FORMAT ──
