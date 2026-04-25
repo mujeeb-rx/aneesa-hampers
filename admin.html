@@ -3045,6 +3045,12 @@
       const p = document.getElementById('pg-' + pg);
       if (p) p.classList.add('active');
       document.getElementById('pgTitle').innerHTML = PAGE_TITLES[pg] || pg;
+      // ── When admin opens Orders page, mark all as seen & hide badge ──
+      if (pg === 'orders') {
+        localStorage.setItem('ah_orders_last_visit', Date.now().toString());
+        const badge = document.getElementById('pendingBadge');
+        if (badge) { badge.textContent = '0'; badge.style.display = 'none'; }
+      }
       sbClose();
     };
 
@@ -3157,14 +3163,19 @@
       document.getElementById('st-month-rev').textContent = '₹' + monthRev.toLocaleString('en-IN');
       document.getElementById('st-month-lbl').textContent = monthNames[thisM] + ' ' + thisY + ' revenue';
 
-      // ── Sidebar badge: count all orders needing action (pending + confirmed) ──
-      // New orders from cart arrive as 'confirmed', not 'pending'
-      const actionNeeded = _orders.filter(o =>
-        o.status === 'pending' || o.status === 'confirmed'
-      ).length;
+      // ── Sidebar badge: count NEW orders placed since admin last visited Orders page ──
+      const lastVisit = Number(localStorage.getItem('ah_orders_last_visit') || 0);
+      const newOrders = _orders.filter(o => {
+        if (o.status !== 'pending' && o.status !== 'confirmed') return false;
+        let ts = 0;
+        if (o.createdAt?.toDate) ts = o.createdAt.toDate().getTime();
+        else if (o.createdAt?.seconds) ts = o.createdAt.seconds * 1000;
+        else if (o.createdAt) ts = new Date(o.createdAt).getTime();
+        return ts > lastVisit;
+      }).length;
       const badge = document.getElementById('pendingBadge');
-      badge.textContent = actionNeeded;
-      badge.style.display = actionNeeded > 0 ? 'inline-block' : 'none';
+      badge.textContent = newOrders;
+      badge.style.display = newOrders > 0 ? 'inline-block' : 'none';
     }
 
     // ── DATE FORMAT ──
@@ -3495,7 +3506,7 @@
     // ══════════════════════════════════════════
 
     // ── EmailJS config — replace with your real IDs from dashboard.emailjs.com ──
-    const EMAILJS_SERVICE_ID = 'service_4xnvng6';   // ✅ connected Gmail
+    const EMAILJS_SERVICE_ID = 'service_s48zpko';   // ✅ connected Gmail
     const EMAILJS_TEMPLATE_ID = 'template_qri4z8s';
     // Public key is set above via emailjs.init()
 

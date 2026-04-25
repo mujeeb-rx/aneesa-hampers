@@ -1,0 +1,17 @@
+# Ignore Node Modules
+node_modules/
+
+# Ignore Environment Variables (Keep secrets safe!)
+.env
+functions/.env
+.env.local
+.env.development
+.env.production
+
+# Ignore Firebase specific hidden files
+.firebase/
+firebase-debug.log
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
