@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EmailJS Test — Aneesa Hampers</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background: #f5eeee; }
+  h1 { color: #3b0d1a; font-size: 1.4rem; }
+  .card { background: white; border-radius: 14px; padding: 24px; margin: 16px 0; box-shadow: 0 4px 16px rgba(59,13,26,.1); }
+  label { font-size: .82rem; color: #666; display: block; margin-bottom: 4px; }
+  input, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid rgba(192,100,122,.3); border-radius: 8px; font-size: .9rem; box-sizing: border-box; margin-bottom: 12px; }
+  button { background: #3b0d1a; color: white; border: none; padding: 13px 28px; border-radius: 10px; font-size: .85rem; cursor: pointer; width: 100%; letter-spacing: 1px; }
+  button:hover { background: #c0647a; }
+  #log { background: #1a1a2e; color: #00ff88; border-radius: 10px; padding: 16px; font-family: monospace; font-size: .78rem; min-height: 120px; white-space: pre-wrap; margin-top: 16px; }
+  .ok  { color: #00ff88; }
+  .err { color: #ff4466; }
+  .info { color: #ffcc44; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; margin-left:8px; }
+  .badge-ok  { background:#d4f5e2; color:#1a7a40; }
+  .badge-err { background:#fde8e8; color:#e05050; }
+</style>
+</head>
+<body>
+<h1>🧪 EmailJS Test — Aneesa Hampers</h1>
+
+<div class="card">
+  <h3 style="margin:0 0 12px;color:#3b0d1a;">Step 1 — Check EmailJS Loaded</h3>
+  <button onclick="checkInit()">Check EmailJS Init</button>
+  <div id="initResult" style="margin-top:10px;"></div>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 12px;color:#3b0d1a;">Step 2 — Send Test Admin Email</h3>
+  <p style="font-size:.82rem;color:#888;margin:0 0 12px;">This sends a test notification to <strong>aneesahampers@gmail.com</strong></p>
+  <label>Your Admin Email (to receive test)</label>
+  <input id="testEmail" value="aneesahampers@gmail.com" type="email"/>
+  <button onclick="sendTest()">📧 Send Test Email Now</button>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px;color:#3b0d1a;">Log Output</h3>
+  <div id="log">Waiting for test…</div>
+</div>
+
+<!-- EmailJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ── Same config as cart.html ──
+var EJS_SVC       = 'service_s48zpko';
+var EJS_TPL_ADMIN = 'template_qri4z8s';
+var EJS_PUBLIC_KEY= '0WnuKvGifFFXelZLj';
+var ADMIN_EMAIL   = 'aneesahampers@gmail.com';
+
+var logEl = document.getElementById('log');
+function log(msg, type) {
+  type = type || 'info';
+  var time = new Date().toLocaleTimeString('en-IN');
+  logEl.innerHTML += '\n[' + time + '] <span class="'+type+'">' + msg + '</span>';
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function checkInit() {
+  logEl.innerHTML = ''; // clear
+  log('Checking EmailJS CDN load…', 'info');
+  if (typeof window.emailjs === 'undefined') {
+    log('❌ EmailJS NOT loaded — CDN failed or blocked!', 'err');
+    document.getElementById('initResult').innerHTML = '<span class="badge badge-err">❌ NOT loaded</span>';
+    return;
+  }
+  log('✅ EmailJS CDN loaded OK', 'ok');
+
+  try {
+    window.emailjs.init(EJS_PUBLIC_KEY);
+    log('✅ emailjs.init("' + EJS_PUBLIC_KEY + '") — success', 'ok');
+    log('Service  : ' + EJS_SVC, 'info');
+    log('Template : ' + EJS_TPL_ADMIN, 'info');
+    document.getElementById('initResult').innerHTML = '<span class="badge badge-ok">✅ Ready</span>';
+  } catch(e) {
+    log('❌ init() threw: ' + e.message, 'err');
+    document.getElementById('initResult').innerHTML = '<span class="badge badge-err">❌ Init failed</span>';
+  }
+}
+
+function sendTest() {
+  logEl.innerHTML = '';
+  var toEmail = document.getElementById('testEmail').value.trim() || ADMIN_EMAIL;
+
+  if (typeof window.emailjs === 'undefined') {
+    log('❌ EmailJS not loaded — cannot send. Check your internet connection.', 'err');
+    return;
+  }
+
+  try { window.emailjs.init(EJS_PUBLIC_KEY); } catch(e) {}
+
+  var params = {
+    to_email:      toEmail,
+    from_name:     'Aneesa Hampers Store',
+    reply_to:      'test@aneesahampers.com',
+    subject:       '🔔 TEST — New Order #AHTEST123 — ₹500 | ✅ Razorpay Paid | Test Customer',
+    message:
+      '🔔 NEW ORDER RECEIVED — Aneesa Hampers\n'
+    + '━━━━━━━━━━━━━\n'
+    + '👤 Customer  : Test Customer\n'
+    + '📞 Phone     : +91 9876543210\n'
+    + '📧 Email     : test@example.com\n'
+    + '📍 Address   : 123 Test Street, Kadapa\n'
+    + '━━━━━━━━━━━━━\n'
+    + '🛒 Items:\n• Gift Hamper ×1 = ₹500\n'
+    + '━━━━━━━━━━━━━\n'
+    + '💰 Total     : ₹500\n'
+    + '💳 Payment   : Razorpay (ID: test_pay_123)\n'
+    + '🔖 Tracking  : AHTEST1\n'
+    + '━━━━━━━━━━━━━\n'
+    + '📊 View orders: https://aneesa-hampers.web.app/admin.html\n\n'
+    + '⚠️ This is a TEST email. Ignore if received.',
+    order_id:      'AHTEST123',
+    tracking_id:   'AHTEST1',
+    customer_name: 'Test Customer'
+  };
+
+  log('📤 Sending test email to: ' + toEmail, 'info');
+  log('Service: ' + EJS_SVC + ' | Template: ' + EJS_TPL_ADMIN, 'info');
+  log('Params: ' + JSON.stringify(params, null, 2), 'info');
+  log('⏳ Waiting for EmailJS response…', 'info');
+
+  window.emailjs.send(EJS_SVC, EJS_TPL_ADMIN, params)
+    .then(function(result) {
+      log('✅ SUCCESS! Email sent.', 'ok');
+      log('Status : ' + result.status, 'ok');
+      log('Text   : ' + result.text, 'ok');
+      log('👉 Check inbox of: ' + toEmail, 'ok');
+      log('👉 Also check SPAM folder!', 'info');
+    })
+    .catch(function(err) {
+      log('❌ FAILED to send email!', 'err');
+      log('Error status : ' + (err.status || 'unknown'), 'err');
+      log('Error text   : ' + (err.text || JSON.stringify(err)), 'err');
+      log('', 'info');
+      log('Common causes:', 'info');
+      if (err.status === 400) {
+        log('  → 400 Bad Request: Template variable mismatch', 'err');
+        log('    Check that template "' + EJS_TPL_ADMIN + '" has {{to_email}} in the TO field', 'err');
+      } else if (err.status === 401 || err.status === 403) {
+        log('  → 401/403: Public Key "' + EJS_PUBLIC_KEY + '" is wrong or expired', 'err');
+      } else if (err.status === 404) {
+        log('  → 404: Service "' + EJS_SVC + '" or Template "' + EJS_TPL_ADMIN + '" not found', 'err');
+      } else if (err.status === 429) {
+        log('  → 429: Monthly email limit reached (200/month on free plan)', 'err');
+      } else if (!navigator.onLine) {
+        log('  → No internet connection', 'err');
+      }
+    });
+}
+
+// Auto-check on load
+window.onload = function() {
+  log('Page loaded. Click "Check EmailJS Init" first.', 'info');
+};
+</script>
+</body>
+</html>
