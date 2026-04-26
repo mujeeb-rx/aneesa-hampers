@@ -303,6 +303,37 @@
     // Save to localStorage
     localStorage.setItem('ah_lang', code);
 
+    // ── Apply correct font for the script ──
+    var LANG_FONTS = {
+      hi: { family: 'Noto Sans Devanagari', url: 'Noto+Sans+Devanagari:wght@400;600' },
+      te: { family: 'Noto Sans Telugu',     url: 'Noto+Sans+Telugu:wght@400;600' },
+      ta: { family: 'Noto Sans Tamil',      url: 'Noto+Sans+Tamil:wght@400;600' },
+      ar: { family: 'Noto Naskh Arabic',    url: 'Noto+Naskh+Arabic:wght@400;600' },
+      ur: { family: 'Noto Naskh Arabic',    url: 'Noto+Naskh+Arabic:wght@400;600' },
+      bn: { family: 'Noto Sans Bengali',    url: 'Noto+Sans+Bengali:wght@400;600' },
+      ml: { family: 'Noto Sans Malayalam',  url: 'Noto+Sans+Malayalam:wght@400;600' },
+      zh: { family: 'Noto Sans SC',         url: 'Noto+Sans+SC:wght@400;600' },
+      ja: { family: 'Noto Sans JP',         url: 'Noto+Sans+JP:wght@400;600' },
+      ko: { family: 'Noto Sans KR',         url: 'Noto+Sans+KR:wght@400;600' },
+      ms: { family: 'Noto Sans',            url: 'Noto+Sans:wght@400;600' }
+    };
+    var fontInfo = LANG_FONTS[code];
+    if (fontInfo) {
+      // Load the Google Font if not already loaded
+      var fontId = 'ah-font-' + code;
+      if (!document.getElementById(fontId)) {
+        var link = document.createElement('link');
+        link.id = fontId;
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=' + fontInfo.url + '&display=swap';
+        document.head.appendChild(link);
+      }
+      // Apply font to body and override Jost/Cormorant
+      document.body.style.fontFamily = "'" + fontInfo.family + "', sans-serif";
+    } else {
+      // Restore default fonts for Latin scripts
+      document.body.style.fontFamily = "'Jost', 'Cormorant Garamond', sans-serif";
+    }
     var dict = TRANSLATIONS[code] || {};
     var isEnglish = (!code || code === 'en' || Object.keys(dict).length === 0);
 

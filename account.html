@@ -738,8 +738,17 @@ nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT a
         </div>
       </div>
 
-      <!-- Language & Region -->
-      <div class="profile-card">
+      <!-- Language & Region VIEW card -->
+      <div class="profile-card" id="langViewCard" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h3 style="margin:0">🌍 Language &amp; Region</h3>
+          <button onclick="editLang()" style="background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:9px;padding:7px 16px;font-size:.75rem;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .2s;">✏️ Edit</button>
+        </div>
+        <div id="langViewBody" style="display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;font-size:.85rem;"></div>
+      </div>
+
+      <!-- Language & Region FORM card -->
+      <div class="profile-card" id="langFormCard">
         <h3>🌍 Language &amp; Region</h3>
         <div style="font-size:.78rem;opacity:.45;margin-bottom:16px;line-height:1.6;">Choose your preferred language and display currency. Payments are always charged in INR.</div>
 
@@ -799,7 +808,10 @@ nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT a
             </select>
           </div>
         </div>
-        <button class="save-btn" style="margin-top:4px;" onclick="savePreferences()">🌍 Save Language &amp; Region</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+          <button class="save-btn" style="flex:1;min-width:140px;" onclick="savePreferences()">🌍 Save Language &amp; Region</button>
+          <button id="langCancelBtn" onclick="cancelEditLang()" style="display:none;flex:1;min-width:120px;padding:13px;border-radius:12px;border:1.5px solid rgba(192,100,122,.25);background:var(--blush);color:var(--deep-rose);font-size:.8rem;font-weight:600;cursor:pointer;">✕ Cancel</button>
+        </div>
 
         <!-- Worldwide shipping note -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
@@ -819,6 +831,8 @@ nav.main-nav{display:none !important;} /* Hide top nav completely — does NOT a
           💬 WhatsApp for International Shipping
         </a>
       </div>
+
+
 
       <!-- Security -->
       <div class="profile-card">
@@ -1130,9 +1144,10 @@ window.savePreferences = function() {
   const country  = document.getElementById('prefCountry').value;
   const currency = document.getElementById('prefCurrency').value;
   localStorage.setItem('ah_prefs', JSON.stringify({lang:_selLang, country, currency, savedAt:Date.now()}));
-  // Apply currency conversion immediately across all pages
   if (window.AH_applyCurrency) window.AH_applyCurrency(currency);
   toast('🌍 Region saved! Prices updated.');
+  document.getElementById('langCancelBtn').style.display = 'none';
+  _showLangView();
 };
 
 function loadPreferences() {
@@ -1141,9 +1156,34 @@ function loadPreferences() {
     if (p.country)  { const s = document.getElementById('prefCountry');  if(s) s.value = p.country; }
     if (p.currency) { const s = document.getElementById('prefCurrency'); if(s) s.value = p.currency; }
     if (p.lang) _selLang = p.lang;
+    if (p.lang || p.currency || p.country) _showLangView();
   } catch(e) {}
   renderLangGrid();
 }
+
+function _showLangView() {
+  const LANG_NAMES = { en:'English', hi:'Hindi', te:'Telugu', ta:'Tamil', ar:'Arabic', ur:'Urdu', fr:'French', de:'German', es:'Spanish', zh:'Chinese', ja:'Japanese', ko:'Korean', ms:'Malay', ml:'Malayalam', bn:'Bengali', pt:'Portuguese' };
+  const langName = LANG_NAMES[_selLang] || 'English';
+  const country  = document.getElementById('prefCountry') ? document.getElementById('prefCountry').value : '';
+  const currency = document.getElementById('prefCurrency') ? document.getElementById('prefCurrency').value : 'INR';
+  const body = document.getElementById('langViewBody');
+  if (!body) return;
+  const row = (label, val) => val ? '<div style="color:#999;font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;">' + label + '</div><div style="font-weight:600;color:var(--burgundy);margin-bottom:4px;">' + val + '</div>' : '';
+  body.innerHTML = row('Language', langName) + row('Currency', currency) + row('Country', country || 'India');
+  document.getElementById('langFormCard').style.display = 'none';
+  document.getElementById('langViewCard').style.display = 'block';
+}
+
+window.editLang = function() {
+  document.getElementById('langViewCard').style.display = 'none';
+  document.getElementById('langFormCard').style.display = 'block';
+  document.getElementById('langCancelBtn').style.display = 'inline-block';
+  renderLangGrid();
+};
+window.cancelEditLang = function() {
+  _showLangView();
+  document.getElementById('langCancelBtn').style.display = 'none';
+};
 // Init on load
 renderLangGrid();
 loadPreferences();
